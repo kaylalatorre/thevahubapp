@@ -1,21 +1,7 @@
 <!DOCTYPE html>
 
-<nav class="navbar navbar-light navbar-expand-md" style="background-color: #009444;padding: 4px;">
-    <div class="container-fluid">
-        <div class="process-label"><img src="assets/img/tvh-logo-white.png" style="margin: 0 8px;height: 40px;"><label style="color: white;margin: 10px;"><strong>|</strong></label><label class="process-ind" style="font-size: 14px;">Training</label></div><button data-toggle="collapse"
-            class="navbar-toggler" data-target="#navcol-1" style="/*height: 70px;*/background: #009444;"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="nav navbar-nav ml-auto" style="font-size: 14px;">
-                <li class="nav-item" id="hr-home"><a class="nav-link active" href="#" style="color: #f0f0f0e6;">Home</a></li>
-                <li class="nav-item" id="screening"><a class="nav-link" href="trainer-classes" style="color: #f0f0f0e6;">Classes</a></li>
-                <li class="nav-item" id="hr-schedule"><a class="nav-link" href="trainer-schedule" style="color: #f0f0f0e6;">Schedule</a></li>
-                <li class="nav-item dropdown show" id="hradmin-drop"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="true" href="#" style="color: #f0f0f0e6;">Trainer</a>
-                    <div class="dropdown-menu dropdown-menu-right show"><a class="dropdown-item" href="trainer-profile">Profile</a><a class="dropdown-item" href="#">Logout</a></div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{{> trainer-navbar}}
+
 <div style="padding: 20px;">
     <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Classes</strong></label>
         <div class="text-right d-inline-block float-right" style="margin: 0px 5px;padding: 5;"><i class="fa fa-plus" style="color: #6dc63f;padding: 4px 6px;font-size: 12px;border-radius: 8px;border-width: 2px;border-style: solid;background: #ffffff;"></i><label style="color: rgb(0,0,0);padding: 3px;margin: 0 auto;font-size: 14px;">Create Class</label></div>
