@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<nav class="navbar navbar-light navbar-expand-md" style="background-color: #009444;padding: 4px;">
+    <div class="container-fluid">
+        <div class="process-label"><img src="assets/img/tvh-logo-white.png" style="margin: 0 8px;height: 40px;"><label style="color: white;margin: 10px;"><strong>|</strong></label><label class="process-ind" style="font-size: 14px;">Application</label></div><button data-toggle="collapse"
+            class="navbar-toggler" data-target="#navcol-1" style="/*height: 70px;*/background: #009444;"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="nav navbar-nav ml-auto" style="font-size: 14px;">
+                <li class="nav-item" id="hr-home"><a class="nav-link active" href="#" style="color: #f0f0f0e6;">Home</a></li>
+                <li class="nav-item" id="screening"><a class="nav-link" href="int-applicants" style="color: #f0f0f0e6;">Applicants</a></li>
+                <li class="nav-item" id="hr-schedule"><a class="nav-link" href="int-schedule" style="color: #f0f0f0e6;">Schedule</a></li>
+                <li class="nav-item dropdown" id="hradmin-drop"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#" style="color: #f0f0f0e6;">Recruiter</a>
+                    <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Logout</a></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div style="padding: 20px;">
+    <div><label class="h2 applicant-phase" style="padding: 5px;color: #2c2c2c;"><strong>Applicants List:&nbsp;</strong>Initial Phase</label></div>
+    <hr>
+    <div class="text-right"><label class="d-inline-block" style="padding: 3px 10px;"><strong>&nbsp;Filter</strong></label>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="formCheck-1"><label class="form-check-label" for="formCheck-1">All</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="formCheck-3"><label class="form-check-label" for="formCheck-1">Done</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="formCheck-2"><label class="form-check-label" for="formCheck-1">Pending</label></div>
+    </div>
+    <div>
+        <div class="table-responsive table-bordered">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="font-size: 14px;background: #efefef;color: rgb(0,148,68);width: 20%;">Name</th>
+                        <th style="font-size: 14px;background: #efefef;color: rgb(0,148,68);width: 35%;">System Requirements</th>
+                        <th style="font-size: 14px;background: #efefef;color: rgb(0,148,68);width: 15%;">CV/Resume</th>
+                        <th style="font-size: 14px;background: #efefef;color: rgb(0,148,68);width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 14px;">
+                    <tr style="font-size: 14px;">
+                        <td style="font-size: 14px;">Applicant 1</td>
+                        <td style="font-size: 14px;">Cell 1</td>
+                        <td style="font-size: 14px;">
+                            <div class="d-inline"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
+                            <div class="d-inline"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>
+                        </td>
+                        <td style="font-size: 14px;">
+                            <div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-pass" type="radio"><label class="form-check-label" for="formCheck-1" style="font-size: 12px;">Pass</label></div>
+                            <div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-fail" type="radio"><label class="form-check-label" for="formCheck-1" style="font-size: 12px;">Fail</label></div>
+                        </td>
+                    </tr>
+                    <tr style="font-size: 14px;">
+                        <td style="font-size: 14px;">Applicant 2</td>
+                        <td style="font-size: 14px;">Cell 2</td>
+                        <td style="font-size: 14px;">
+                            <div class="d-inline"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
+                            <div class="d-inline"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>
+                        </td>
+                        <td style="font-size: 14px;">
+                            <div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-pass" type="radio"><label class="form-check-label" for="formCheck-1" style="font-size: 12px;">Pass</label></div>
+                            <div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-fail" type="radio"><label class="form-check-label" for="formCheck-1" style="font-size: 12px;">Fail</label></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
