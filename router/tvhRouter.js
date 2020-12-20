@@ -6,7 +6,10 @@ const controller = require('../controller/tvhController');
 // get
 router.get('/login', controller.getLogin);
 router.get('/', controller.getHome);
-
+router.get('/application', controller.getAppForm);
+	// hr admin
+router.get('/hr-schedule', controller.getHRSched);
+router.get('/hr-screening', controller.getHRScreening);
 // post
 
 

@@ -47,20 +47,6 @@ app.use('/', router);
 app.use(express.static(__dirname));
 app.use(express.static('/public'));
 
-// calendar
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-
-  var calendar = new Calendar(calendarEl, {
-    plugins: [ dayGridPlugin ]
-  });
-
-  calendar.render();
-});
-
 /* PORT */
 app.listen(port, function(){
     console.log("Listening to http://localhost:" + port);

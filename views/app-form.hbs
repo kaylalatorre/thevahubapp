@@ -1,1 +1,75 @@
 <!DOCTYPE html>
+
+<div style="padding: 50px;">
+<form id="appForm" action="/action_page.php">
+  <h1 style="color:#009444;">Join the team!</h1>
+  <a class="forgot" href="/application" style="text-align:  center;">Already have an account? Login here.</a>
+  <!-- One "tab" for each step in the form: -->
+  
+  <div class="tab">
+    <p><label style="font-size: 14px;">First Name </label>
+    <input placeholder="First name " oninput="this.className = ''" name="fname"></p>
+
+    <p><label style="font-size: 14px;">Last Name </label>
+    <input placeholder="Last name " oninput="this.className = ''" name="lname"></p>
+
+    <p><label style="font-size: 14px;">Mobile Number</label>
+    <input placeholder="Mobile Number" oninput="this.className = ''" name="cNo"></p>
+
+    <p><label style="font-size: 14px;">Email </label>
+    <input placeholder="Email" oninput="this.className = ''" name="email"></p>
+
+    <p><label style="font-size: 14px;">Address </label>
+    <input placeholder="Address" oninput="this.className = ''" name="address"></p>
+
+    <p><label style="font-size: 14px;">Birthday </label>
+    <input type="date" id="startDate"min="2018-01-01" max="2024-12-31"></p>
+    
+    <p><label style="font-size: 14px;">Applying for </label>
+    <select class="appdrop">    
+      <option class="appoption dropdown-item" href="#">Marketing</option>
+      <option class="appoption dropdown-item" href="#">Real Estate</option>
+      </select>
+    </p>
+  </div>
+  
+  <div class="tab">Skills <button type="button" id="addSkill" onclick="">+</button>
+    <p><input placeholder="Skill" oninput="this.className = ''" name="skill"></p>
+    <p><label style="font-size: 14px; margin-right: 20px">Level</label>
+    <select class="appdrop" style="width: 70%">    
+      <option class="appoption dropdown-item" href="#">Professional</option>
+      <option class="appoption dropdown-item" href="#">Intermediate</option>
+      <option class="appoption dropdown-item" href="#">Beginner</option>
+      </select>
+    </p>
+  </div>
+  
+  <div class="tab">Certificates <button type="button" id="addCert" onclick="">+</button>
+      <p><input placeholder="Certificate or Award Title" oninput="this.className = ''" name="certificate"></p>
+      <p><input placeholder="Certified From" oninput="this.className = ''" name="certFrom"></p>
+      <p><input placeholder="Year" oninput="this.className = ''" name="certFrom"></p>
+  </div>
+  
+  <div class="tab">System Requirements
+      <div class="form-check"><input class="form-check-input" type="checkbox" id="formCheck-1" style="font-size: 18px;"><label class="form-check-label" for="formCheck-1" style="font-size: 18px;width: 639px;"><strong>Personal Computer/Laptop</strong><br><em>Any processor with 2.0 GHz clock speed or higher&nbsp;and a 4GB RAM or higher.</em><br></label></div>
+      <div class="form-check" style="margin-top: 25px;"><input class="form-check-input" type="checkbox" id="formCheck-2" style="font-size: 18px;"><label class="form-check-label" for="formCheck-1" style="font-size: 18px;width: 639px;"><strong>Internet speed</strong><br><em>Internet speed of 3 Mbps or higher with 2.5 Mbps running speed.</em><br></label></div>
+      <div class="form-check" style="margin-top: 25px;width: 1165px;"><input class="form-check-input" type="checkbox" id="formCheck-3" style="font-size: 18px;"><label class="form-check-label" for="formCheck-1" style="font-size: 18px;width: 1070px;"><strong>Headset</strong><br><em> Over-the-ear headset with a retractable noise-reduction microphone or In-ear headsets (like the ones that come with your phone) are not allowed.</em><br></label></div>
+      <div class="form-check" style="margin-top: 25px;width: 1165px;"><input class="form-check-input" type="checkbox" id="formCheck-4" style="font-size: 18px;"><label class="form-check-label" for="formCheck-1" style="font-size: 18px;width: 1070px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label></div>
+  </div> 
+  <div style="overflow:auto;">
+    <div style="float:right;">
+      <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+      <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+    </div>
+  </div>
+
+  <!-- Circles which indicates the steps of the form: -->
+  <div style="text-align:center;margin-top:40px;">
+    <span class="step"></span>
+    <span class="step"></span>
+    <span class="step"></span>
+    <span class="step"></span>
+  </div>
+</form>
+
+</div>
