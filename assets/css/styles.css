@@ -1,7 +1,11 @@
-html, body {
+html {
   margin: 0 auto;
-  width, height: 100%;
+  height: 100%;
   font-family: "Raleway", sans-serif;
+}
+
+body {
+  height: 100%;
 }
 
 a:hover {
@@ -50,23 +54,33 @@ a {
   box-sizing: border-box;
 }
 
-#appForm {
-  background-color: #ebf5ee;;
-  margin: 100px auto;
+.form-style {
+  background-color: #fff;
+  color:#009444;
+  margin: 20px auto;
   font-family: Raleway;
   padding: 40px;
   width: 45%;
   min-width: 300px;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+.appForm-clean {
+  min-height: 100%; 
+  padding: 20px 0px;
+  background-color: #ebf5ee;
 }
 
 h1 {
-  text-align: center;  
+  text-align: center; 
+  font-weight: bold; 
 }
 
-input {
+input, .appdrop, .appoption {
   padding: 10px;
-  width: 100%;
-  font-size: 17px;
+ /* width: 100%;*/
+  font-size: 14px;
   font-family: Raleway;
   border: 1px solid #aaaaaa;
 }
@@ -85,6 +99,7 @@ button {
   background-color: #4CAF50;
   color: #ffffff;
   border: none;
+  border-radius: 8px;
   padding: 10px 20px;
   font-size: 17px;
   font-family: Raleway;
@@ -93,6 +108,19 @@ button {
 
 button:hover {
   opacity: 0.8;
+}
+
+#addSkill, #addCert {
+  background-color: #f8f8f8;
+  color: #4CAF50;
+  border: solid;
+  border-width: 1px;
+  border-color: #4CAF50;
+  border-radius: 8px;
+  padding: 2px 4px;
+  font-size: 10px;
+  font-family: Raleway;
+  cursor: pointer;
 }
 
 #prevBtn {

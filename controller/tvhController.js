@@ -30,6 +30,15 @@ const rendFunctions = {
 	// }
 	},
 
+	getSubmitted: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('form-submitted', {
+		});
+	// }
+	},
+
 	getHRSched: function(req, res, next) {
 	// if (req.session.user){
 	// 	res.redirect('/');
