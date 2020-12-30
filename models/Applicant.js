@@ -6,7 +6,7 @@ var applicantSchema = new mongoose.Schema({
 	lName: String,
 	email: String,
 	address: String,
-	sys_reqs: [ boolean ],
+	sys_reqs: [ Boolean ],
 	certifications: [{
 			title: String,
 			certFrom: String,
