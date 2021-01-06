@@ -147,3 +147,7 @@ button:hover {
 .step.finish {
   background-color: #4CAF50;
 }
+
+.required {
+  color: red; display: inline-block;
+}
