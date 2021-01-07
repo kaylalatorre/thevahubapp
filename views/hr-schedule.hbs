@@ -7,7 +7,63 @@
     <hr>
     <div style="width: 15%; float: left;">
     	<div style="margin-bottom: 25px;">
-	    	<button type="button" id="createSched" style="display:flex; margin-bottom: 10px; width:90%;">+ Create Schedule</button>
+	    	<button type="button" id="createSchedModal" style="display:flex; margin-bottom: 10px; width:90%; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i> <label style="margin-left: 3px;">Create Schedule</label></button>
+
+			<!-- The Modal -->
+			<div id="myModal" class="modal">
+
+			  <!-- Modal content -->
+			  <div class="modal-content">
+			    <div>
+			    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Create </strong>Schedule</label>
+			    	<span class="close">&times;</span>
+			    </div>
+			    <div>
+			    	<hr>
+			    	<form id="createSched-form" style="margin-bottom: 30px;">
+			    		<div style="margin-bottom: 12px;">
+							<label style="display: inline-block; width: 30%">Interview Phase</label>
+							<div class="switch-field" style="display: inline-block;">
+								<input type="radio" id="radio-one" name="switch-one" value="initial" checked/>
+								<label for="radio-one">Initial</label>
+								<input type="radio" id="radio-two" name="switch-one" value="final" />
+								<label for="radio-two">Final</label>
+							</div>
+						</div>
+						<div style="margin-bottom: 12px;">
+							<label id="schedDate" style="display: inline-block; width: 30%">Date</label>
+							<input for="schedDate" type="date">
+						</div>
+						<div style="margin-bottom: 12px;">
+							<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
+							<input for="timeSlot" type="time" min="17:00" max="5:00"> - <input for="timeSlot" type="time" min="17:00" max="5:00">
+						</div>
+						<div style="margin-bottom: 12px;">
+							<label id="interviewerName" style="display: inline-block; width: 30%">Interviewer</label>
+							<select for="interviewerName" class="appdrop" style="width: 68%">     
+								<option class="appoption dropdown-item" href="#">Interviewer Name</option>
+								<option class="appoption dropdown-item" href="#">Interviewer Name</option>
+							</select>
+						</div>
+						<div style="margin-bottom: 12px;">
+							<label id="applicantName" style="display: inline-block; width: 30%">Applicant</label>
+							<select for="applicantName" class="appdrop" style="width: 68%">    
+								<option class="appoption dropdown-item" href="#">Applicant Name</option>
+								<option class="appoption dropdown-item" href="#">Applicant Name</option>
+							</select>
+						</div>
+						<div style="margin-bottom: 12px;">
+							<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
+							<input for="meet-link" placeholder="Meeting Link" style="width: 68%">
+						</div>
+			    	</form>
+			    	<button type="button" id="createSched" style="float:right;">Save</button>
+			    </div>
+			  </div>
+
+			</div>
+
+			<!-- Search -->
 	    	<input placeholder="Search for people" style="margin-bottom: 10px; width:90%;"></input>
     	</div>
 	    <div>
@@ -15,21 +71,23 @@
 	            <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1">INITIAL</a></li>
 	            <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-2">FINAL</a></li>
 	        </ul>
+	        
 	        <div class="tab-content" style="padding: 20px;margin: 0px -5px;">
+	        	<!-- Initial Applicants -->
 	            <div class="tab-pane active" role="tabpanel" id="tab-1">
 	                <div class="wrap-collabsible" for="applicants" style="margin-bottom: 20px;">
 	                    <input id="app-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="app-collapsible" class="lbl-toggle">Applicants</label>
 	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div>
+	                    	<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Applicant Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Applicant Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Applicant Name</label>
 	        				</div>
@@ -39,31 +97,32 @@
 	                    <input id="int-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="int-collapsible" class="lbl-toggle">Interviews</label>
 	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div>
+	                    	<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Interviewer Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Interviewer Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Interviewer Name</label>
 	        				</div>
         				</div>
 	                </div>
 	            </div>
+	            <!-- Final Applicants -->
 	            <div class="tab-pane" role="tabpanel" id="tab-2">
 	                <div class="wrap-collabsible" for="applicants" style="margin-bottom: 20px;">
 	                    <input id="app2-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="app2-collapsible" class="lbl-toggle">Applicants</label>
 	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div>
+	                    	<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Applicant Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Applicant Name</label>
 	        				</div>
@@ -73,11 +132,11 @@
 	                    <input id="int2-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="int2-collapsible" class="lbl-toggle">Interviews</label>
 	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div>
+	                    	<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Interviewer Name</label>
 	        				</div>
-	        				<div>
+	        				<div class="sched-list">
 			                    <input class="form-check-input" type="checkbox">
 		        				<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">Interviewer Name</label>
 	        				</div>
@@ -87,6 +146,7 @@
 	        </div>
 	    </div>
 	</div>
+	<!-- Calendar -->
     <div style="width: 85%; float: right;">
     	<div id="calendar"></div>
     </div>

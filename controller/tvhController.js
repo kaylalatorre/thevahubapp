@@ -76,6 +76,16 @@ const rendFunctions = {
 	// }
 	},
 
+	getIntApplicants: function(req, res, next) {
+		res.render('int-applicants', {
+		});
+	},
+
+	getError: function(req, res, next) {
+		res.render('error', {
+		});
+	},
+
 }
 
 module.exports = rendFunctions;

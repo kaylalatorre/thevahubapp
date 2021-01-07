@@ -1,0 +1,81 @@
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 10; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 35%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* styled radio button */
+.switch-field {
+  overflow: hidden;
+  margin-bottom: -2px;
+}
+
+.switch-field input {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  border: 0;
+  overflow: hidden;
+}
+
+.switch-field label {
+  background-color: #e4e4e4;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  padding: 8px 16px;
+  border: 1px solid;
+  border-radius: 4px;
+  transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.switch-field input:checked + label {
+  background-color: #4CAF50;
+  box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+  border-radius: 4px;
+}
+
+.switch-field label:last-of-type {
+  border-radius: 4px;
+}
