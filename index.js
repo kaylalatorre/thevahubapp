@@ -2,33 +2,36 @@
 const express = require('express');
 const hbs = require('handlebars');
 const exphbs = require('express-handlebars');
-// const bodyParser = require ('body-parser');
-// const cookieParser = require('cookie-parser'); //generates cookies to keep track of logged-in user
-// const session = require('express-session'); //keeps track of who's logged in
-// const mongoose = require('mongoose');
+const bodyParser = require ('body-parser');
+const cookieParser = require('cookie-parser'); //generates cookies to keep track of logged-in user
+const session = require('express-session'); //keeps track of who's logged in
+const mongoose = require('mongoose');
 const path = require('path');
 
 
 /* EXPRESS APPLICATION */
 const app = express();
-const port = process.env.port||9000;
+const port = process.env.port || 9000;
  
 /* CONNECT DB */ 
-// const db = require('./models/db');
-// db.connect();
+ const db = require('./models/db');
+ db.connect();
+ 
+/* INITIALIZING DOTENV (for db access info)*/
+require('dotenv').config();
 
 /* INITIALIZING COOKIES & SESSION, BODYPARSER */
-// app.use(cookieParser());
+ app.use(cookieParser());
 
-// app.use(session({
-// 	secret: 'sikret',
-// 	name: 'saeshun',
-// 	resave: true,
-// 	saveUninitialized: true
-// }));
+ app.use(session({
+ 	secret: 'tvhsecret',
+ 	name: 'tvhsession',
+ 	resave: true,
+ 	saveUninitialized: true
+ }));
 
-// app.use(bodyParser.urlencoded({extended: true}));
-// app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({extended: true}));
+ app.use(bodyParser.json());
 
 /* CREATE HBS ENGINE */
 app.engine('hbs', exphbs({  

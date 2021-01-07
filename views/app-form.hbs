@@ -7,28 +7,28 @@
   <!-- One "tab" for each step in the form: -->
   
   <div class="tab">
-    <p><label style="font-size: 14px;">First Name </label>
+    <p><label style="font-size: 14px;">First Name </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="First name " oninput="this.className = ''" name="fname"></p>
 
-    <p><label style="font-size: 14px;">Last Name </label>
+    <p><label style="font-size: 14px;">Last Name </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="Last name " oninput="this.className = ''" name="lname"></p>
 
-    <p><label style="font-size: 14px;">Mobile Number</label>
+    <p><label style="font-size: 14px;">Mobile Number </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="Mobile Number" oninput="this.className = ''" name="cNo"></p>
 
-    <p><label style="font-size: 14px;">Email </label>
+    <p><label style="font-size: 14px;">Email </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="Email" oninput="this.className = ''" name="email"></p>
 
-    <p><label style="font-size: 14px;">Address </label>
+    <p><label style="font-size: 14px;">Address </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="Address" oninput="this.className = ''" name="address"></p>
 
-    <p><label style="font-size: 14px;">Birthday </label>
-    <input name="bday" style="width: 100%;" type="date" id="startDate"min="2018-01-01" max="2024-12-31"></p>
+    <p><label style="font-size: 14px;">Birthday </label><label class="required">*</label>
+    <input style="width: 100%;" type="date" id="startDate"min="2018-01-01" max="2024-12-31" name="bday"></p>
     
-    <p><label style="font-size: 14px;">Applying for </label>
-    <select name="applyFor" style="width: 100%;" style="width: 100%;" class="appdrop">    
-      <option class="appoption dropdown-item" value="Marketing"> Marketing </option>
-      <option class="appoption dropdown-item" value="Real Estate"> Real Estate </option>
+    <p><label style="font-size: 14px;">Applying for </label><label class="required">*</label>
+    <select style="width: 100%;" style="width: 100%;" class="appdrop" name="applyFor">    
+      <option class="appoption dropdown-item" href="#">Marketing</option>
+      <option class="appoption dropdown-item" href="#">Real Estate</option>
       </select>
     </p>
   </div>
@@ -55,7 +55,8 @@
       <p><input style="width: 100%;" placeholder="Year" oninput="this.className = ''" name="certFrom"></p>
   </div>
   
-  <div class="tab">System Requirements
+  <div class="tab">System Requirements <label class="required">*</label>
+    <div style="color: #000000">
       <div class="form-check" style="margin-top: 25px;">
         <input class="form-check-input" type="checkbox" id="formCheck-1">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Personal Computer/Laptop</strong><br><em>Any processor with 2.0 GHz clock speed or higher&nbsp;and a 4GB RAM or higher.</em><br></label>
@@ -72,6 +73,13 @@
         <input class="form-check-input" type="checkbox" id="formCheck-4">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label>
       </div>
+    </div>
+    <div style="margin-bottom: 25px;">
+    Resume or CV
+    <br>
+    <input type="file" for="resume">
+    </div>
+
   </div> 
   
   <div style="overflow:auto;">

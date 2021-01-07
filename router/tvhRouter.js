@@ -11,6 +11,8 @@ router.get('/form-submitted', controller.getSubmitted);
 	// hr admin
 router.get('/hr-schedule', controller.getHRSched);
 router.get('/hr-screening', controller.getHRScreening);
+router.get('/yes', controller.getTest);
+
 // post
 
 
