@@ -49,14 +49,9 @@ const rendFunctions = {
 		});
 	// }
 	},
-
-	getSubmitted: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('form-submitted', {
-		});
-	// }
+	
+	getFormSubmitted: function(req, res) {
+		res.render('form-submitted', {});
 	},
 
 /* [] Schedule Interview
@@ -103,18 +98,42 @@ const rendFunctions = {
 				res.status(500).send(e);
 			}
 		},
+		
+// for console register w password hashing
+	postRegister: async function(req, res) {
+		try {
+			let hashPass = await bcrypt.hash(req.body.password, saltRounds);
+			console.log(hashPass);
+			let insertUser = await db.insertOne(UserDB,
+				{userID: req.body.userID, firstName: req.body.firstName, lastName: req.body.lastName, 
+					email: req.body.email, password: hashPass, isVerified: true, userType: req.body.userType});
+				
+			console.log("db: Created user/n" + insertUser);
+		} catch(e) {
+			res.status(500).send(e);
+		}
+	},
 
-//	postApplication: async function(req, res) {
-//		try {
-//			// send to Applicant email
-//			
-//			// create Applicant record
-//			let {fName, lName, cNo, email, address, bday, applyFor /*skills, certs, sys_reqs*/} = req.body;
-//			
-//			// redirect to form submitted page (--> then what?)
-//		} catch(e) {
-//			res.status(500).send(e);
-//	},
+	postApplication: async function(req, res) {
+		try {
+			
+			
+			// create Applicant record
+			let {fName, lName, cNo, email, address, bday, applyFor, /*skillTitle, skillLevel, certName, certFrom, certYear,*/ 
+				check1, check2, check3, check4} = req.body;
+			// how to get data from form-check-input input type? (sys_reqs)
+			// ^ for file types? (resume/cv) 
+			// accept only *pdf file types
+			
+			// redirect to form submitted page (--> then what?)
+			
+			// inform Applicant that their submission has been acknowledged
+				
+			
+		} catch(e) {
+			res.status(500).send(e);
+		}
+	},
 			
 	getTest: function(req, res){
 		res.render('int-applicants', {});
