@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
+const url = `mongodb://TVH-admin:zLXsFFmBmU4QkQvT@tvh-cluster-shard-00-00.zuv4e.mongodb.net:27017,tvh-cluster-shard-00-01.zuv4e.mongodb.net:27017,tvh-cluster-shard-00-02.zuv4e.mongodb.net:27017/tvh-db?authSource=admin&replicaSet=atlas-wfdg1t-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true`;
 
-//const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@zenactive-cluster.ot555.mongodb.net/zenactive?retryWrites=true&w=majority`;
 const options = {
 	useUnifiedTopology: true,
 	useNewUrlParser: true
