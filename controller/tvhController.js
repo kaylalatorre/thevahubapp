@@ -12,6 +12,7 @@ const rendFunctions = {
 	// }
 	},
 
+	// put condition kung anong usER then render '<user>-home'
 	getHome: function(req, res, next) {
 	// if (req.session.user){
 	// 	res.redirect('/');
@@ -56,6 +57,25 @@ const rendFunctions = {
 		});
 	// }
 	},
+
+	getTraineeProf: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-profile', {
+		});
+	// }
+	},
+
+	getTraineeClasses: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-classes', {
+		});
+	// }
+	},
+
 }
 
 module.exports = rendFunctions;
