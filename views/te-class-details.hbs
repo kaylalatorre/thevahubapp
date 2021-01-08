@@ -1,2 +1,65 @@
 <!DOCTYPE html>
 
+{{> trainee-navbar}}
+
+<div style="padding: 20px;">
+    <div>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/trainee-classes">Classes</a> > <strong>Class Section</strong></label>
+        <hr>
+    </div>
+    <div>
+        <div name="class_dets"  style="width: 100%; display: block; margin-bottom: 20px;">
+        	<div style="display: inline-block;padding: 5px;">
+        		Real Estate<br>
+        		Rudolfa Villalopez<br>
+        		September 10 - 18, 2020<br>
+        		8AM - 5PM<br>
+        	</div>
+        	<div class="wrap-collabsible" name="grade-legend" style="float: right; padding: 0px 35px;">
+                {{> grade-legend-modal}}
+            </div>
+        	</div>
+        </div>
+        <div name="scoresheet" style="padding: 5px;">
+        	<label class="h4" style="color: #2c2c2c;"><strong>Scoresheet</strong></label>
+        	<div class="table-responsive" style="width: 98%; margin-top: 20px;">
+		        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
+		            <thead>
+		                <tr style="background: #efefef;color: rgb(0,148,68);">
+		                    <th style="width: 40%;">Skill</th>
+		                    <th style="width: 5%;">Day 1</th>
+		                    <th style="width: 5%;">Day 2</th>
+		                    <th style="width: 5%;">Day 3</th>
+		                    <th style="width: 5%;">Day 4</th>
+		                    <th style="width: 5%;">Day 5</th>
+		                    <th style="width: 5%;">Day 6</th>
+		                    <th style="width: 5%;">Day 7</th>
+		                    <th style="width: 5%;">Day 8</th>
+		                    <th style="width: 15%;">Average</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+					<!--for each skill-->
+		                <tr>
+		                    <td> Skill Name </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                    <td>  </td>
+		                </tr>
+		            <!--for the final ave-->
+		            	<tr>
+		            		<td colspan="9"><strong>Final Average</strong></td>
+		            		<td></td>
+		            	</tr>
+		            </tbody>
+		        </table>
+		    </div>
+        </div>
+    </div>
+</div>

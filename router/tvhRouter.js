@@ -20,6 +20,7 @@ router.get('/int-applicants', controller.getIntApplicants);
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
+router.get('/trainee-class-details', controller.getTEClassDet);
 
 /* POST */
 

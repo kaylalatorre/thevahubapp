@@ -6,6 +6,7 @@ html {
 
 body {
   height: 100%;
+  font-family: "Raleway", sans-serif;
 }
 
 a:hover {
@@ -55,6 +56,6 @@ a {
   width: 100%;
   display: block;
 }
-.sched-list:hover {
+.sched-list:hover, .class-card:hover {
   background-color: #ebf5ee;
 }

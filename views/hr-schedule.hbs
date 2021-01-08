@@ -8,60 +8,7 @@
     <div style="width: 15%; float: left;">
     	<div style="margin-bottom: 25px;">
 	    	<button type="button" id="createSchedModal" style="display:flex; margin-bottom: 10px; width:90%; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i> <label style="margin-left: 3px;">Create Schedule</label></button>
-
-			<!-- The Modal -->
-			<div id="myModal" class="modal">
-
-			  <!-- Modal content -->
-			  <div class="modal-content">
-			    <div>
-			    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Create </strong>Schedule</label>
-			    	<span class="close">&times;</span>
-			    </div>
-			    <div>
-			    	<hr>
-			    	<form id="createSched-form" style="margin-bottom: 30px;">
-			    		<div style="margin-bottom: 12px;">
-							<label style="display: inline-block; width: 30%">Interview Phase</label>
-							<div class="switch-field" style="display: inline-block;">
-								<input type="radio" id="radio-one" name="switch-one" value="initial" checked/>
-								<label for="radio-one">Initial</label>
-								<input type="radio" id="radio-two" name="switch-one" value="final" />
-								<label for="radio-two">Final</label>
-							</div>
-						</div>
-						<div style="margin-bottom: 12px;">
-							<label id="schedDate" style="display: inline-block; width: 30%">Date</label>
-							<input for="schedDate" type="date">
-						</div>
-						<div style="margin-bottom: 12px;">
-							<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
-							<input for="timeSlot" type="time" min="17:00" max="5:00"> - <input for="timeSlot" type="time" min="17:00" max="5:00">
-						</div>
-						<div style="margin-bottom: 12px;">
-							<label id="interviewerName" style="display: inline-block; width: 30%">Interviewer</label>
-							<select for="interviewerName" class="appdrop" style="width: 68%">     
-								<option class="appoption dropdown-item" href="#">Interviewer Name</option>
-								<option class="appoption dropdown-item" href="#">Interviewer Name</option>
-							</select>
-						</div>
-						<div style="margin-bottom: 12px;">
-							<label id="applicantName" style="display: inline-block; width: 30%">Applicant</label>
-							<select for="applicantName" class="appdrop" style="width: 68%">    
-								<option class="appoption dropdown-item" href="#">Applicant Name</option>
-								<option class="appoption dropdown-item" href="#">Applicant Name</option>
-							</select>
-						</div>
-						<div style="margin-bottom: 12px;">
-							<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-							<input for="meet-link" placeholder="Meeting Link" style="width: 68%">
-						</div>
-			    	</form>
-			    	<button type="button" id="createSched" style="float:right;">Save</button>
-			    </div>
-			  </div>
-
-			</div>
+	    	{{> create-sched-modal}}
 
 			<!-- Search -->
 	    	<input placeholder="Search for people" style="margin-bottom: 10px; width:90%;"></input>

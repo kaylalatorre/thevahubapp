@@ -81,6 +81,11 @@ const rendFunctions = {
 		});
 	},
 
+	getTEClassDet: function(req, res, next) {
+		res.render('te-class-details', {
+		});
+	},
+
 	getError: function(req, res, next) {
 		res.render('error', {
 		});
