@@ -1,11 +1,21 @@
+// calendar
 document.addEventListener('DOMContentLoaded', function() {
-	var calendarEl = document.getElementById('calendar');
-	var calendar = new FullCalendar.Calendar(calendarEl, {
-	  initialView: 'dayGridMonth'
-	});
-	calendar.render();
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    initialDate: '2020-12-07',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    // events: data
+  });
+
+  calendar.render();
 });
 
+// collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
 

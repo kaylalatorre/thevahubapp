@@ -81,8 +81,18 @@ const rendFunctions = {
 		});
 	},
 
+	getIntSchedule: function(req, res, next) {
+		res.render('int-schedule', {
+		});
+	},
+
 	getTEClassDet: function(req, res, next) {
 		res.render('te-class-details', {
+		});
+	},
+
+	getDeactivate: function(req, res, next) {
+		res.render('deactivate', {
 		});
 	},
 

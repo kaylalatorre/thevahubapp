@@ -16,11 +16,13 @@ router.get('/hr-screening', controller.getHRScreening);
 
 	// interviewer
 router.get('/int-applicants', controller.getIntApplicants);
+router.get('/int-schedule', controller.getIntSchedule);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
 router.get('/trainee-class-details', controller.getTEClassDet);
+router.get('/deactivate', controller.getDeactivate);
 
 /* POST */
 
