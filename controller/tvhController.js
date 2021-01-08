@@ -118,17 +118,20 @@ const rendFunctions = {
 		try {
 			
 			
-			// create Applicant record
+			
 			let {fName, lName, cNo, email, address, bday, applyFor, /*skillTitle, skillLevel, certName, certFrom, certYear,*/ 
 				check1, check2, check3, check4} = req.body;
-			// how to get data from form-check-input input type? (sys_reqs)
-			// ^ for file types? (resume/cv) 
-			// accept only *pdf file types
+			// [] how to get data from form-check-input input type? (sys_reqs)
+			// --get check1-4 var 
+			// --if there is data in var, put as 0 in boolean array?
 			
-			// redirect to form submitted page (--> then what?)
+			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
 			
-			// inform Applicant that their submission has been acknowledged
-				
+			
+			// [/] inform Applicant that their submission has been acknowledged
+			// --done in scripts.js submitAppForm()	
+			
+			// create Applicant record in db
 			
 		} catch(e) {
 			res.status(500).send(e);

@@ -48,11 +48,11 @@
 
   </div>
   
-  <div class="tab">
+  <div id="certContainer" class="tab">
     <div style="margin-bottom: 15px;">Certificates <button type="button" id="addCert" onclick="">+ Add</button></div>
-      <p><input style="width: 100%;" placeholder="Certificate or Award Title" oninput="this.className = ''" name="certName"></p>
-      <p><input style="width: 100%;" placeholder="Certified From" oninput="this.className = ''" name="certFrom"></p>
-      <p><input style="width: 100%;" placeholder="Year" oninput="this.className = ''" name="certYear"></p>
+      <p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName"></p>
+      <p><input style="width: 100%;" placeholder="Certified From" class="certFrom"></p>
+      <p><input style="width: 100%;" placeholder="Year" class="certYear"></p>
   </div>
   
   <div class="tab">System Requirements <label class="required">*</label>
@@ -74,6 +74,7 @@
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label>
       </div>
     </div>
+
     <div style="margin-bottom: 25px;">
     Resume or CV
     <br>

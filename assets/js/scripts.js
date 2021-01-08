@@ -9,13 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function submitAppForm() {
 	var appForm = $('#appForm').serialize();
 	var skillsArr = [];
+	var certsArr = [];
 	
 	$('.skillTitle').each((i, object) => {
 		let lvl = $('.skillLevel')[i]; 
 		skillsArr.push({title: object.val(), level: lvl});
 	});
 	
-	appForm.skills = skillsArr;
+	$('.certName').each((i, object) => {
+		let cFrom = $('.certFrom')[i];
+		let cYear = $('.certYear')[i];
+		certsArr.push({title: object.val(), certFrom: cFrom, year: cYear});
+	});
+	
+	appForm.skills = skillsArr; //why .skills? where is it from?
+	appForm.certifications = certsArr;
 	console.log(appForm);
 	
 //	$.ajax({
@@ -40,4 +48,11 @@ $(document).ready(function() {
 							+ '</select>' + '</p>';
 		$('#skillContainer').append(skillHTML);
 	});	
+	
+	$('button#addCert').click(function() {		
+		var certHTML = '<p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Certified From" class="certFrom"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear"></p>';
+		$('#certContainer').append(certHTML);
+	});
 });
