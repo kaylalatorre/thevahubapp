@@ -26,21 +26,20 @@ function submitAppForm() {
 	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
 	console.log(appForm);
 	
-//	$.ajax({
-//		method: 'POST',
-//		url: '/submit-applic',
-//		data: appForm,
-//		success: () => window.location.href = '/form-submitted',
-//		error: res => console.log(res)
-//	});	
+	$.ajax({
+		method: 'POST',
+		url: '/submit-applic',
+		data: appForm,
+		success: () => window.location.href = '/form-submitted',
+		error: res => console.log(res)
+	});	
 }
 
 
 $(document).ready(function() {	
 	$('button#addSkill').click(function() {		
 		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"> </p>'
-						+ '<p>' 
-							+ '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
+						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
 									+ '<option value="" disabled selected>Level</option>'    
 									+ '<option class="appoption dropdown-item" href="#">Professional</option>'
 									+ '<option class="appoption dropdown-item" href="#">Intermediate</option>'

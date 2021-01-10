@@ -119,8 +119,9 @@ const rendFunctions = {
 			
 			let {fname, lname, cNo, email, address, bday, applyFor, skills, certifications} = req.body;
 			
-			// [] how to get data from form-check-input input type? (sys_reqs)
+			// [/] from form-check-input input type? (sys_reqs)
 			let sysReqs = checkSysReqs(req.body);
+			let applicID = generateID("AP");
 			
 			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
 			
@@ -130,7 +131,7 @@ const rendFunctions = {
 			
 			// create Applicant record in db
 			let insertApplic = await db.insertOne(ApplicantDB, {
-//					applicantID: String,
+					applicantID: applicID,
 					fName: fname,
 					lName: lname,
 					email: email,
@@ -161,6 +162,15 @@ function checkSysReqs(form) {
 		"check3" in form,
 		"check4" in form
 	];
+}
+
+function generateID(IDprefix) {
+   var ID = IDprefix;
+   var idLength = 5;
+
+   for (var i = 0; i < idLength; i++) { ID += (Math.round(Math.random() * 10)).toString(); }
+
+   return ID;
 }
 
 module.exports = rendFunctions;
