@@ -38,15 +38,14 @@ function submitAppForm() {
 
 $(document).ready(function() {	
 	$('button#addSkill').on("click", function() {		
-//		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"> </p>'
-//						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
-//									+ '<option value="" disabled selected>Level</option>'    
-//									+ '<option class="appoption dropdown-item" href="#">Professional</option>'
-//									+ '<option class="appoption dropdown-item" href="#">Intermediate</option>'
-//									+ '<option class="appoption dropdown-item" href="#">Beginner</option>'
-//							+ '</select>' + '</p>';
-//		$('#skillContainer').append(skillHTML);
-		alert("add skill working");
+		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"> </p>'
+						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
+									+ '<option value="" disabled selected>Level</option>'    
+									+ '<option class="appoption dropdown-item" href="#">Professional</option>'
+									+ '<option class="appoption dropdown-item" href="#">Intermediate</option>'
+									+ '<option class="appoption dropdown-item" href="#">Beginner</option>'
+							+ '</select>' + '</p>';
+		$('#skillContainer').append(skillHTML);
 	});	
 	
 	$('div button#addCert').on("click", function() {		
