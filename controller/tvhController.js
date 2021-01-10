@@ -113,17 +113,14 @@ const rendFunctions = {
 			res.status(500).send(e);
 		}
 	},
-
+	
 	postApplication: async function(req, res) {
 		try {
 			
+			let {fname, lname, cNo, email, address, bday, applyFor, skills, certifications} = req.body;
 			
-			
-			let {fName, lName, cNo, email, address, bday, applyFor, /*skillTitle, skillLevel, certName, certFrom, certYear,*/ 
-				check1, check2, check3, check4} = req.body;
 			// [] how to get data from form-check-input input type? (sys_reqs)
-			// --get check1-4 var 
-			// --if there is data in var, put as 0 in boolean array?
+			let sysReqs = checkSysReqs(req.body);
 			
 			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
 			
@@ -132,6 +129,19 @@ const rendFunctions = {
 			// --done in scripts.js submitAppForm()	
 			
 			// create Applicant record in db
+			let insertApplic = await db.insertOne(ApplicantDB, {
+//					applicantID: String,
+					fName: fname,
+					lName: lname,
+					email: email,
+					address: address,
+					birthdate: bday,
+					applyFor: applyFor,
+					skills: JSON.parse(skills),
+					sys_reqs: sysReqs,
+					certifications: JSON.parse(certifications)
+					//resume_cv: String
+			});
 			
 		} catch(e) {
 			res.status(500).send(e);
@@ -142,5 +152,15 @@ const rendFunctions = {
 		res.render('int-applicants', {});
 	}
 };
+
+// HELPER FUNCTIONS
+function checkSysReqs(form) {
+	return [
+		"check1" in form,
+		"check2" in form,
+		"check3" in form,
+		"check4" in form
+	];
+}
 
 module.exports = rendFunctions;

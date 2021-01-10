@@ -18,6 +18,7 @@ var applicantSchema = new mongoose.Schema({
 			certFrom: String,
 			year: Number
 	}],
+	resume_cv: String,
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,

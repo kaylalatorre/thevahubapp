@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function submitAppForm() {
-	var appForm = $('#appForm').serialize();
+	var appForm = $('#appForm').serializeArray();
 	var skillsArr = [];
 	var certsArr = [];
 	
@@ -22,8 +22,8 @@ function submitAppForm() {
 		certsArr.push({title: object.val(), certFrom: cFrom, year: cYear});
 	});
 	
-	appForm.skills = skillsArr; //why .skills? where is it from?
-	appForm.certifications = certsArr;
+	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
+	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
 	console.log(appForm);
 	
 //	$.ajax({
