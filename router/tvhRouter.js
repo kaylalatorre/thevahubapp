@@ -14,7 +14,7 @@ router.get('/hr-schedule', controller.getHRSched);
 router.get('/hr-screening', controller.getHRScreening);
 
 // *for testing
-router.get('/yes', controller.getTest);
+router.get('/test', controller.getTest);
 
 // post routes
 router.post('/register', controller.postRegister);

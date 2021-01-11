@@ -150,7 +150,8 @@ const rendFunctions = {
 	},
 			
 	getTest: function(req, res){
-		res.render('int-applicants', {});
+//		res.render('int-applicants', {});
+		res.render('hr-schedule', {});
 	}
 };
 
