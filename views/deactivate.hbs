@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 
-<nav class="navbar navbar-light navbar-expand-md" style="background-color: #009444;padding: 4px;">
-    <div class="container-fluid">
-        <div class="process-label"><img src="assets/img/tvh-logo-white.png" style="margin: 0 8px;height: 40px;"><label style="color: white;margin: 10px;"><strong>|</strong></label><label class="process-ind" style="font-size: 14px;">Training</label></div><button data-toggle="collapse" class="navbar-toggler"
-            data-target="#navcol-1" style="/*height: 70px;*/background: #009444;"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="nav navbar-nav ml-auto" style="font-size: 14px;">
-                <li class="nav-item" id="hr-home"><a class="nav-link active" href="#" style="color: #f0f0f0e6;">Home</a></li>
-                <li class="nav-item" id="screening"><a class="nav-link" href="trainer-classes" style="color: #f0f0f0e6;">Classes</a></li>
-                <li class="nav-item" id="hr-schedule"></li>
-                <li class="nav-item dropdown" id="hradmin-drop"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#" style="color: #f0f0f0e6;">Trainee</a>
-                    <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="trainee-profile">Profile</a><a class="dropdown-item" href="deactivate">Deactivate</a><a class="dropdown-item" href="#">Logout</a></div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{{> trainee-navbar}}
+
 <div style="padding: 20px;">
-    <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Deactivate Account</strong></label>
+    <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Deactivate</strong> your account</label>
         <div class="text-right d-inline-block float-right" style="margin: 0px 5px;padding: 5;"></div>
         <hr>
     </div>
-    <div></div>
+    <div style="background-color: #efefef; border-radius: 18px; width: 75%; height: 55%; padding: 20px; margin: 40px auto; overflow: auto">
+        <p>
+        Hi <strong>Gabriel</strong>, <br><br>
+
+        We’re sorry to hear you’d like to deactivate your account. <br><br>
+
+        If you think you will no longer use your account and would like your account deactivated, we can take care of this for you. Keep in mind that you will not be able to reactivate your account or retrieve any of the content or information you have added. <br><br>
+
+        After proceeding, you will have no longer be able to login to the system. In addition, your account will no longer be active and our name will be removed from any class you have enrolled in. <br><br>
+        </p>
+        <div style="margin-bottom: 24px;">
+            <label id="deactivation-rsn" style="font-weight: bold">Why are you deleting your account?</label>
+            <select for="deactivation-rsn" class="appdrop" style="width: 50%;">    
+                <option class="appoption dropdown-item" href="#">Change of plans</option>
+                <option class="appoption dropdown-item" href="#">Incompatible schedule</option>
+                <option class="appoption dropdown-item" href="#">Missed multiple classes</option>
+                <option class="appoption dropdown-item" href="#">Others</option>
+            </select>
+        </div>
+        <div style="float: right;">
+            <button
+                class="btn btn-primary d-inline-flex" type="button" id="deact-btn" onclick="window.confirm('Deactivate account?')"; style="background: #ffffff;border-radius: 10px;margin: 3px;color: #cd201f;border-width: 2px;border-color: #cd201f;text-align: center;">Deactivate</button>
+            <button class="btn btn-primary d-inline-flex" type="button" style="background: #009444;border-radius: 10px;margin: 3px;text-align: center;"><a href="/" style="color: #fff">Cancel</a></button>
+        </div>
+    </div>
 </div>

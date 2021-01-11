@@ -1,0 +1,103 @@
+/* APP FORM STYLES */
+* {
+  box-sizing: border-box;
+}
+
+.form-style {
+  background-color: #fff;
+  color:#009444;
+  margin: 20px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 45%;
+  min-width: 300px;
+  border-radius: 8px;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+.appForm-clean {
+  min-height: 100%; 
+  padding: 20px 0px;
+  background-color: #ebf5ee;
+}
+
+h1 {
+  text-align: center; 
+  font-weight: bold; 
+}
+
+input, .appdrop, .appoption {
+  padding: 4px;
+ /* width: 100%;*/
+  font-size: 14px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+
+button {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-family: Raleway;
+  cursor: pointer;
+  align-items: center;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+#addSkill, #addCert {
+  background-color: #f8f8f8;
+  color: #4CAF50;
+  border: solid;
+  border-width: 1px;
+  border-color: #4CAF50;
+  border-radius: 8px;
+  padding: 2px 4px;
+  font-size: 10px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+#prevBtn {
+  background-color: #bbbbbb;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;  
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #4CAF50;
+}
+
+.required {
+  color: red; display: inline-block;
+}

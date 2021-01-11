@@ -1,0 +1,31 @@
+.fc .fc-button-primary {
+  color: #6dc63f;
+  background-color: #fff;
+  border-color: #6dc63f;
+}
+
+.fc .fc-button-primary:hover {
+  color: #6dc63f;
+  background-color: #ebf5ee;
+  border-color: #6dc63f;
+}
+
+.fc .fc-button-primary:disabled { /* not DRY */
+  color: #fff;
+  color: var(--fc-button-text-color, #fff);
+  background-color: #2c2c2c;
+  border-color: #2c2c2c;
+}
+
+.fc .fc-button-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0);
+}
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+  color: #fff;
+  background-color: #2c2c2c;
+}
+.fc .fc-button-primary:not(:disabled):active:focus,
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0);
+}

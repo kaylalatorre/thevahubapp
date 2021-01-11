@@ -76,6 +76,49 @@ const rendFunctions = {
 	// }
 	},
 
+	getTraineeProf: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-profile', {
+		});
+	// }
+	},
+
+	getTraineeClasses: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-classes', {
+		});
+	// }
+	},
+
+	getIntApplicants: function(req, res, next) {
+		res.render('int-applicants', {
+		});
+	},
+
+	getIntSchedule: function(req, res, next) {
+		res.render('int-schedule', {
+		});
+	},
+
+	getTEClassDet: function(req, res, next) {
+		res.render('te-class-details', {
+		});
+	},
+
+	getDeactivate: function(req, res, next) {
+		res.render('deactivate', {
+		});
+	},
+
+	getError: function(req, res, next) {
+		res.render('error', {
+		});
+	},
+
 /* POST FUNCTIONS */
 	postLogin: async function(req, res) {
 			let {email, password} = req.body;
