@@ -23,22 +23,22 @@
     <input style="width: 100%;" placeholder="Address" oninput="this.className = ''" name="address"></p>
 
     <p><label style="font-size: 14px;">Birthday </label><label class="required">*</label>
-    <input style="width: 100%;" type="date" id="startDate"min="2018-01-01" max="2024-12-31"></p>
+    <input style="width: 100%;" type="date" id="startDate"min="2018-01-01" max="2024-12-31" name="bday"></p>
     
     <p><label style="font-size: 14px;">Applying for </label><label class="required">*</label>
-    <select style="width: 100%;" style="width: 100%;" class="appdrop">    
+    <select style="width: 100%;" style="width: 100%;" class="appdrop" name="applyFor">    
       <option class="appoption dropdown-item" href="#">Marketing</option>
       <option class="appoption dropdown-item" href="#">Real Estate</option>
       </select>
     </p>
   </div>
   
-  <div class="tab">
-    <div style="margin-bottom: 15px;">Skills <button type="button" id="addSkill" onclick="">+ Add</button></div>
-    <p><input style="width: 100%;" placeholder="Skill" oninput="this.className = ''" name="skill"></p>
+  <div id="skillContainer" class="tab">
+    <div style="margin-bottom: 15px;">Skills <button type="button" id="addSkill">+ Add</button></div>
+    <p><input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"></p>
 
     <p>
-    <select style="width: 100%;" class="appdrop" for="level">
+    <select style="width: 100%;" class="appdrop" for="level" id="skillLevel" class="skillLevel">
       <option value="" disabled selected>Level</option>    
       <option class="appoption dropdown-item" href="#">Professional</option>
       <option class="appoption dropdown-item" href="#">Intermediate</option>
@@ -48,32 +48,33 @@
 
   </div>
   
-  <div class="tab">
-    <div style="margin-bottom: 15px;">Certificates <button type="button" id="addCert" onclick="">+ Add</button></div>
-      <p><input style="width: 100%;" placeholder="Certificate or Award Title" oninput="this.className = ''" name="certificate"></p>
-      <p><input style="width: 100%;" placeholder="Certified From" oninput="this.className = ''" name="certFrom"></p>
-      <p><input style="width: 100%;" placeholder="Year" oninput="this.className = ''" name="certFrom"></p>
+  <div id="certContainer" class="tab">
+    <div style="margin-bottom: 15px;">Certificates <button type="button" id="addCert">+ Add</button></div>
+      <p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName"></p>
+      <p><input style="width: 100%;" placeholder="Certified From" class="certFrom"></p>
+      <p><input style="width: 100%;" placeholder="Year" class="certYear"></p>
   </div>
   
   <div class="tab">System Requirements <label class="required">*</label>
     <div style="color: #000000">
       <div class="form-check" style="margin-top: 25px;">
-        <input class="form-check-input" type="checkbox" id="formCheck-1">
+        <input class="form-check-input" type="checkbox" id="formCheck-1" name="check1">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Personal Computer/Laptop</strong><br><em>Any processor with 2.0 GHz clock speed or higher&nbsp;and a 4GB RAM or higher.</em><br></label>
       </div>
       <div class="form-check" style="margin-top: 25px;">
-        <input class="form-check-input" type="checkbox" id="formCheck-2">
+        <input class="form-check-input" type="checkbox" id="formCheck-2" name="check2">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Internet speed</strong><br><em>Internet speed of 3 Mbps or higher with 2.5 Mbps running speed.</em><br></label>
       </div>
       <div class="form-check" style="margin-top: 25px;">
-        <input class="form-check-input" type="checkbox" id="formCheck-3">
+        <input class="form-check-input" type="checkbox" id="formCheck-3" name="check3">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Headset</strong><br><em>Over-the-ear headset with a retractable noise-reduction microphone or In-ear headsets (like the ones that come with your phone) are not allowed.</em><br></label>
       </div>
       <div class="form-check" style="margin-top: 25px;">
-        <input class="form-check-input" type="checkbox" id="formCheck-4">
+        <input class="form-check-input" type="checkbox" id="formCheck-4" name="check4">
         <label class="form-check-label" for="formCheck-1" style="font-size: 14px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label>
       </div>
     </div>
+
     <div style="margin-bottom: 25px;">
     Resume or CV
     <br>

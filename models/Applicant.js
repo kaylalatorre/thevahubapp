@@ -6,12 +6,19 @@ var applicantSchema = new mongoose.Schema({
 	lName: String,
 	email: String,
 	address: String,
+	birthdate: String,
+	applyFor: String,
+	skills: [{
+		title: String,
+		level: String
+	}],
 	sys_reqs: [ Boolean ],
 	certifications: [{
 			title: String,
 			certFrom: String,
 			year: Number
 	}],
+	resume_cv: String,
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,
