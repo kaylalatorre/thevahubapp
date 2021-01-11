@@ -38,13 +38,13 @@ function submitAppForm() {
 	
 	$('.skillTitle').each((i, object) => {
 		let lvl = $('.skillLevel')[i]; 
-		skillsArr.push({title: object.val(), level: lvl});
+		skillsArr.push({title: $(object).val(), level: lvl});
 	});
 	
 	$('.certName').each((i, object) => {
 		let cFrom = $('.certFrom')[i];
 		let cYear = $('.certYear')[i];
-		certsArr.push({title: object.val(), certFrom: cFrom, year: cYear});
+		certsArr.push({title: $(object).val(), certFrom: cFrom, year: cYear});
 	});
 	
 	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
