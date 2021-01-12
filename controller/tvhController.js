@@ -76,6 +76,41 @@ const rendFunctions = {
 	// }
 	},
 
+	getTEClassDet: function(req, res, next) {
+		res.render('te-class-details', {
+		});
+	},
+
+	getTrainerClasses: function(req, res, next) {
+		res.render('trainer-classes', {
+		});
+	},
+
+
+	getTRClassDet: function(req, res, next) {
+		res.render('tr-class-details', {
+		});
+	},
+
+	getScoresheet: function(req, res, next) {
+		res.render('update-scoresheet', {
+		});
+	},
+
+	getTraineeList: function(req, res, next) {
+		res.render('manage-trainees', {
+		});
+	},
+
+	getTRSchedule: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('tr-schedule', {
+		});
+	// }
+	},
+
 	getIntApplicants: function(req, res, next) {
 		res.render('int-applicants', {
 		});
@@ -83,11 +118,6 @@ const rendFunctions = {
 
 	getIntSchedule: function(req, res, next) {
 		res.render('int-schedule', {
-		});
-	},
-
-	getTEClassDet: function(req, res, next) {
-		res.render('te-class-details', {
 		});
 	},
 

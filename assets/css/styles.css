@@ -20,11 +20,16 @@ a {
   background-color: transparent;
 }
 
+.nav-item {
+  padding-right: 15px;
+}
+
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
   color: #6dc63f;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
+
 
 .table-hover tbody tr:hover {
   color: #212529;
@@ -36,6 +41,18 @@ a {
     padding: 75px 300px;
   }
 }
+
+button {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-family: Raleway;
+  cursor: pointer;
+  align-items: center;
+}
+
 
 .process-label {
   margin-left: 0;
@@ -58,4 +75,17 @@ a {
 }
 .sched-list:hover, .class-card:hover {
   background-color: #ebf5ee;
+}
+
+.footer {
+  position: fixed;
+  left: -10px;
+  bottom: 0px;
+  width: 100%;
+  font-size: 9px;
+  text-align: right;
+}
+
+button:disabled {
+  opacity: 30%;
 }

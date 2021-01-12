@@ -44,23 +44,11 @@ input.invalid {
   display: none;
 }
 
-button {
-  background-color: #4CAF50;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 14px;
-  font-family: Raleway;
-  cursor: pointer;
-  align-items: center;
-}
-
 button:hover {
   opacity: 0.8;
 }
 
-#addSkill, #addCert {
+#addSkill, #addCert, #editTrainees, #upCoursePic{
   background-color: #f8f8f8;
   color: #4CAF50;
   border: solid;

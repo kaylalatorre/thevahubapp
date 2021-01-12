@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<div class="modal">
+
+  <!-- Modal content -->
+  <div  id="create-class-mod" class="modal-content">
+    <div>
+    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Create </strong>Class</label>
+    	<span class="close">&times;</span>
+    </div>
+    <div>
+    	<hr>
+    	<form id="createClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%;">
+    		<div style="margin-bottom: 12px;">
+				<label id="courseName" style="display: inline-block; width: 30%">Course</label>
+				<select for="courseName" class="appdrop" style="width: 68%">     
+					<option class="appoption dropdown-item" href="#">course Name</option>
+					<option class="appoption dropdown-item" href="#">course Name</option>
+				</select>
+			</div>
+			<div style="margin-bottom: 12px;">
+				<label id="startDate" style="display: inline-block; width: 30%">Start Date</label>
+				<input for="startDate" type="date">
+			</div>
+			<div style="margin-bottom: 12px;">
+				<label id="endDate" style="display: inline-block; width: 30%">End Date</label>
+				<input for="endDate" type="date">
+			</div>
+			<div style="margin-bottom: 12px;">
+				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
+				<input for="timeSlot" type="time" min="17:00" max="5:00"> - <input for="timeSlot" type="time" min="17:00" max="5:00">
+			</div>
+			<div style="margin-bottom: 12px;">
+				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
+				<input for="meet-link" placeholder="Meeting Link" style="width: 68%">
+			</div>
+    	</form>
+
+    	<div style="display: inline-block; width:42%; ">
+	    	<div for="course-image" style="align-items: center;border-style: solid; border-width: 1px; border-color: #ebf5ee; overflow: hidden;">
+	    		<img style="max-width: 320px; max-height: 170px;" src="/assets/img/hr-admin-pic.jpg">
+	    	</div>
+	    		<button type="button" id="upCoursePic" style="margin: 2px;"><i class="material-icons" style="margin: 0 auto;font-size: 12px;">upload</i><label style="margin-left: 3px;">Upload Course Photo</button>
+    	</div>
+    	<button type="button" id="createClass" style="border: none;" disabled="true">Save</button>
+
+    </div>
+  </div>
+
+</div>

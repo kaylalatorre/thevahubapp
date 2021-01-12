@@ -24,6 +24,13 @@ router.get('/trainee-classes', controller.getTraineeClasses);
 router.get('/trainee-class-details', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
 
+	// trainer
+router.get('/trainer-classes', controller.getTrainerClasses);
+router.get('/trainer-schedule', controller.getTRSchedule);
+router.get('/trainer-class-details', controller.getTRClassDet);
+router.get('/update-scoresheet', controller.getScoresheet);
+router.get('/manage-trainees', controller.getTraineeList);
+
 /* POST */
 
 

@@ -1,25 +1,29 @@
 // Get the modal
-var modal1 = document.getElementById("create-sched-mod");
+var modal = document.getElementsByClassName("modal");
 
 // Get the button that opens the modal
-var btn1 = document.getElementById("createSchedModal");
+var btn = document.getElementsByClassName("myBtn");
 
 // Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+var span = document.getElementsByClassName("close");
 
 // When the user clicks the button, open the modal 
-btn1.onclick = function() {
-  modal1.style.display = "block";
+btn[0].onclick = function() {
+  modal[0].style.display = "block";
 }
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal1.style.display = "none";
+span[0].onclick = function() {
+	var r = confirm("Canges you made will not be saved.");
+	if (r == true) 
+		modal[0].style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal1) {
-    modal1.style.display = "none";
-  }
+	if (event.target == modal[0]) {
+		var r = confirm("Canges you made will not be saved.");
+		if (r == true)
+			modal[0].style.display = "none";
+	}
 }

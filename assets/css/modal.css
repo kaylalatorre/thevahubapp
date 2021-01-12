@@ -19,7 +19,14 @@
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
+}
+
+#create-sched-mod {
   width: 35%;
+}
+
+#create-class-mod {
+  width: 50%;
 }
 
 /* The Close Button */
