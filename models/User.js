@@ -5,6 +5,7 @@ var userSchema = new mongoose.Schema({
 	fName: String,
 	lName: String,
 	email: String,
+	password: String,
 	userType: String,
 	TrainerInfo: {
 		classes: [{
@@ -17,7 +18,9 @@ var userSchema = new mongoose.Schema({
 		trainingStatus: String,
 		isDeactivated: Boolean,
 		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
-	}
+	},
+	isVerified: Boolean,
+	isDeactivated: Boolean,
 }, {collection: "User"});
 
 module.exports = mongoose.model('User', userSchema);

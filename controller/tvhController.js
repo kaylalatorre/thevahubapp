@@ -27,16 +27,16 @@ const rendFunctions = {
 	},
 
 	getHome: function(req, res) {
-		if (req.session.user.userType === "HR admin")
+		// if (req.session.user.userType === "HR admin")
 			res.render('hr-home', {});
-		else if (req.session.user.userType === "HR interviewer")
-			res.render('int-home', {});		
-		else if (req.session.user.userType === "Trainee")
-			res.render('trainee-home', {});
-		else if (req.session.user.userType === "Trainer")
-			res.render('trainer-home', {});
-		else 
-			res.render('login', {});
+		// else if (req.session.user.userType === "HR interviewer")
+		// 	res.render('int-home', {});		
+		// else if (req.session.user.userType === "Trainee")
+		// 	res.render('trainee-home', {});
+		// else if (req.session.user.userType === "Trainer")
+		// 	res.render('trainer-home', {});
+		// else 
+		// 	res.render('login', {});
 	},
 	
 /* [..] Application
@@ -102,11 +102,12 @@ const rendFunctions = {
 // for console register w password hashing
 	postRegister: async function(req, res) {
 		try {
+			// console.log("Hello " + req.body.fName, req.body.lName);
 			let hashPass = await bcrypt.hash(req.body.password, saltRounds);
 			console.log(hashPass);
 			let insertUser = await db.insertOne(UserDB,
-				{userID: req.body.userID, firstName: req.body.firstName, lastName: req.body.lastName, 
-					email: req.body.email, password: hashPass, isVerified: true, userType: req.body.userType});
+				{ userID: req.body.userID, fName: req.body.fName, lName: req.body.lName, 
+					email: req.body.email, password: hashPass, userType: req.body.userType, isVerified: true, isDeactivated: false });
 				
 			console.log("db: Created user/n" + insertUser);
 		} catch(e) {
