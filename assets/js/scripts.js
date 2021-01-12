@@ -31,34 +31,35 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 
-function submitAppForm() {
-	var appForm = $('#appForm').serializeArray();
-	var skillsArr = [];
-	var certsArr = [];
-	
-	$('.skillTitle').each((i, object) => {
-		let lvl = $('.skillLevel')[i]; 
-		skillsArr.push({title: $(object).val(), level: lvl});
-	});
-	
-	$('.certName').each((i, object) => {
-		let cFrom = $('.certFrom')[i];
-		let cYear = $('.certYear')[i];
-		certsArr.push({title: $(object).val(), certFrom: cFrom, year: cYear});
-	});
-	
-	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
-	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
-	console.log(appForm);
-	
-	$.ajax({
-		method: 'POST',
-		url: '/submit-applic',
-		data: appForm,
-		success: () => window.location.href = '/form-submitted',
-		error: res => console.log(res)
-	});	
-}
+//function submitAppForm() {
+//	var appForm = $('#appForm').serializeArray();
+//	var skillsArr = [];
+//	var certsArr = [];
+//	
+//	$('.skillTitle').each((i, object) => {
+//		let lvl = $('.skillLevel')[i]; 
+//		skillsArr.push({title: $(object).val(), level: lvl});
+//	});
+//	
+//	$('.certName').each((i, object) => {
+//		let cFrom = $('.certFrom')[i];
+//		let cYear = $('.certYear')[i];
+//		certsArr.push({title: $(object).val(), certFrom: cFrom, year: cYear});
+//	});
+//	
+//	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
+//	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
+//	
+//	console.log(appForm);
+//
+//	$.ajax({
+//		method: 'POST',
+//		url: '/submit-applic',
+//		data: appForm,
+//		success: () => window.location.href = '/form-submitted',
+//		error: res => console.log(res)
+//	});	
+//}
 
 
 $(document).ready(function() {	

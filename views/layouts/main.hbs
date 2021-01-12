@@ -13,7 +13,8 @@
 
 	<!-- for FILEPOND -->
 	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-
+	
+	
     <!--css files-->
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Kanit:200" rel="stylesheet">
@@ -37,12 +38,16 @@
      {{{body}}}
 
 	<!-- for FILEPOND -->
+	<script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js"></script>
 	<script src="https://unpkg.com/filepond/dist/filepond.js"></script>  
-
+	
 	<!-- Turn all file input elements into ponds -->
 	<script>
-	FilePond.parse(document.body);
+		// Register the plugin
+		FilePond.registerPlugin(FilePondPluginFileEncode);
+		FilePond.parse(document.body);
 	</script>
+
 </body>
     <script src="assets/js/app-scripts.js"></script> <!--application script file-->
     <script src="assets/js/modal.js"></script>
