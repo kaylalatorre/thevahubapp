@@ -29,6 +29,10 @@
   width: 50%;
 }
 
+#int-details {
+  width: 30%;
+}
+
 /* The Close Button */
 .close {
   color: #aaaaaa;

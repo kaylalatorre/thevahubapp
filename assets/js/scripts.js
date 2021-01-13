@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
   calendar.render();
 });
 
+
+
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;

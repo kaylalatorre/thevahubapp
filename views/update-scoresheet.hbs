@@ -1,3 +1,60 @@
 <!DOCTYPE html>
 
 {{> trainer-navbar}}
+
+<div style="padding: 20px;">
+	<div>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="#">Class #</a> > <strong>Update Scoresheet</strong></label>
+        <hr>
+    </div>
+    <div>
+        <div name="class_dets"  style="width: 100%; display: block; margin-bottom: 65px;">
+        	<div style="display: inline-block;padding: 5px;">
+        		<label style="margin-right: 10px;"><strong>Course</strong></label>
+        		<label>Course Name</label>
+        	</div>
+            <div class="wrap-collabsible" name="grade-legend" style="float: right; margin: 5px auto; padding-right:35px;">
+                {{> grade-legend-collapse}}
+            </div>
+            <div class="wrap-collabsible" name="grade-legend" style="float: right; margin: 5px auto;  padding-right: 35px;">
+                {{> skills-legend-collapse}}
+            </div>
+        </div>
+    </div>
+    <div name="scoresheet" style="padding: 5px;">
+    	<label class="h4" style="color: #2c2c2c;"><strong>Scores</strong></label>
+    	<button type="button" class="outlined-btn" style="margin: 2px;" onclick="">Edit</button>
+    	<div style="float: right;  text-align: center; margin: 0 auto; display: inline-flex;  padding-right:35px;" id="daysBtnGrp">
+    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" onclick=""><i class="material-icons" style="position: relative; top: 2px;">navigate_before</i></button>
+    		<label style="font-weight: bold; font-size: 18px; vertical-align: center; padding: 4px 8px;">Day 1</label>
+    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" onclick=""><i class="material-icons" style="position: relative; top: 2px;">navigate_next</i></button>
+    	</div>
+    	<div class="table-responsive" style="width: 98%; margin-top: 20px;">
+	        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
+	            <thead>
+	                <tr style="background: #efefef;color: rgb(0,148,68);">
+	                    <th style="width: 40%;">Trainee</th>
+	                    <th style="width: 5%;">VC</th>
+	                    <th style="width: 5%;">WC</th>
+	                    <th style="width: 5%;">CR</th>
+	                    <th style="width: 5%;">PA</th>
+	                    <th style="width: 5%;">AS</th>
+	                    <th style="width: 5%;">TS</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+				<!--for each trainee-->
+	                <tr>
+	                    <td> Name </td>
+	                    <td>  </td>
+	                    <td>  </td>
+	                    <td>  </td>
+	                    <td>  </td>
+	                    <td>  </td>
+	                    <td>  </td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+    </div>
+</div>

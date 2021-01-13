@@ -48,7 +48,7 @@ button:hover {
   opacity: 0.8;
 }
 
-#addSkill, #addCert, #editTrainees, #upCoursePic{
+.outlined-btn, #addSkill, #addCert{
   background-color: #f8f8f8;
   color: #4CAF50;
   border: solid;
