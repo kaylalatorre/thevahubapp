@@ -2,10 +2,16 @@
 
 {{> trainer-navbar}}
 
-<div class="homepage-design">
-    <div class="jumbotron">
-        <h1>Heading text</h1>
-        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
-        <p><a class="btn btn-primary" role="button">Learn more</a></p>
+<div style="background: url('/assets/img/trainer-pic.jpeg') no-repeat center fixed; background-size: cover; overflow: hidden; width: 100%; height: 100%;">
+    <div class="jumbotron" style="width: 45%; margin: 0 auto; padding: 35px; text-align: center; position: relative; top: 100px;">
+    	<h2 style="padding-bottom: 20px;">Welcome, <strong>trainer!</strong></h2>
+        <p style="padding-bottom: 20px;">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+        <!-- change to display: none; when no class -->
+        <div style="display: block;">
+	        <p>Class # is starting soon.</p>
+	        <div style="align-items: center;">
+	        	<button type="button" style="border: none;display: inline-block; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" onclick="window.location.href='#'">Go to class</button>
+	        </div>
+	    </div>    
     </div>
 </div>

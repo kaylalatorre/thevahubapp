@@ -74,7 +74,11 @@ button {
   display: block;
 }
 .sched-list:hover, .class-card:hover {
-  background-color: #ebf5ee;
+  background-color: #efefef;
+}
+
+.edit-class:hover {
+  color: #ebf5ee;
 }
 
 .footer {
@@ -84,6 +88,13 @@ button {
   width: 100%;
   font-size: 9px;
   text-align: right;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
 }
 
 button:disabled {
