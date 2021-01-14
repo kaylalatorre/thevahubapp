@@ -107,7 +107,7 @@ const rendFunctions = {
 			console.log(hashPass);
 			let insertUser = await db.insertOne(UserDB,
 				{ userID: req.body.userID, fName: req.body.fName, lName: req.body.lName, 
-					email: req.body.email, password: hashPass, userType: req.body.userType, isVerified: true, isDeactivated: false });
+					email: req.body.email, password: hashPass, userType: req.body.userType, isDeactivated: false });
 				
 			console.log("db: Created user/n" + insertUser);
 		} catch(e) {

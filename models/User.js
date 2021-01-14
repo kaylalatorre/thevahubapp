@@ -19,7 +19,6 @@ var userSchema = new mongoose.Schema({
 		isDeactivated: Boolean,
 		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
 	},
-	isVerified: Boolean,
 	isDeactivated: Boolean,
 }, {collection: "User"});
 
