@@ -13,12 +13,12 @@ const FilePond = require('filepond'); //for uploading files
 const app = express();
 const port = process.env.port || 9000;
  
+/* INITIALIZING DOTENV (for db access info)*/
+require('dotenv').config(); 
+ 
 /* CONNECT DB */ 
  const db = require('./models/db');
  db.connect();
- 
-/* INITIALIZING DOTENV (for db access info)*/
-require('dotenv').config();
 
 /* INITIALIZING COOKIES & SESSION, BODYPARSER */
  app.use(cookieParser());
@@ -31,8 +31,8 @@ require('dotenv').config();
  }));
 
 /* BODY PARSER */
- app.use(bodyParser.urlencoded({extended: true}));
- app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 /* FILEPOND */
 // Create a multi file upload component

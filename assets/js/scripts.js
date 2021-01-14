@@ -1,3 +1,8 @@
+// global variables
+var skillCount = 1;
+var certCount = 1;
+
+
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -63,21 +68,26 @@ for (i = 0; i < coll.length; i++) {
 
 
 $(document).ready(function() {	
-	$('button#addSkill').on("click", function() {		
-		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"> </p>'
-						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
+	
+	$('button#addSkill').on("click", function() {	
+		skillCount++;
+		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle" name="skillTitle'+ skillCount +'"> </p>'
+						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel" name="skillLevel'+ skillCount +'">'
 									+ '<option value="" disabled selected>Level</option>'    
 									+ '<option class="appoption dropdown-item" href="#">Professional</option>'
 									+ '<option class="appoption dropdown-item" href="#">Intermediate</option>'
 									+ '<option class="appoption dropdown-item" href="#">Beginner</option>'
 							+ '</select>' + '</p>';
 		$('#skillContainer').append(skillHTML);
+		
 	});	
 	
-	$('div button#addCert').on("click", function() {		
-		var certHTML = '<p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName"></p>'
-					 + '<p><input style="width: 100%;" placeholder="Certified From" class="certFrom"></p>'
-					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear"></p>';
+	$('div button#addCert').on("click", function() {	
+		certCount++;
+		var certHTML = '<p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName" name="certName'+ certCount +'"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Certified From" class="certFrom" name="certFrom'+ certCount +'"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear" name="certYear'+ certCount +'"></p>';
 		$('#certContainer').append(certHTML);
 	});
+	
 });

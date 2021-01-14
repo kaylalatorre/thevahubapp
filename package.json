@@ -20,10 +20,10 @@
     "hbs": "^4.1.1",
     "mongoose": "^5.11.10",
     "nodemailer": "^6.4.17",
-    "nodemon": "^2.0.7"
+	"dotenv": "^8.2.0"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0"
+    "nodemon": "^2.0.7"    
   },
   "repository": {
     "type": "git",

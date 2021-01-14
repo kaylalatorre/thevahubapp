@@ -32,5 +32,6 @@ router.get('/test', controller.getTest);
 // post routes
 router.post('/register', controller.postRegister);
 router.post('/submit-applic', controller.postApplication);
+router.post('/login-test', controller.postLogin);
 
 module.exports = router;

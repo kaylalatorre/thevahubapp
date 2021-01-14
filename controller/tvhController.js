@@ -125,20 +125,27 @@ const rendFunctions = {
 
 			var user = await db.findOne(UserDB, {email:email}, '');
 
+			console.log(req.body);
 			try {
 				if (!user) 
-					res.status(401).send();
+//					res.status(401).send();			
+					alert("u failed");
 				else { 
 					bcrypt.compare(password, user.password, function(err, match) {
 						if (match){
 							req.session.user = user;
-							res.status(200).send();					
+//							res.status(200).send();
+							res.redirect("/");							
 						} else
-							res.status(401).send();
+							alert("u failed");
+//							res.status(401).send();
+							
+
 					});
 				}		
 			} catch(e) { // Server error
-				res.status(500).send(e);
+//				res.status(500).send(e);
+				alert("u failed");
 			}
 		},
 		
@@ -160,14 +167,33 @@ const rendFunctions = {
 	postApplication: async function(req, res) {
 		try {
 			
-			let {fname, lname, cNo, email, address, bday, applyFor, skills, certifications} = req.body;
+			let {fname, lname, cNo, email, address, bday, applyFor} = req.body;
+			console.log(req.body); 
 			
-			// [/] from form-check-input input type? (sys_reqs)
-			let sysReqs = checkSysReqs(req.body);
+			let formArray = [];
+			let skills = [];
+			let certs = [];
 			let applicID = generateID("AP");
 			
-			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
+			// for skills and certs
+			for(let i=0; i < Object.keys(req.body).length; i++)
+				formArray.push({name: Object.keys(req.body)[i], value: Object.values(req.body)[i]});
 			
+			for(let i=0; i < formArray.length; i++){
+				if (formArray[i].name.substr(0, 10) === "skillTitle")
+					skills.push({title: formArray[i].value, level: formArray[i+1].value});
+				
+				if (formArray[i].name.substr(0, 8) === "certName")
+					certs.push({title: formArray[i].value, certFrom: formArray[i+1].value, certYear: Number.parseInt(formArray[i+2].value)});				
+			}
+			console.log(skills);
+			console.log(certs);
+			
+			// [/] for form-check-input input type (sys_reqs)
+			let sysReqs = checkSysReqs(req.body);
+			
+			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
+			// -- should be done w filepond
 			
 			// [/] inform Applicant that their submission has been acknowledged
 			// --done in scripts.js submitAppForm()	
@@ -177,19 +203,20 @@ const rendFunctions = {
 					applicantID: applicID,
 					fName: fname,
 					lName: lname,
+					phoneNo: cNo,
 					email: email,
 					address: address,
 					birthdate: bday,
 					applyFor: applyFor,
-					skills: JSON.parse(skills),
+					skills: skills,
 					sys_reqs: sysReqs,
-					certifications: JSON.parse(certifications)
+					certifications: certs
 					//resume_cv: String
 			});
-			
 		} catch(e) {
 			res.status(500).send(e);
 		}
+		
 	},
 			
 	getTest: function(req, res){

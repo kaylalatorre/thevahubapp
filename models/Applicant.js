@@ -4,6 +4,7 @@ var applicantSchema = new mongoose.Schema({
 	applicantID: String,
 	fName: String,
 	lName: String,
+	phoneNo: String,
 	email: String,
 	address: String,
 	birthdate: String,
