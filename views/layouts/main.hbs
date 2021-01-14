@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
 <head>
     <title>The VA Hub</title>
+
+    <!-- add icon link -->
+    <link rel="icon" href="assets/img/tvh-logo-square.png"> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
     <!--script files-->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.js"></script> <!--calendar-->
 	<script src="assets/js/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.5.0/main.min.js"></script> <!--calendar-->
     <script src="assets/js/scripts.js"></script> <!--general-->
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 
+	<!-- for FILEPOND -->
+	<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+	
+	
     <!--css files-->
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Kanit:200" rel="stylesheet">
@@ -34,7 +40,23 @@
 
      {{{body}}}
      
+    <p class="footer">© 2021 TVH System · Developed by Calamanci</p>
+
+
+	<!-- for FILEPOND -->
+	<script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js"></script>
+	<script src="https://unpkg.com/filepond/dist/filepond.js"></script>  
+	
+	<!-- Turn all file input elements into ponds -->
+	<script>
+		// Register the plugin
+		FilePond.registerPlugin(FilePondPluginFileEncode);
+		FilePond.parse(document.body);
+	</script>
+
 </body>
     <script src="assets/js/app-scripts.js"></script> <!--application script file-->
     <script src="assets/js/modal.js"></script>
+
+	
 </html>

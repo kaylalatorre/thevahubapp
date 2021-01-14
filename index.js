@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser'); //generates cookies to keep track
 const session = require('express-session'); //keeps track of who's logged in
 const mongoose = require('mongoose');
 const path = require('path');
-
+const FilePond = require('filepond'); //for uploading files
 
 /* EXPRESS APPLICATION */
 const app = express();
@@ -30,8 +30,17 @@ require('dotenv').config();
  	saveUninitialized: true
  }));
 
+/* BODY PARSER */
  app.use(bodyParser.urlencoded({extended: true}));
  app.use(bodyParser.json());
+
+/* FILEPOND */
+// Create a multi file upload component
+const pond = FilePond.create({
+    multiple: true,
+    name: 'filepond'
+});
+
 
 /* CREATE HBS ENGINE */
 app.engine('hbs', exphbs({  

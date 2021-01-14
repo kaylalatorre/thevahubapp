@@ -27,16 +27,16 @@ const rendFunctions = {
 	},
 
 	getHome: function(req, res) {
-		// if (req.session.user.userType === "HR admin")
+		if (req.session.user.userType === "HR admin")
 			res.render('hr-home', {});
-		// else if (req.session.user.userType === "HR interviewer")
-		// 	res.render('int-home', {});		
-		// else if (req.session.user.userType === "Trainee")
-		// 	res.render('trainee-home', {});
-		// else if (req.session.user.userType === "Trainer")
-		// 	res.render('trainer-home', {});
-		// else 
-		// 	res.render('login', {});
+		else if (req.session.user.userType === "HR interviewer")
+			res.render('int-home', {});		
+		else if (req.session.user.userType === "Trainee")
+			res.render('trainee-home', {});
+		else if (req.session.user.userType === "Trainer")
+			res.render('trainer-home', {});
+		else 
+			res.render('login', {});
 	},
 	
 /* [..] Application
@@ -74,6 +74,84 @@ const rendFunctions = {
 		res.render('hr-screening', {
 		});
 	// }
+	},
+
+	getTraineeProf: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-profile', {
+		});
+	// }
+	},
+
+	getTraineeClasses: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('trainee-classes', {
+		});
+	// }
+	},
+
+	getTEClassDet: function(req, res, next) {
+		res.render('te-class-details', {
+		});
+	},
+
+	getTrainerClasses: function(req, res, next) {
+		res.render('trainer-classes', {
+		});
+	},
+
+
+	getTRClassDet: function(req, res, next) {
+		res.render('tr-class-details', {
+		});
+	},
+
+	getScoresheet: function(req, res, next) {
+		res.render('update-scoresheet', {
+		});
+	},
+
+	getTraineeList: function(req, res, next) {
+		res.render('manage-trainees', {
+		});
+	},
+
+	getSummaryReport: function(req, res, next) {
+		res.render('trainer-reports', {
+		});
+	},
+
+	getTRSchedule: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('tr-schedule', {
+		});
+	// }
+	},
+
+	getIntApplicants: function(req, res, next) {
+		res.render('int-applicants', {
+		});
+	},
+
+	getIntSchedule: function(req, res, next) {
+		res.render('int-schedule', {
+		});
+	},
+
+	getDeactivate: function(req, res, next) {
+		res.render('deactivate', {
+		});
+	},
+
+	getError: function(req, res, next) {
+		res.render('error', {
+		});
 	},
 
 /* POST FUNCTIONS */
@@ -151,7 +229,8 @@ const rendFunctions = {
 	},
 			
 	getTest: function(req, res){
-		res.render('int-applicants', {});
+//		res.render('int-applicants', {});
+		res.render('hr-schedule', {});
 	}
 };
 

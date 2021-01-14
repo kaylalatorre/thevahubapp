@@ -2,33 +2,74 @@
 
 {{> trainer-navbar}}
 
-<div style="padding: 20px;">
+<div style="padding: 70px 20px 20px 20px;">
     <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Classes</strong></label>
-        <div class="text-right d-inline-block float-right" style="margin: 0px 5px;padding: 5;"><i class="fa fa-plus" style="color: #6dc63f;padding: 4px 6px;font-size: 12px;border-radius: 8px;border-width: 2px;border-style: solid;background: #ffffff;"></i><label style="color: rgb(0,0,0);padding: 3px;margin: 0 auto;font-size: 14px;">Create Class</label></div>
+        <button type="button" class="myBtn" style="border: none; display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createClassModal"><i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
+        {{> create-class-modal}}
         <hr>
     </div>
     <div id="trainer-classes">
-        <div class="shadow-sm d-inline-block class-card">
-            <div style="margin-right: 20px;margin-left: 20px;margin-top: 20px;height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/hr-admin-pic.jpg" width="310px" height="140px">
-                <hr>
+        <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
+            <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
             </div>
-            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 30%;">
-                <div class="d-flex" style="padding-right: 20px;padding-left: 20px;padding-top: 20px;"><label class="d-inline class-nbr" style="margin-right: 30px;width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="margin-right: 30px;width: 50%;font-size: 14px;"><strong>Course Name</strong></label></div>
-                <div
-                    class="d-flex float-left" style="padding-right: 20px;padding-left: 20px;width: 80%;"><label class="d-inline class-nbr" style="margin-right: 30px;width: 43%;font-size: 12px;">Schedule</label><label class="d-inline class-nbr" style="margin-right: 30px;width: 40%;font-size: 12px;">No of Trainees</label></div>
-            <div><i class="fa fa-pencil d-inline float-right" style="width: 10%;"></i></div>
+            
+            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 35%; margin-bottom: 10px;">
+                <hr>
+                <div style="display: inline-block; width: 85%">
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
+                    </div>
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
+                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
+                    </div>
+                </div>
+                <div style="display: inline-block; float: right; vertical-align: top;">
+                    <div class="edit-class d-inline" style="color: #2b2b2b; border-color: #2b2b2b; font-size: 12px"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></div>
+                </div>
+                
+            </div>
         </div>
-    </div>
-    <div class="shadow-sm d-inline-block class-card">
-        <div style="margin-right: 20px;margin-left: 20px;margin-top: 20px;height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/hr-admin-pic.jpg" width="310px" height="140px">
-            <hr>
+        <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
+            <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
+            </div>
+            
+            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 35%; margin-bottom: 10px;">
+                <hr>
+                <div style="display: inline-block; width: 85%">
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
+                    </div>
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
+                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
+                    </div>
+                </div>
+                <div style="display: inline-block; float: right; vertical-align: top;">
+                    <div class="edit-class d-inline" style="color: #2b2b2b; border-color: #2b2b2b; font-size: 12px"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></div>
+                </div>
+            </div>
         </div>
-        <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 30%;">
-            <div class="d-flex" style="padding-right: 20px;padding-left: 20px;padding-top: 20px;"><label class="d-inline class-nbr" style="margin-right: 30px;width: 30%;font-size: 14px;"><strong>Class 201</strong></label><label class="d-inline class-nbr" style="margin-right: 30px;width: 50%;font-size: 14px;"><strong>Real Estate</strong></label></div>
-            <div
-                class="d-flex float-left" style="padding-right: 20px;padding-left: 20px;width: 80%;"><label class="d-inline class-nbr" style="margin-right: 30px;width: 43%;font-size: 12px;">Dec 1 - 8. 2020</label><label class="d-inline class-nbr" style="margin-right: 30px;width: 40%;font-size: 12px;">9:00 to 19:00</label></div>
-        <div><i class="fa fa-pencil d-inline float-right" style="width: 10%;"></i></div>
+        <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
+            <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
+            </div>
+            
+            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 35%; margin-bottom: 10px;">
+                <hr>
+                <div style="display: inline-block; width: 85%">
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
+                    </div>
+                    <div class="d-flex">
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
+                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
+                    </div>
+                </div>
+                <div style="display: inline-block; float: right; vertical-align: top;">
+                    <div class="edit-class d-inline" style="color: #2b2b2b; border-color: #2b2b2b; font-size: 12px"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
-</div>
-</div>
 </div>

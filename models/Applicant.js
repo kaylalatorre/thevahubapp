@@ -18,7 +18,10 @@ var applicantSchema = new mongoose.Schema({
 			certFrom: String,
 			year: Number
 	}],
-	resume_cv: String,
+	resume_cv: {
+		type: Buffer,
+		required: true
+	},
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,
