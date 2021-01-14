@@ -81,6 +81,23 @@ button {
   color: #ebf5ee;
 }
 
+.certificate-border {
+  width:900px; 
+  height:700px; 
+  padding:20px; 
+  text-align:center; 
+  border: 10px solid #4CAF50;
+  margin: 0 auto;
+}
+
+.certificate-content {
+  width:850px; 
+  height:650px; 
+  padding:20px;
+  text-align:center; 
+  border: 5px solid #4CAF50;
+}
+
 .error {
   color: red;
   padding-top: 5px;

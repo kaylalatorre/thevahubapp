@@ -98,6 +98,15 @@ const rendFunctions = {
 	// }
 	},
 
+	getCertificate: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('certificate', {
+		});
+	// }
+	},
+
 	getTEClassDet: function(req, res, next) {
 		res.render('te-class-details', {
 		});

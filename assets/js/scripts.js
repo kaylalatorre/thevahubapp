@@ -143,4 +143,11 @@ $(document).ready(function() {
     }
   });
 
+
+  // View certificate
+  $('button#viewCert').click(function() {
+    // get data 
+    window.location.href='/certificate';
+  });
+
 });
