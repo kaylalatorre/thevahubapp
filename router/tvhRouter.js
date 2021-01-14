@@ -43,4 +43,7 @@ router.post('/login', controller.postLogin);
 router.post('/register', controller.postRegister);
 router.post('/submit-applic', controller.postApplication);
 
+	//trainees
+router.post('/deactivate', controller.postDeactivate);
+
 module.exports = router;
