@@ -7,7 +7,7 @@ const controller = require('../controller/tvhController');
 router.get('/login', controller.getLogin);
 router.get('/', controller.getHome);
 router.get('/application', controller.getAppForm);
-router.get('/form-submitted', controller.getSubmitted);
+router.get('/form-submitted', controller.getFormSubmitted);
 router.get('/error', controller.getError);
 
 	// hr admin
