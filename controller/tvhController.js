@@ -145,15 +145,8 @@ const rendFunctions = {
 	},
 
 	getDeactivate: function(req, res, next) {
-		// if (req.session.user) {
-			if(req.session.user.userType === "Trainee")
-				res.render('deactivate', {
-					userID: req.params.userID,
-				});
-			
-			else res.redirect('login');
-		// }
-		// else res.redirect('login');
+		res.render('deactivate', {
+		});
 	},
 
 	getError: function(req, res, next) {
@@ -237,27 +230,7 @@ const rendFunctions = {
 	getTest: function(req, res){
 //		res.render('int-applicants', {});
 		res.render('hr-schedule', {});
-	},
-
-	postDeactivateAccount: function(req, res) {
-		let { password } = req.body;
-
-		var userIDtemp = req.session.user.userID;
-
-		usersModel.findOneAndUpdate(
-			{userID: userIDtemp},
-			{ $set: { isDeactivated: true }},
-			{ useFindAndModify: false},
-			function(err, match) {
-				if (err) {
-					res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
-				}
-				else {
-				res.send({status: 200, mssg:'Account deactivated succesfully.'});
-				req.session.destroy();
-				}
-		});	
-	},
+	}
 };
 
 // HELPER FUNCTIONS
