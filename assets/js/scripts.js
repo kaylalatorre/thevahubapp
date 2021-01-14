@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
   calendar.render();
 });
 
-
-
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -125,10 +123,6 @@ $(document).ready(function() {
             $('p#pwError').text('Server Error.');
             break;
           }
-          case 409: {
-            $('p#pwError').text('Verify account to login.');
-            break;
-          }
           case 410: {
             $('p#pwError').text('Account inactive.');
             break;
@@ -137,4 +131,16 @@ $(document).ready(function() {
       });
     }
   });
+
+  // Deactivate client-side validation
+  $('button#deact-btn').click(function() {
+    var deactPass = prompt("Please enter your password to deactivate.", "");
+    if (deactPass == null || deactPass == "") {
+      window.location.href = '/deactivate';
+    } else {
+      alert("Account deactivated.");
+      window.location.href = '/';
+    }
+  });
+
 });
