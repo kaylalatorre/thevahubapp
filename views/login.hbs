@@ -5,8 +5,14 @@
     <form method="post" id="login-frm">
         <h2 class="sr-only">Login Form</h2>
         <div class="illustration"><img src="assets/img/tvh-logo-square.png" style="height: 120px;"></div>
-        <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
-        <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password"></div>
+        <div class="form-group">
+        	<input class="form-control" type="email" id="email" name="email" placeholder="Email">
+        	<p id="emailError" class="error"> {{emailError}} </p>
+        </div>
+        <div class="form-group">
+        	<input class="form-control" type="password" id="password" name="password" placeholder="Password">
+        	<p id="pwError" class="error"> {{pwError}} </p>
+        </div>
         <div class="form-group">
         	<button class="btn btn-primary btn-block" id="login-btn" type="button" style="background: #6dc63f;">Log In</button>
         </div>

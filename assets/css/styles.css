@@ -81,6 +81,13 @@ button {
   color: #ebf5ee;
 }
 
+.error {
+  color: red;
+  padding-top: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+
 .footer {
   position: fixed;
   left: -10px;

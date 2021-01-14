@@ -38,6 +38,8 @@ router.get('/trainer-reports', controller.getSummaryReport);
 router.get('/test', controller.getTest);
 
 // post routes
+router.post('/logout', controller.postLogout);
+router.post('/login', controller.postLogin);
 router.post('/register', controller.postRegister);
 router.post('/submit-applic', controller.postApplication);
 

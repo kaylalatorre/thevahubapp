@@ -24,7 +24,14 @@
                 <li class="nav-item dropdown" id="hradmin-drop">
                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#" style="color: #f0f0f0e6;">Admin</a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="/">Logout</a>
+                        <div>
+                            <form method="POST" action="/logout">
+                                  <input type="hidden" name="name" value="value" /> 
+                                    <a onclick="this.parentNode.submit();" class = "dropdown-item">
+                                        Logout
+                                    </a>
+                            </form>
+                        </div>
                     </div>
                 </li>
             </ul>
