@@ -3,17 +3,27 @@
   "version": "1.0.0",
   "description": "The VA Hub is a system application designed to aid the company of virutal assistants in tracking thier application and training data.",
   "main": "index.js",
+  "scripts": {
+    "test": "nodemon index"
+  },
   "dependencies": {
     "@fullcalendar/core": "^5.5.0",
     "@fullcalendar/daygrid": "^5.5.0",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "express-hbs": "^2.3.4",
-    "hbs": "^4.1.1"
+    "express-session": "^1.17.1",
+    "filepond": "^4.25.1",
+    "hbs": "^4.1.1",
+    "mongoose": "^5.11.10",
+    "nodemailer": "^6.4.17",
+    "nodemon": "^2.0.7"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   },
   "repository": {
     "type": "git",

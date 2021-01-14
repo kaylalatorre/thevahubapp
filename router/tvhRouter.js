@@ -34,5 +34,11 @@ router.get('/trainer-reports', controller.getSummaryReport);
 
 /* POST */
 
+// *for testing
+router.get('/test', controller.getTest);
+
+// post routes
+router.post('/register', controller.postRegister);
+router.post('/submit-applic', controller.postApplication);
 
 module.exports = router;
