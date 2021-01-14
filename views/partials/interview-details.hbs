@@ -1,11 +1,38 @@
 <!DOCTYPE html>
 
-<div class="modal">
+<div class="int-details modal">
 	<!-- Modal content -->
-  <div  id="int-details" class="modal-content">
+  <div id="int-dets" class="modal-content">
     <div>
     	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Interview Details</strong></label>
     	<span class="close">&times;</span>
+    </div>
+    <div style="display: inline-block; vertical-align: bottom; margin-bottom: 25px;">
+    	<hr>
+        <table style="line-height: 1.5; width: 100%;">
+                <tbody>
+                	<tr>
+                		<td style="width:25%"><strong> Applicant</strong> </td>
+                		<td style="width:75%">Applicant Name</td>
+                	</tr>
+                	<tr>
+                		<td style="width:25%"><strong> Schedule</strong> </td>
+                		<td style="width:75%">Applicant Name</td>
+                	</tr>
+                	<tr>
+                		<td style="width:25%"><strong> Resume</strong> </td>
+                		<td style="width:75%"><div class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div></td>
+                	</tr>
+                	<tr>
+                		<td style="width:25%"><strong> Meeting Link</strong> </td>
+                		<td style="width:75%">Applicant Name</td>
+                	</tr>
+                </tbody>
+        </table>
+        <div style="margin: 20px 10px 0px 20px;">
+	        <input id="interviewed" class="form-check-input" type="checkbox">
+			<label class="form-check-label" for="interviewed" style="font-size: 14px;">Interviewed</label>
+		</div>
     </div>
   </div>
 </div>

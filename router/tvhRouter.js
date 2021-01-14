@@ -30,6 +30,7 @@ router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/trainer-class-details', controller.getTRClassDet);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees', controller.getTraineeList);
+router.get('/trainer-reports', controller.getSummaryReport);
 
 /* POST */
 

@@ -102,6 +102,11 @@ const rendFunctions = {
 		});
 	},
 
+	getSummaryReport: function(req, res, next) {
+		res.render('trainer-reports', {
+		});
+	},
+
 	getTRSchedule: function(req, res, next) {
 	// if (req.session.user){
 	// 	res.redirect('/');

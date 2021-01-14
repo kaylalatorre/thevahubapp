@@ -1,13 +1,31 @@
 // Get the modal
-var modal = document.getElementsByClassName("modal");
+let modals = document.getElementsByClassName('modal');
+let modalBtns = document.getElementsByClassName('myBtn');
+let closeBtns = document.getElementsByClassName('close');
 
-// Get the button that opens the modal
-var btn = document.getElementsByClassName("myBtn");
+for(let modalBtn of modalBtns) {
+    modalBtn.onclick = function(event) {
+        document.querySelector(event.target.getAttribute('href') ).style.display = 'block';
+    }
+}
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close");
+for(let closeBtn of closeBtns) {
+    closeBtn.onclick = function(event) {
+        event.target.parentNode.parentNode.parentNode.style.display = 'none';
+    }
+}
 
-console.log(btn.length);
+window.onclick = function(event) {
+    if(event.target.classList.contains('modal') ) {
+        for(let modal of modals) {
+            if(typeof modal.style !== 'undefined') {
+                modal.style.display = 'none';    
+            }
+        }
+    }
+}
+
+/*
 // When the user clicks the button, open the modal 
 btn[0].onclick = function() {
   modal[0].style.display = "block";
@@ -40,6 +58,4 @@ span[1].onclick = function() {
 }
 
 
-
-
-
+*/
