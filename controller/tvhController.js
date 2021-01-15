@@ -167,13 +167,14 @@ const rendFunctions = {
 	postApplication: async function(req, res) {
 		try {
 			
-			let {fname, lname, cNo, email, address, bday, applyFor} = req.body;
+			let {fname, lname, cNo, email, address, bday, applyFor, resumeFile} = req.body;
 			console.log(req.body); 
 			
 			let formArray = [];
 			let skills = [];
 			let certs = [];
 			let applicID = generateID("AP");
+			let resFile = new Buffer.from(JSON.parse(resumeFile).data, "base64"); //converts String to base64 for Buffer type in Applicant (resume_cv)
 			
 			// for skills and certs
 			for(let i=0; i < Object.keys(req.body).length; i++)
@@ -184,7 +185,7 @@ const rendFunctions = {
 					skills.push({title: formArray[i].value, level: formArray[i+1].value});
 				
 				if (formArray[i].name.substr(0, 8) === "certName")
-					certs.push({title: formArray[i].value, certFrom: formArray[i+1].value, certYear: Number.parseInt(formArray[i+2].value)});				
+					certs.push({title: formArray[i].value, certFrom: formArray[i+1].value, year: Number.parseInt(formArray[i+2].value)});				
 			}
 			console.log(skills);
 			console.log(certs);
@@ -210,9 +211,13 @@ const rendFunctions = {
 					applyFor: applyFor,
 					skills: skills,
 					sys_reqs: sysReqs,
-					certifications: certs
-					//resume_cv: String
+					certifications: certs,
+					resume_cv: resFile
 			});
+			
+			if (insertApplic)
+				res.redirect("/form-submitted");
+			
 		} catch(e) {
 			res.status(500).send(e);
 		}
@@ -220,8 +225,8 @@ const rendFunctions = {
 	},
 			
 	getTest: function(req, res){
-//		res.render('int-applicants', {});
-		res.render('hr-schedule', {});
+		res.render('int-applicants', {});
+//		res.render('hr-schedule', {});
 	}
 };
 
