@@ -27,16 +27,20 @@ const rendFunctions = {
 	},
 
 	getHome: function(req, res) {
-		if (req.session.user.userType === "HR admin")
-			res.render('hr-home', {});
-		else if (req.session.user.userType === "HR interviewer")
-			res.render('int-home', {});		
-		else if (req.session.user.userType === "Trainee")
-			res.render('trainee-home', {});
-		else if (req.session.user.userType === "Trainer")
-			res.render('trainer-home', {});
-		else 
-			res.render('login', {});
+		if(req.session.user) {
+			if (req.session.user.userType === "HR admin")
+				res.render('hr-home', {});
+			else if (req.session.user.userType === "HR interviewer")
+				res.render('int-home', {});		
+			else if (req.session.user.userType === "Trainee")
+				res.render('trainee-home', {});
+			else if (req.session.user.userType === "Trainer")
+				res.render('trainer-home', {});
+			else 
+				res.render('login');
+		} else 
+			res.render('login');
+		 
 	},
 	
 /* [..] Application
@@ -94,6 +98,15 @@ const rendFunctions = {
 	// }
 	},
 
+	getCertificate: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('certificate', {
+		});
+	// }
+	},
+
 	getTEClassDet: function(req, res, next) {
 		res.render('te-class-details', {
 		});
@@ -145,15 +158,15 @@ const rendFunctions = {
 	},
 
 	getDeactivate: function(req, res, next) {
-		// if (req.session.user) {
+		if (req.session.user) {
 			if(req.session.user.userType === "Trainee")
 				res.render('deactivate', {
 					userID: req.params.userID,
 				});
 			
 			else res.redirect('login');
-		// }
-		// else res.redirect('login');
+		}
+		else res.redirect('login');
 	},
 
 	getError: function(req, res, next) {
@@ -163,26 +176,22 @@ const rendFunctions = {
 
 /* POST FUNCTIONS */
 	postLogin: async function(req, res) {
-			let {email, password} = req.body;
+		let {email, password} = req.body;
 
-			var user = await db.findOne(UserDB, {email:email}, '');
+		var user = await db.findOne(UserDB, {email:email}, '');
 
-			try {
-				if (!user) 
-					res.status(401).send();
-				else { 
-					bcrypt.compare(password, user.password, function(err, match) {
-						if (match){
-							req.session.user = user;
-							res.status(200).send();					
-						} else
-							res.status(401).send();
-					});
-				}		
-			} catch(e) { // Server error
-				res.status(500).send(e);
-			}
-		},
+		if (!user) // USER NOT IN DB
+			res.send({status: 401});
+		else { // SUCCESS
+			bcrypt.compare(password, user.password, function(err, match) {
+					if (match){
+						req.session.user = user;
+						res.send({status: 200});
+					} else
+						res.send({status: 401});
+			});
+		}
+	},		
 		
 // for console register w password hashing
 	postRegister: async function(req, res) {
@@ -240,24 +249,33 @@ const rendFunctions = {
 		res.render('hr-schedule', {});
 	},
 
-	postDeactivateAccount: function(req, res) {
-		let { password } = req.body;
 
-		var userIDtemp = req.session.user.userID;
+	postLogout: function(req, res) {
+		req.session.destroy();
+		res.redirect('/login');
+	},
+	
+	postDeactivate: function(req, res) {
+		if(req.session.user) {
+			let { password } = req.body;
 
-		usersModel.findOneAndUpdate(
-			{userID: userIDtemp},
-			{ $set: { isDeactivated: true }},
-			{ useFindAndModify: false},
-			function(err, match) {
-				if (err) {
-					res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
-				}
-				else {
-				res.send({status: 200, mssg:'Account deactivated succesfully.'});
-				req.session.destroy();
-				}
-		});	
+			var userIDtemp = req.session.user.userID;
+
+			usersModel.findOneAndUpdate(
+				{userID: userIDtemp},
+				{ $set: { isDeactivated: true }},
+				{ useFindAndModify: false},
+				function(err, match) {
+					if (err) {
+						res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
+					}
+					else {
+					res.send({status: 200, mssg:'Account deactivated succesfully.'});
+					req.session.destroy();
+					}
+			});	
+		}
+		else res.redirect('/');
 	},
 };
 

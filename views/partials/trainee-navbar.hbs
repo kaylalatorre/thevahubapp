@@ -23,7 +23,14 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="/trainee-profile">Profile</a>
                         <a class="dropdown-item" href="/deactivate">Deactivate</a>
-                        <a class="dropdown-item" href="/">Logout</a></div>
+                        <div>
+                            <form method="POST" action="/logout">
+                                  <input type="hidden" name="name" value="value" /> 
+                                    <a onclick="this.parentNode.submit();" class = "dropdown-item">
+                                        Logout
+                                    </a>
+                            </form>
+                        </div>
                 </li>
             </ul>
         </div>

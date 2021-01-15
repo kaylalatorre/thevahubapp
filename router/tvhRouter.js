@@ -23,6 +23,7 @@ router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
 router.get('/trainee-class-details', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
+router.get('/certificate', controller.getCertificate);
 
 	// trainer
 router.get('/trainer-classes', controller.getTrainerClasses);
@@ -38,6 +39,8 @@ router.get('/trainer-reports', controller.getSummaryReport);
 router.get('/test', controller.getTest);
 
 // post routes
+router.post('/logout', controller.postLogout);
+router.post('/login', controller.postLogin);
 router.post('/register', controller.postRegister);
 router.post('/submit-applic', controller.postApplication);
 
