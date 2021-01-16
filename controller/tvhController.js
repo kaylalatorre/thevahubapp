@@ -27,16 +27,20 @@ const rendFunctions = {
 	},
 
 	getHome: function(req, res) {
-		if (req.session.user.userType === "HR admin")
-			res.render('hr-home', {});
-		else if (req.session.user.userType === "HR interviewer")
-			res.render('int-home', {});		
-		else if (req.session.user.userType === "Trainee")
-			res.render('trainee-home', {});
-		else if (req.session.user.userType === "Trainer")
-			res.render('trainer-home', {});
-		else 
-			res.render('login', {});
+		if(req.session.user) {
+			if (req.session.user.userType === "HRadmin")
+				res.render('hr-home', {});
+			else if (req.session.user.userType === "HRinterv1")
+				res.render('int-home', {});		
+			else if (req.session.user.userType === "Trainee")
+				res.render('trainee-home', {});
+			else if (req.session.user.userType === "Trainer")
+				res.render('trainer-home', {});
+			else 
+				res.render('certificate'); //test onli
+		} else 
+			res.render('login');
+		 
 	},
 	
 /* [..] Application
@@ -75,6 +79,35 @@ const rendFunctions = {
 		});
 	// }
 	},
+	
+	getScreenApplicants: async function(req, res) {
+		if(req.session.user.userType === "HR admin"){
+			let applicants = await db.findMany(ApplicantDB, {});
+			
+			let acceptApps = [];
+			let pendApps = [];
+			let rejectApps = [];
+			
+			
+			if(applicants.initialStatus === "ACCEPTED")
+				acceptApps.push(applicants);
+			else if(applicants.initialStatus === "PENDING")
+				pendApps.push(applicants);
+			else if(applicants.initialStatus === "REJECTED")
+				rejectApps.push(applicants);
+			
+			res.render('hr-screening', {
+				accepted: acceptApps,
+				pending: pendApps,
+				rejected: rejectApps 
+				
+			});			
+			
+			
+		}
+	},
+	
+	
 
 	getTraineeProf: function(req, res, next) {
 	// if (req.session.user){
@@ -94,6 +127,55 @@ const rendFunctions = {
 	// }
 	},
 
+	getCertificate: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('certificate', {
+		});
+	// }
+	},
+
+	getTEClassDet: function(req, res, next) {
+		res.render('te-class-details', {
+		});
+	},
+
+	getTrainerClasses: function(req, res, next) {
+		res.render('trainer-classes', {
+		});
+	},
+
+
+	getTRClassDet: function(req, res, next) {
+		res.render('tr-class-details', {
+		});
+	},
+
+	getScoresheet: function(req, res, next) {
+		res.render('update-scoresheet', {
+		});
+	},
+
+	getTraineeList: function(req, res, next) {
+		res.render('manage-trainees', {
+		});
+	},
+
+	getSummaryReport: function(req, res, next) {
+		res.render('trainer-reports', {
+		});
+	},
+
+	getTRSchedule: function(req, res, next) {
+	// if (req.session.user){
+	// 	res.redirect('/');
+	// } else {
+		res.render('tr-schedule', {
+		});
+	// }
+	},
+
 	getIntApplicants: function(req, res, next) {
 		res.render('int-applicants', {
 		});
@@ -104,14 +186,16 @@ const rendFunctions = {
 		});
 	},
 
-	getTEClassDet: function(req, res, next) {
-		res.render('te-class-details', {
-		});
-	},
-
 	getDeactivate: function(req, res, next) {
-		res.render('deactivate', {
-		});
+		if (req.session.user) {
+			if(req.session.user.userType === "Trainee")
+				res.render('deactivate', {
+					userID: req.params.userID,
+				});
+			
+			else res.redirect('login');
+		}
+		else res.redirect('login');
 	},
 
 	getError: function(req, res, next) {
@@ -121,33 +205,22 @@ const rendFunctions = {
 
 /* POST FUNCTIONS */
 	postLogin: async function(req, res) {
-			let {email, password} = req.body;
+		let {email, password} = req.body;
 
-			var user = await db.findOne(UserDB, {email:email}, '');
+		var user = await db.findOne(UserDB, {email:email}, '');
 
-			console.log(req.body);
-			try {
-				if (!user) 
-//					res.status(401).send();			
-					alert("u failed");
-				else { 
-					bcrypt.compare(password, user.password, function(err, match) {
-						if (match){
-							req.session.user = user;
-//							res.status(200).send();
-							res.redirect("/");							
-						} else
-							alert("u failed");
-//							res.status(401).send();
-							
-
-					});
-				}		
-			} catch(e) { // Server error
-//				res.status(500).send(e);
-				alert("u failed");
-			}
-		},
+		if (!user) // USER NOT IN DB
+			res.send({status: 401});
+		else { // SUCCESS
+			bcrypt.compare(password, user.password, function(err, match) {
+					if (match){
+						req.session.user = user;
+						res.send({status: 200});
+					} else
+						res.send({status: 401});
+			});
+		}
+	},		
 		
 // for console register w password hashing
 	postRegister: async function(req, res) {
@@ -223,21 +296,42 @@ const rendFunctions = {
 		}
 		
 	},
-	
-	getApplicants: async function(req, res) {
-		if(req.session.user.userType === "HR admin"){
-			let applicants = await db.findMany(ApplicantDB, {});
-			
-			
-			
-		}
-	},
 			
 	getTest: function(req, res){
 		res.render('hr-screening', {});
 //		res.render('hr-schedule', {});
 //		res.render('int-applicants', {});
-	}
+		res.render('hr-schedule', {});
+	},
+
+
+	postLogout: function(req, res) {
+		req.session.destroy();
+		res.redirect('/login');
+	},
+	
+	postDeactivate: function(req, res) {
+		if(req.session.user) {
+			let { password } = req.body;
+
+			var userIDtemp = req.session.user.userID;
+
+			usersModel.findOneAndUpdate(
+				{userID: userIDtemp},
+				{ $set: { isDeactivated: true }},
+				{ useFindAndModify: false},
+				function(err, match) {
+					if (err) {
+						res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
+					}
+					else {
+					res.send({status: 200, mssg:'Account deactivated succesfully.'});
+					req.session.destroy();
+					}
+			});	
+		}
+		else res.redirect('/');
+	},
 };
 
 // HELPER FUNCTIONS

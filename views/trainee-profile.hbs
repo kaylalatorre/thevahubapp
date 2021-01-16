@@ -2,13 +2,26 @@
 
 {{> trainee-navbar}}
 
-<div style="padding: 20px;">
-    <div class="d-flex" style="margin: 20px;width: 100%;"><img class="rounded-circle d-block float-left" width="200px" height="200px" style="margin: 20px;" src="/assets/img/default-photo.jpg">
-        <div class="d-inline float-left d-xl-flex justify-content-xl-start align-items-xl-center"><label class="d-flex h2" style="padding: 5px;color: #2c2c2c;"><strong>Trainee Name</strong></label><label class="d-flex" style="color: rgb(0,0,0);padding: 5px;">#TRAINEEID</label></div>
-        <div class="text-right d-inline-block float-right" style="margin: 0px 5px;padding: 5;"></div>
+<div style="padding: 70px 20px 20px 20px;">
+    <div style="position: relative; top: 5px;">
+        <div style="width: 18%; display: inline-block;"><img class="rounded-circle d-block float-left" width="200px" height="200px" style="margin: 20px;" src="/assets/img/default-photo.jpg">
+        </div>
+        <div style="display: inline-block; vertical-align: bottom; margin-bottom: 25px;">
+            <h2 style="font-weight: bold">Trainee Name</h2>
+            <div style="display: inline-block; padding: 2px 5px;">
+                <label style="margin-right: 10px;"><strong>ID</strong></label>
+                <label>12345</label>
+            </div><br>
+            <div style="display: inline-block; padding: 2px 5px;">
+                <label style="margin-right: 10px;"><strong>Status</strong></label>
+                <label>On-going</label>
+            </div>
+            <!-- make display: block when graduated -->
+            <button type="button" id="viewCert" style="display: none; border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
+        </div>
     </div>
-    <hr class="d-flex">
     <div class="table-responsive" style="width: 95%; margin: 00px auto;">
+        <hr>
         <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
             <thead>
                 <tr style="background: #efefef;color: rgb(0,148,68);">

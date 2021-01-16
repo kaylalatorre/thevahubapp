@@ -20,11 +20,16 @@ a {
   background-color: transparent;
 }
 
+.nav-item {
+  padding-right: 15px;
+}
+
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
   color: #6dc63f;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
+
 
 .table-hover tbody tr:hover {
   color: #212529;
@@ -36,6 +41,18 @@ a {
     padding: 75px 300px;
   }
 }
+
+button {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-family: Raleway;
+  cursor: pointer;
+  align-items: center;
+}
+
 
 .process-label {
   margin-left: 0;
@@ -57,5 +74,53 @@ a {
   display: block;
 }
 .sched-list:hover, .class-card:hover {
-  background-color: #ebf5ee;
+  background-color: #efefef;
+}
+
+.edit-class:hover {
+  color: #ebf5ee;
+}
+
+.certificate-border {
+  width:900px; 
+  height:700px; 
+  padding:20px; 
+  text-align:center; 
+  border: 10px solid #4CAF50;
+  margin: 0 auto;
+}
+
+.certificate-content {
+  width:850px; 
+  height:650px; 
+  padding:20px;
+  text-align:center; 
+  border: 5px solid #4CAF50;
+}
+
+.error {
+  color: red;
+  padding-top: 5px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.footer {
+  position: fixed;
+  left: -10px;
+  bottom: 0px;
+  width: 100%;
+  font-size: 9px;
+  text-align: right;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+button:disabled {
+  opacity: 30%;
 }

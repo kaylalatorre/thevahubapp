@@ -89,5 +89,73 @@ $(document).ready(function() {
 					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear" name="certYear'+ certCount +'"></p>';
 		$('#certContainer').append(certHTML);
 	});
-	
+
+  // Log-in client-side validation
+  // LOG-IN VALIDATION
+  $('button#login-btn').click(function() {
+    var email = validator.trim($('#email').val());
+    var password = validator.trim($('#password').val());
+    
+    var emailEmpty = validator.isEmpty(email);
+    var passEmpty = validator.isEmpty(password);
+    var emailFormat = validator.isEmail(email);
+    
+    // resets input form when log-in button is clicked
+    $('p#emailError').text('');
+    $('p#pwError').text('');
+    
+    if (emailEmpty){
+      $('p#emailError').text('Please enter your email.');
+    }
+    else if (!emailFormat){
+      $('p#emailError').text('Invalid email format.');
+    }
+    
+    if (passEmpty){
+      $('p#pwError').text('Please enter your password.');
+    }
+    
+    // successful client-side validation: no empty fields and valid email
+    if (!emailEmpty && emailFormat && !passEmpty){
+      $.post('/login', {email: email, password: password}, function(res) {
+        switch (res.status){
+          case 200: {
+            window.location.href = '/';
+            break;
+          }
+          case 401: {
+            $('p#pwError').text('Incorrect Email and/or Password.');
+            break;                
+          }
+          case 500: {
+            $('p#pwError').text('Server Error.');
+            break;
+          }
+          case 410: {
+            $('p#pwError').text('Account inactive.');
+            break;
+          }
+        }
+      });
+    }
+  });
+
+  // Deactivate client-side validation
+  $('button#deact-btn').click(function() {
+    var deactPass = prompt("Please enter your password to deactivate.", "");
+    if (deactPass == null || deactPass == "") {
+      window.location.href = '/deactivate';
+    } else {
+      alert("Account deactivated.");
+      window.location.href = '/';
+    }
+  });
+
+
+  // View certificate
+  $('button#viewCert').click(function() {
+    // get data 
+    window.location.href='/certificate';
+  });
+
 });
