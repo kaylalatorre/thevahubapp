@@ -30,6 +30,10 @@ function nextPrev(n) {
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
   // if you have reached the end of the form...
+  
+	console.log("currentTab: " + currentTab);
+	console.log("x.length: " + x.length);
+	
   if (currentTab >= x.length) {
     // ... the form gets submitted:
     document.getElementById("appForm").submit();

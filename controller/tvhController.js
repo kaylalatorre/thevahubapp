@@ -193,8 +193,8 @@ const rendFunctions = {
 			// [/] for form-check-input input type (sys_reqs)
 			let sysReqs = checkSysReqs(req.body);
 			
-			// [] how to get for file types? (resume/cv) --> accept only *pdf file types
-			// -- should be done w filepond
+			// [/] get file types (resume/cv) --> accept only *pdf file types
+			// -- done w filepond
 			
 			// [/] inform Applicant that their submission has been acknowledged
 			// --done in scripts.js submitAppForm()	
@@ -223,10 +223,20 @@ const rendFunctions = {
 		}
 		
 	},
+	
+	getApplicants: async function(req, res) {
+		if(req.session.user.userType === "HR admin"){
+			let applicants = await db.findMany(ApplicantDB, {});
+			
+			
+			
+		}
+	},
 			
 	getTest: function(req, res){
-		res.render('int-applicants', {});
+		res.render('hr-screening', {});
 //		res.render('hr-schedule', {});
+//		res.render('int-applicants', {});
 	}
 };
 
