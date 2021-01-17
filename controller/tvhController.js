@@ -87,8 +87,17 @@ const rendFunctions = {
 			let acceptApps = [];
 			let pendApps = [];
 			let rejectApps = [];
+						
 			
+			//test var
+			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
+		
+			let buff = new Buffer.from(testApp.resume_cv, 'base64');
+			let testFile = buff.toString('base64');
 			
+//			let testFile = parseInt(testApp.resume_cv, 2).toString(10);
+			console.log(testFile);
+		//	
 			for(let i=0; i< applicants.length; i++){
 				if(applicants[i].screenStatus === "ACCEPTED")
 					acceptApps.push(applicants[i]);
@@ -97,13 +106,12 @@ const rendFunctions = {
 				else if(applicants[i].screenStatus === "REJECTED")
 					rejectApps.push(applicants[i]);				
 			}
-			
-//			console.log(acceptApps);
-			
+						
 			res.render('hr-screening', {
 				accepted: acceptApps,
 				pending: pendApps,
-				rejected: rejectApps 
+				rejected: rejectApps, 
+				testF: testFile 
 			});			
 		}
 	},

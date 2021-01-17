@@ -50,7 +50,7 @@ app.engine('hbs', exphbs({
   partialsDir: path.join(__dirname, '/views/partials'),
   helpers: {
 	 genApplicName: function(applic){
-		 console.log(applic);
+//		 console.log(applic);
 		 return applic.lName + ", " + applic.fName;
 	 } 
   }
