@@ -36,6 +36,24 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 
+function getApplicInfo(applic){
+//	$.ajax({
+//		method: 'POST',
+//		url: '/addToCart',
+//		data: {item: {code: code, size: size, qty: Number.parseInt(qty)}},
+//		success: () => alert('Item added to cart'),
+//		error: res => console.log(res)
+//	});
+	
+	$.ajax({
+		method: 'GET',
+		url: '/rend-applicant',
+		data: {applicant: applic},
+		success: () => alert('hoy nagana ata'),
+		error: res => console.log(res)
+	});
+}
+
 //function submitAppForm() {
 //	var appForm = $('#appForm').serializeArray();
 //	var skillsArr = [];

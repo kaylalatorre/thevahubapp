@@ -14,7 +14,8 @@ const ClientDB = require('../models/Client');
 
 const rendFunctions = {
 /* GET FUNCTIONS */	
-/* [..] Login
+
+/* [/] Login
  */
 	getLogin: function(req, res, next) {
 		var {email, password} = req.body;
@@ -37,13 +38,13 @@ const rendFunctions = {
 			else if (req.session.user.userType === "Trainer")
 				res.render('trainer-home', {});
 			else 
-				res.render('certificate'); //test onli
+				res.render('login');
 		} else 
 			res.render('login');
 		 
 	},
 	
-/* [..] Application
+/* [/] Application
  */
 	getAppForm: function(req, res) {
 	// if (req.session.user){
@@ -71,14 +72,6 @@ const rendFunctions = {
 
 /* [] Screen Applicants
  */
-//	getHRScreening: function(req, res, next) {
-//	// if (req.session.user){
-//	// 	res.redirect('/');
-//	// } else {
-//		res.render('hr-screening', {
-//		});
-//	// }
-//	},
 	
 	getHRScreening: async function(req, res) {
 		if(req.session.user.userType === "HRadmin"){
@@ -95,7 +88,6 @@ const rendFunctions = {
 			let buff = new Buffer.from(testApp.resume_cv, 'base64');
 			let testFile = buff.toString('base64');
 			
-//			let testFile = parseInt(testApp.resume_cv, 2).toString(10);
 			console.log(testFile);
 		//	
 			for(let i=0; i< applicants.length; i++){
@@ -113,6 +105,16 @@ const rendFunctions = {
 				rejected: rejectApps, 
 				testF: testFile 
 			});			
+		}
+	},
+	
+	getApplicInfo: async function(req, res) {
+		if(req.session.user.userType === "HRadmin"){
+			let {applicant} = req.params;
+			
+			let applic = db.findOne(ApplicantDB, {applicantID: applicant}, '');
+			
+			res.send(applic);  
 		}
 	},
 	

@@ -13,6 +13,7 @@ router.get('/error', controller.getError);
 	// hr admin
 router.get('/hr-schedule', controller.getHRSched);
 router.get('/hr-screening', controller.getHRScreening);
+router.get('/rend-applicant', controller.getApplicInfo);
 
 	// interviewer
 router.get('/int-applicants', controller.getIntApplicants);
