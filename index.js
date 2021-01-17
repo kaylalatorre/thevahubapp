@@ -46,8 +46,14 @@ const pond = FilePond.create({
 app.engine('hbs', exphbs({  
   extname: 'hbs',
   defaultView: 'main',
-layoutsDir: path.join(__dirname, '/views/layouts'),
-partialsDir: path.join(__dirname, '/views/partials')
+  layoutsDir: path.join(__dirname, '/views/layouts'),
+  partialsDir: path.join(__dirname, '/views/partials'),
+  helpers: {
+	 genApplicName: function(applic){
+		 console.log(applic);
+		 return applic.lName + ", " + applic.fName;
+	 } 
+  }
 }));
 
 app.set('view engine', 'hbs');

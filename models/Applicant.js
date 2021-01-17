@@ -23,6 +23,7 @@ var applicantSchema = new mongoose.Schema({
 		type: Buffer,
 		required: true
 	},
+	screenStatus: String,
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,
