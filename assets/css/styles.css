@@ -12,6 +12,7 @@ body {
 a:hover {
   color: #000;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 a {
@@ -34,6 +35,7 @@ a {
 .table-hover tbody tr:hover {
   color: #212529;
   background-color: #ebf5ee;
+  cursor: pointer;
 }
 
 @media (min-width:576px) {
@@ -43,7 +45,7 @@ a {
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #6dc63f;
   color: #ffffff;
   border-radius: 8px;
   padding: 7px 14px;
@@ -75,10 +77,12 @@ button {
 }
 .sched-list:hover, .class-card:hover {
   background-color: #efefef;
+  cursor: pointer;
 }
 
 .edit-class:hover {
   color: #ebf5ee;
+  cursor: pointer;
 }
 
 .certificate-border {
@@ -86,7 +90,7 @@ button {
   height:700px; 
   padding:20px; 
   text-align:center; 
-  border: 10px solid #4CAF50;
+  border: 10px solid #6dc63f;
   margin: 0 auto;
 }
 
@@ -95,11 +99,11 @@ button {
   height:650px; 
   padding:20px;
   text-align:center; 
-  border: 5px solid #4CAF50;
+  border: 5px solid #6dc63f;
 }
 
 .error {
-  color: red;
+  color: #cd201f;
   padding-top: 5px;
   font-size: 12px;
   text-align: center;
@@ -123,4 +127,12 @@ button {
 
 button:disabled {
   opacity: 30%;
+}
+
+.tabInactive {
+  background-color: #fff;
+}
+
+.tabActive {
+  background-color: #f7f7f7;
 }
