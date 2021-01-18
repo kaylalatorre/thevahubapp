@@ -46,6 +46,10 @@ const pond = FilePond.create({
 app.engine('hbs', exphbs({  
   extname: 'hbs',
   defaultView: 'main',
+  runtimeOptions: {
+	allowProtoPropertiesByDefault: true,
+	allowProtoMethodsByDefault: true
+  },
   layoutsDir: path.join(__dirname, '/views/layouts'),
   partialsDir: path.join(__dirname, '/views/partials'),
   helpers: {

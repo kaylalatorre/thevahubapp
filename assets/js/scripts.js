@@ -36,20 +36,36 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 
-function getApplicInfo(applic){
-//	$.ajax({
-//		method: 'POST',
-//		url: '/addToCart',
-//		data: {item: {code: code, size: size, qty: Number.parseInt(qty)}},
-//		success: () => alert('Item added to cart'),
-//		error: res => console.log(res)
-//	});
+function getApplicInfo(applicID){
+	console.log("in AJAX: " + applicID);
 	
 	$.ajax({
 		method: 'GET',
 		url: '/rend-applicant',
-		data: {applicant: applic},
-		success: () => alert('hoy nagana ata'),
+		data: {applicantID: applicID},
+		success: function(applicant) {
+			console.log(applicant);
+			 
+			for (let i=0; i<applicant.sys_reqs.length; i++)
+				$("input#formCheck-" + (i+1)).prop("checked", applicant.sys_reqs[i]);
+			
+//			let buff = new Buffer.from(testApp.resume_cv, 'base64');
+			let resumeFile = applicant.resume_cv.data.toString('base64');
+			$("object#resume").prop("data", "data:application/pdf;base64," + resumeFile);
+			console.log(resumeFile);
+			
+			for (let i=0; i<applicant.skills.length; i++){
+				var skillHTML = '<label>' + applicant.skills[i].title + '</label>'
+								+ '<p>' + applicant.skills[i].level + '</p>';
+				$('#tab-6 p').append(skillHTML);
+			}
+			
+			for (let i=0; i<applicant.certifications.length; i++){
+				var certHTML = '<label>' + applicant.certifications[i].title + ' (' + applicant.certifications[i].year + ')' +'</label>'
+								+ '<p>' + applicant.certifications[i].certFrom + '</p>';
+				$('#tab-7 p').append(certHTML);
+			}			
+		},
 		error: res => console.log(res)
 	});
 }

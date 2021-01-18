@@ -83,12 +83,9 @@ const rendFunctions = {
 						
 			
 			//test var
-			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
+//			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
 		
-			let buff = new Buffer.from(testApp.resume_cv, 'base64');
-			let testFile = buff.toString('base64');
-			
-			console.log(testFile);
+
 		//	
 			for(let i=0; i< applicants.length; i++){
 				if(applicants[i].screenStatus === "ACCEPTED")
@@ -102,19 +99,23 @@ const rendFunctions = {
 			res.render('hr-screening', {
 				accepted: acceptApps,
 				pending: pendApps,
-				rejected: rejectApps, 
-				testF: testFile 
+				rejected: rejectApps
 			});			
 		}
 	},
 	
 	getApplicInfo: async function(req, res) {
-		if(req.session.user.userType === "HRadmin"){
-			let {applicant} = req.params;
-			
-			let applic = db.findOne(ApplicantDB, {applicantID: applicant}, '');
-			
-			res.send(applic);  
+		try {
+			if(req.session.user.userType === "HRadmin"){
+				console.log(req.query);
+				
+				let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicantID}, '');
+				console.log("in controller: " + applic);
+				res.send(applic);  
+			}			
+		} catch(e){
+			console.log(e);
+			res.send(e);
 		}
 	},
 	
