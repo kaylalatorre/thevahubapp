@@ -46,6 +46,10 @@ router.post('/register', controller.postRegister);
 router.post('/submit-applic', controller.postApplication);
 router.post('/login-test', controller.postLogin);
 
+	//hr admin
+router.post('/accept-applicant', controller.postAcceptApplic);	
+router.post('/reject-applicant', controller.postRejectApplic);	
+
 	//trainees
 router.post('/deactivate', controller.postDeactivate);
 

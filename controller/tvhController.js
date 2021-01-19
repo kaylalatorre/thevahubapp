@@ -283,7 +283,7 @@ const rendFunctions = {
 			// -- done w filepond
 			
 			// [/] inform Applicant that their submission has been acknowledged
-			// --done in scripts.js submitAppForm()	
+			// -- done in scripts.js submitAppForm()	
 			
 			// create Applicant record in db
 			let insertApplic = await db.insertOne(ApplicantDB, {
@@ -298,7 +298,8 @@ const rendFunctions = {
 					skills: skills,
 					sys_reqs: sysReqs,
 					certifications: certs,
-					resume_cv: resFile
+					resume_cv: resFile,
+					screenStatus: "PENDING"
 			});
 			
 			if (insertApplic)
@@ -314,7 +315,6 @@ const rendFunctions = {
 		res.render('hr-screening', {});
 //		res.render('hr-schedule', {});
 //		res.render('int-applicants', {});
-		res.render('hr-schedule', {});
 	},
 
 
@@ -329,7 +329,7 @@ const rendFunctions = {
 
 			var userIDtemp = req.session.user.userID;
 
-			usersModel.findOneAndUpdate(
+			UserDB.findOneAndUpdate(
 				{userID: userIDtemp},
 				{ $set: { isDeactivated: true }},
 				{ useFindAndModify: false},
@@ -345,6 +345,31 @@ const rendFunctions = {
 		}
 		else res.redirect('/');
 	},
+	
+	//there might be a way to optimize
+	postAcceptApplic: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRadmin"){
+                let applic = await db.updateOne(ApplicantDB, {applicantID: req.body.applicantID}, {screenStatus: "ACCEPTED"});
+                res.sendStatus(200);
+			}			
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}		
+	},
+	
+	postRejectApplic: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRadmin"){
+                let applic = await db.updateOne(ApplicantDB, {applicantID: req.body.applicantID}, {screenStatus: "REJECTED"});
+                res.sendStatus(200);
+			}			 
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}		
+	}
 };
 
 // HELPER FUNCTIONS

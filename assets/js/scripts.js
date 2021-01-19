@@ -45,6 +45,7 @@ function getApplicInfo(applicID){
         success: function(res) {
             console.log(res);
             
+			$("input#hide-applicID").val(res.applic.applicantID);
 			$("label#applic-name").text(res.applic.fName + " " + res.applic.lName);
 			
             for (let i=0; i<res.applic.sys_reqs.length; i++)
@@ -72,6 +73,30 @@ function getApplicInfo(applicID){
 }
 
 $(document).ready(function() {	
+	
+	$('button#accept-btn').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		$.ajax({
+			method: 'POST',
+			url: '/accept-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
+
+	$('button#reject-btn').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		$.ajax({
+			method: 'POST',
+			url: '/reject-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
 	
 	$('button#addSkill').on("click", function() {	
 		skillCount++;
