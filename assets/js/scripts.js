@@ -2,6 +2,9 @@
 var skillCount = 1;
 var certCount = 1;
 
+import * as base64 from "byte-base64";
+//const base64 = require("byte-base64"); //for embedding resume .pdf files
+
 
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
@@ -50,9 +53,11 @@ function getApplicInfo(applicID){
 				$("input#formCheck-" + (i+1)).prop("checked", applicant.sys_reqs[i]);
 			
 //			let buff = new Buffer.from(testApp.resume_cv, 'base64');
-			let resumeFile = applicant.resume_cv.data.toString('base64');
+//			let resumeFile = applicant.resume_cv.data.toString('base64');
+			let resumeFile = base64.bytesToBase64(applicant.resume_cv.data);
+			
 			$("object#resume").prop("data", "data:application/pdf;base64," + resumeFile);
-			console.log(resumeFile);
+			console.log("resFile: " + resumeFile);
 			
 			for (let i=0; i<applicant.skills.length; i++){
 				var skillHTML = '<label>' + applicant.skills[i].title + '</label>'
@@ -69,37 +74,6 @@ function getApplicInfo(applicID){
 		error: res => console.log(res)
 	});
 }
-
-//function submitAppForm() {
-//	var appForm = $('#appForm').serializeArray();
-//	var skillsArr = [];
-//	var certsArr = [];
-//	
-//	$('.skillTitle').each((i, object) => {
-//		let lvl = $('.skillLevel')[i]; 
-//		skillsArr.push({title: $(object).val(), level: lvl});
-//	});
-//	
-//	$('.certName').each((i, object) => {
-//		let cFrom = $('.certFrom')[i];
-//		let cYear = $('.certYear')[i];
-//		certsArr.push({title: $(object).val(), certFrom: cFrom, year: cYear});
-//	});
-//	
-//	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
-//	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
-//	
-//	console.log(appForm);
-//
-//	$.ajax({
-//		method: 'POST',
-//		url: '/submit-applic',
-//		data: appForm,
-//		success: () => window.location.href = '/form-submitted',
-//		error: res => console.log(res)
-//	});	
-//}
-
 
 $(document).ready(function() {	
 	

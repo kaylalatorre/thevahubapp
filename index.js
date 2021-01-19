@@ -8,6 +8,7 @@ const session = require('express-session'); //keeps track of who's logged in
 const mongoose = require('mongoose');
 const path = require('path');
 const FilePond = require('filepond'); //for uploading files
+const base64 = require("byte-base64"); //for embedding resume .pdf files
 
 /* EXPRESS APPLICATION */
 const app = express();
