@@ -81,12 +81,22 @@ const rendFunctions = {
 	},
 
 	getTraineeProf: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('trainee-profile', {
-		});
-	// }
+		if (req.session.user){
+
+			// will determine trainee status (on-going, graduated)
+
+			// will collect classes of trainee
+
+			res.render('trainee-profile', {
+				fName: req.session.user.fName,
+				lName: req.session.user.lName,
+				userID: req.session.user.userID,
+				
+			});
+			
+		} else {
+			res.redirect('/');
+		}
 	},
 
 	getTraineeClasses: function(req, res, next) {
@@ -161,7 +171,8 @@ const rendFunctions = {
 		if (req.session.user) {
 			if(req.session.user.userType === "Trainee")
 				res.render('deactivate', {
-					userID: req.params.userID,
+					userID: req.session.user.userID,
+					fName: req.session.user.fName,
 				});
 			
 			else res.redirect('login');
@@ -183,13 +194,16 @@ const rendFunctions = {
 		if (!user) // USER NOT IN DB
 			res.send({status: 401});
 		else { // SUCCESS
-			bcrypt.compare(password, user.password, function(err, match) {
-					if (match){
-						req.session.user = user;
-						res.send({status: 200});
-					} else
-						res.send({status: 401});
-			});
+			if(!user.isDeactivated){ // user can not log in once deactivated
+				bcrypt.compare(password, user.password, function(err, match) {
+						if (match){
+							req.session.user = user;
+							res.send({status: 200});
+						} else
+							res.send({status: 401});
+				});
+			}
+			else res.send({status: 410});
 		}
 	},		
 		
@@ -258,24 +272,28 @@ const rendFunctions = {
 	postDeactivate: function(req, res) {
 		if(req.session.user) {
 			let { password } = req.body;
+			console.log(req.session.user.password, password);
 
-			var userIDtemp = req.session.user.userID;
-
-			usersModel.findOneAndUpdate(
-				{userID: userIDtemp},
-				{ $set: { isDeactivated: true }},
-				{ useFindAndModify: false},
-				function(err, match) {
-					if (err) {
-						res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
-					}
-					else {
-					res.send({status: 200, mssg:'Account deactivated succesfully.'});
-					req.session.destroy();
-					}
-			});	
+			bcrypt.compare(password, req.session.user.password, function(err, match) {
+				if (match){ 
+					UserDB.findOneAndUpdate(
+						{userID: req.session.user.userID},
+						{ $set: { isDeactivated: true }},
+						{ useFindAndModify: false},
+						function(err, match) {
+							if (err) {
+								res.send({status: 500});
+							}
+							else {
+								res.send({status: 200});
+								req.session.destroy();
+							}
+					});	
+				}
+				else res.send({status: 401});
+			});
 		}
-		else res.redirect('/');
+		else res.redirect('/login');
 	},
 };
 
