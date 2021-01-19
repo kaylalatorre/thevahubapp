@@ -295,6 +295,13 @@ const rendFunctions = {
 		}
 		else res.redirect('/login');
 	},
+
+	postCreateClass: function(req, res) {
+		if(req.session.user) {
+			
+		}
+		else res.redirect('/login');
+	},
 };
 
 // HELPER FUNCTIONS

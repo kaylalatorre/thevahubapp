@@ -47,4 +47,8 @@ router.post('/submit-applic', controller.postApplication);
 	//trainees
 router.post('/deactivate', controller.postDeactivate);
 
+	//trainers
+router.post('/create-class', controller.postCreateClass);
+
+
 module.exports = router;

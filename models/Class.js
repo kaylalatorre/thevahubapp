@@ -7,6 +7,8 @@ var classSchema = new mongoose.Schema({
 	endDate: Date,
 	startTime: Date,
 	endTime: Date,
+	meetLink: String,
+	coursePhoto: String,
 	trainees: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 }, {collection: "Class"});
 

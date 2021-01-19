@@ -13,9 +13,9 @@
     	<form id="createClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
     		<div style="margin-bottom: 12px;">
 				<label id="courseName" style="display: inline-block; width: 30%">Course</label>
-				<select for="courseName" class="appdrop" style="width: 68%">     
-					<option class="appoption dropdown-item" href="#">course Name</option>
-					<option class="appoption dropdown-item" href="#">course Name</option>
+				<select id="courseName" for="courseName" class="appdrop" style="width: 68%">     
+					<option class="appoption dropdown-item" href="#">Marketing</option>
+					<option class="appoption dropdown-item" href="#">Real Estate</option>
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
@@ -42,7 +42,9 @@
 	    	</div>
 	    		<button type="button" class="outlined-btn" style="margin: 2px;"><i class="material-icons" style="margin: 0 auto; position: relative; top: 2px; font-size: 12px;">upload</i><label style="margin-left: 3px;">Upload Course Photo</button>
     	</div>
-    	<button type="button" id="createClass" style="border: none;" disabled="true">Save</button>
+    	{{!-- <button type="button" id="createClass" style="border: none;" disabled="true">Save</button> --}}
+    	<button type="button" id="createClass" style="border: none;">Save</button>
+		
     </div>
   </div>
 </div>
