@@ -109,9 +109,10 @@ const rendFunctions = {
 			if(req.session.user.userType === "HRadmin"){
 				console.log(req.query);
 				
-				let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicantID}, '');
-				console.log("in controller: " + applic);
-				res.send(applic);  
+                let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicantID}, '');
+                let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
+                // console.log(encode);
+                res.send({applic: applic, encoded: encode});
 			}			
 		} catch(e){
 			console.log(e);

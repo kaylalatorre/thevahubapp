@@ -2,10 +2,6 @@
 var skillCount = 1;
 var certCount = 1;
 
-import * as base64 from "byte-base64";
-//const base64 = require("byte-base64"); //for embedding resume .pdf files
-
-
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -18,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     // events: data
-  });
+  });  
 
   calendar.render();
 });
@@ -46,31 +42,31 @@ function getApplicInfo(applicID){
 		method: 'GET',
 		url: '/rend-applicant',
 		data: {applicantID: applicID},
-		success: function(applicant) {
-			console.log(applicant);
-			 
-			for (let i=0; i<applicant.sys_reqs.length; i++)
-				$("input#formCheck-" + (i+1)).prop("checked", applicant.sys_reqs[i]);
+        success: function(res) {
+            console.log(res);
+            
+			$("label#applic-name").text(res.applic.fName + " " + res.applic.lName);
 			
-//			let buff = new Buffer.from(testApp.resume_cv, 'base64');
-//			let resumeFile = applicant.resume_cv.data.toString('base64');
-			let resumeFile = base64.bytesToBase64(applicant.resume_cv.data);
+            for (let i=0; i<res.applic.sys_reqs.length; i++)
+                $("input#formCheck-" + (i+1)).prop("checked", res.applic.sys_reqs[i]);
+            
+            $("object#resume").prop("data", "data:application/pdf;base64," + res.encoded);
+            
+			$('#tab-6 p').empty();
+			$('#tab-7 p').empty();
 			
-			$("object#resume").prop("data", "data:application/pdf;base64," + resumeFile);
-			console.log("resFile: " + resumeFile);
-			
-			for (let i=0; i<applicant.skills.length; i++){
-				var skillHTML = '<label>' + applicant.skills[i].title + '</label>'
-								+ '<p>' + applicant.skills[i].level + '</p>';
-				$('#tab-6 p').append(skillHTML);
-			}
-			
-			for (let i=0; i<applicant.certifications.length; i++){
-				var certHTML = '<label>' + applicant.certifications[i].title + ' (' + applicant.certifications[i].year + ')' +'</label>'
-								+ '<p>' + applicant.certifications[i].certFrom + '</p>';
-				$('#tab-7 p').append(certHTML);
-			}			
-		},
+            for (let i=0; i<res.applic.skills.length; i++){
+                var skillHTML = '<label>' + res.applic.skills[i].title + '</label>'
+                                + '<p>' + res.applic.skills[i].level + '</p>';
+                $('#tab-6 p').append(skillHTML);
+            }
+            
+            for (let i=0; i<res.applic.certifications.length; i++){
+                var certHTML = '<label>' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
+                                + '<p>' + res.applic.certifications[i].certFrom + '</p>';
+                $('#tab-7 p').append(certHTML);
+            }            
+        },
 		error: res => console.log(res)
 	});
 }
