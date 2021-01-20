@@ -2,6 +2,7 @@
 var skillCount = 1;
 var certCount = 1;
 
+var removeBtn = false;
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -69,9 +70,16 @@ function changeTab3Class(elClass) {
 // hr-screening update buttons
 function updateButtons(tabpane) {
   var tab = tabpane.id;
-  if (tab == "acceptedTab" || tab == "rejectedTab") {
+  if (tab === "acceptedTab" || tab === "rejectedTab") {
     document.getElementById("acceptApplcnt").style.display = "none";
-    document.getElementById("rejectApplcnt").innerHTML = "Remove";
+    document.getElementById("rejectApplcnt").style.display = "none";
+	 
+	if (!removeBtn){
+		var removeHTML = '<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>';
+		$('div#applic-container').append(removeHTML);		
+		removeBtn = true;
+	}
+
   } else {
     document.getElementById("acceptApplcnt").style.display = "block";
     document.getElementById("rejectApplcnt").innerHTML = "Reject";
@@ -135,6 +143,19 @@ $(document).ready(function() {
 		$.ajax({
 			method: 'POST',
 			url: '/reject-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
+	
+	$('button#removeApplcnt').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		console.log("in remove applicant///");
+		$.ajax({
+			method: 'POST',
+			url: '/remove-applicant',
 			data: {applicantID: applicID},
 			success: location.reload(),
 			error: res => console.log(res)
