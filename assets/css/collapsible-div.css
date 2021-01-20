@@ -13,7 +13,7 @@
 } 
 
 .lbl-toggle:hover { 
-  color: #4CAF50; 
+  color: #6dc63f; 
 } 
 .lbl-toggle::before { 
   content: ' '; 
