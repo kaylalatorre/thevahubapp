@@ -14,27 +14,34 @@
             </ul>
             <div class="tab-content" style="padding: 20px;margin: 0px -5px;">
                 <div class="tab-pane active" role="tabpanel" id="tab-1">
-                    <div class="tab1row tabActive" onclick="changeTab1Class(this);">
-                        <label class="col-form-label d-block">Applicant Name</label>
-                    </div>
-                    <div class="tab1row tabInactive" onclick="changeTab1Class(this);">
-                        <label class="col-form-label d-block">Applicant Name (1)</label>
-                    </div>
+					{{#each pending}}
+						<div class="row applicant-row tab1row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab1Class(this);">
+							<label class="col-form-label d-block"> {{genApplicName this}} </label>
+						</div>
+					{{/each}}
                 </div>
+
                 <div class="tab-pane" role="tabpanel" id="tab-2">
-                    <div class="tab2row tabActive" onclick="changeTab2Class(this);">
-                        <label class="col-form-label d-block">Applicant Name (1)</label>
-                    </div>
+					{{#each accepted}}
+						<div class="row tab2row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab2Class(this);">
+							<label class="col-form-label d-block"> {{genApplicName this}} </label>
+						</div>						
+					{{/each}}
                 </div>
+
                 <div class="tab-pane" role="tabpanel" id="tab-3">
-                    <div class="tab3row tabActive" onclick="changeTab3Class(this);">
-                        <label class="col-form-label d-block">Applicant Name (1)</label>
-                    </div>
+					{{#each rejected}}
+						<div class="row tab3row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab3Class(this);">
+							<label class="col-form-label d-block"> {{genApplicName this}} </label>
+						</div>						
+					{{/each}}
                 </div>
+
             </div>
         </div>
+
         <div class="border rounded float-right" style="width: 65%;padding: 10px;background: #f7f7f7;margin: 0;">
-            <div class="d-flex"><label class="d-inline-flex float-left h3" style="width: 80%;padding: 0px;padding-left: 10px;">Applicant Name</label>
+            <div id="applic-container" class="d-flex"><label id="applic-name" class="d-inline-flex float-left h3" style="width: 80%;padding: 0px;padding-left: 10px;">Applicant Name</label>
                 <button type="button" id="acceptApplcnt" style="border: none;display:flex; margin-bottom: 10px; margin-right: 5px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Accept</button>
                 <button type="button" id="rejectApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Reject</button>
             </div>
@@ -47,17 +54,41 @@
                         <li class="nav-item" role="presentation"><a class="nav-link" role="tab" data-toggle="pill" href="#tab-7">Certifications</a></li>
                     </ul>
                     <div class="tab-content" style="padding: 20px;">
-                        <div class="tab-pane active" role="tabpanel" id="tab-4">
-                            <p>Content for tab 4.</p>
+					
+					<input id="hide-applicID" type="hidden"/>
+
+                        <div class="tab-pane active" role="tabpanel" id="tab-4" name="tab-sysreq">
+                            <p></p>
+
+							<div class="form-check" style="margin-top: 25px;">
+							  <input class="form-check-input" type="checkbox" id="formCheck-1" name="check1" disabled/>
+							  <label class="form-check-label" style="font-size: 14px;"><strong>Personal Computer/Laptop</strong><br><em>Any processor with 2.0 GHz clock speed or higher&nbsp;and a 4GB RAM or higher.</em><br></label>
+							</div>
+							<div class="form-check" style="margin-top: 25px;">
+							  <input class="form-check-input" type="checkbox" id="formCheck-2" name="check2" disabled/>
+							  <label class="form-check-label" style="font-size: 14px;"><strong>Internet speed</strong><br><em>Internet speed of 3 Mbps or higher with 2.5 Mbps running speed.</em><br></label>
+							</div>
+							<div class="form-check" style="margin-top: 25px;">
+							  <input class="form-check-input" type="checkbox" id="formCheck-3" name="check3" disabled/>
+							  <label class="form-check-label" style="font-size: 14px;"><strong>Headset</strong><br><em>Over-the-ear headset with a retractable noise-reduction microphone or In-ear headsets (like the ones that come with your phone) are not allowed.</em><br></label>
+							</div>
+							<div class="form-check" style="margin-top: 25px;">
+							  <input class="form-check-input" type="checkbox" id="formCheck-4" name="check4" disabled/>
+							  <label class="form-check-label" style="font-size: 14px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label>
+							</div>
+
                         </div>
-                        <div class="tab-pane" role="tabpanel" id="tab-5">
-                            <p>Content for tab 5.</p>
+
+                        <div class="tab-pane" role="tabpanel" id="tab-5" name="tab-resume">
+							<object id="resume" data="" type="application/pdf" style="width: 100%; height: 100%;" ></object>
                         </div>
-                        <div class="tab-pane" role="tabpanel" id="tab-6">
-                            <p>Content for tab 6.</p>
+
+                        <div class="tab-pane" role="tabpanel" id="tab-6" name="tab-skills">
+                            <p></p>
                         </div>
-                        <div class="tab-pane" role="tabpanel" id="tab-7">
-                            <p>Content for tab 6.</p>
+
+                        <div class="tab-pane" role="tabpanel" id="tab-7" name="tab-certs">
+                            <p></p>
                         </div>
                     </div>
                 </div>

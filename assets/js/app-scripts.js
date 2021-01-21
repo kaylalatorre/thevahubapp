@@ -30,6 +30,10 @@ function nextPrev(n) {
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
   // if you have reached the end of the form...
+  
+	console.log("currentTab: " + currentTab);
+	console.log("x.length: " + x.length);
+	
   if (currentTab >= x.length) {
     // ... the form gets submitted:
   submitAppForm(); // document.getElementById("appForm").submit();
@@ -46,13 +50,16 @@ function validateForm() {
   y = x[currentTab].getElementsByTagName("input");
   // A loop that checks every input field in the current tab:
   for (i = 0; i < y.length; i++) {
-    // If a field is empty...
-    if (y[i].value == "") {
-      // add an "invalid" class to the field:
-      y[i].className += " invalid";
-      // and set the current valid status to false
-      valid = false;
-    }
+	  
+	if (y[i].type !== "file"){
+		// If a field is empty...
+		if (y[i].value === "") {
+		  // add an "invalid" class to the field:
+		  y[i].className += "invalid";
+		  // and set the current valid status to false
+		  valid = false;
+		}
+	}
   }
   // If the valid status is true, mark the step as finished and valid:
   if (valid) {

@@ -4,6 +4,7 @@ var applicantSchema = new mongoose.Schema({
 	applicantID: String,
 	fName: String,
 	lName: String,
+	phoneNo: String,
 	email: String,
 	address: String,
 	birthdate: String,
@@ -22,6 +23,7 @@ var applicantSchema = new mongoose.Schema({
 		type: Buffer,
 		required: true
 	},
+	screenStatus: String,
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,

@@ -1,3 +1,8 @@
+// global variables
+var skillCount = 1;
+var certCount = 1;
+
+var removeBtn = false;
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -10,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
     // events: data
-  });
+  });  
 
   calendar.render();
 });
@@ -65,63 +70,116 @@ function changeTab3Class(elClass) {
 // hr-screening update buttons
 function updateButtons(tabpane) {
   var tab = tabpane.id;
-  if (tab == "acceptedTab" || tab == "rejectedTab") {
+  if (tab === "acceptedTab" || tab === "rejectedTab") {
     document.getElementById("acceptApplcnt").style.display = "none";
-    document.getElementById("rejectApplcnt").innerHTML = "Remove";
+    document.getElementById("rejectApplcnt").style.display = "none";
+	 
+	if (!removeBtn){
+		var removeHTML = '<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>';
+		$('div#applic-container').append(removeHTML);		
+		removeBtn = true;
+	}
+
   } else {
     document.getElementById("acceptApplcnt").style.display = "block";
     document.getElementById("rejectApplcnt").innerHTML = "Reject";
   }
 }
 
-//function submitAppForm() {
-//	var appForm = $('#appForm').serializeArray();
-//	var skillsArr = [];
-//	var certsArr = [];
-//	
-//	$('.skillTitle').each((i, object) => {
-//		let lvl = $('.skillLevel')[i]; 
-//		skillsArr.push({title: $(object).val(), level: lvl});
-//	});
-//	
-//	$('.certName').each((i, object) => {
-//		let cFrom = $('.certFrom')[i];
-//		let cYear = $('.certYear')[i];
-//		certsArr.push({title: $(object).val(), certFrom: cFrom, year: cYear});
-//	});
-//	
-//	appForm.push({name: "skills", value: JSON.stringify(skillsArr)});
-//	appForm.push({name: "certifications", value: JSON.stringify(certsArr)});
-//	
-//	console.log(appForm);
-//
-//	$.ajax({
-//		method: 'POST',
-//		url: '/submit-applic',
-//		data: appForm,
-//		success: () => window.location.href = '/form-submitted',
-//		error: res => console.log(res)
-//	});	
-//}
-
+function getApplicInfo(applicID){
+	console.log("in AJAX: " + applicID);
+	
+	$.ajax({
+		method: 'GET',
+		url: '/rend-applicant',
+		data: {applicantID: applicID},
+        success: function(res) {
+            console.log(res);
+            
+			$("input#hide-applicID").val(res.applic.applicantID);
+			$("label#applic-name").text(res.applic.fName + " " + res.applic.lName);
+			
+            for (let i=0; i<res.applic.sys_reqs.length; i++)
+                $("input#formCheck-" + (i+1)).prop("checked", res.applic.sys_reqs[i]);
+            
+            $("object#resume").prop("data", "data:application/pdf;base64," + res.encoded);
+            
+			$('#tab-6 p').empty();
+			$('#tab-7 p').empty();
+			
+            for (let i=0; i<res.applic.skills.length; i++){
+                var skillHTML = '<label>' + res.applic.skills[i].title + '</label>'
+                                + '<p>' + res.applic.skills[i].level + '</p>';
+                $('#tab-6 p').append(skillHTML);
+            }
+            
+            for (let i=0; i<res.applic.certifications.length; i++){
+                var certHTML = '<label>' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
+                                + '<p>' + res.applic.certifications[i].certFrom + '</p>';
+                $('#tab-7 p').append(certHTML);
+            }            
+        },
+		error: res => console.log(res)
+	});
+}
 
 $(document).ready(function() {	
+	
+	$('button#acceptApplcnt').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		$.ajax({
+			method: 'POST',
+			url: '/accept-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
 
-	$('button#addSkill').on("click", function() {		
-		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle"> </p>'
-						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel">'
+	$('button#rejectApplcnt').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		$.ajax({
+			method: 'POST',
+			url: '/reject-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
+	
+	$('button#removeApplcnt').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		console.log("in remove applicant///");
+		$.ajax({
+			method: 'POST',
+			url: '/remove-applicant',
+			data: {applicantID: applicID},
+			success: location.reload(),
+			error: res => console.log(res)
+		});
+	});
+	
+	$('button#addSkill').on("click", function() {	
+		skillCount++;
+		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle" name="skillTitle'+ skillCount +'"> </p>'
+						+ '<p>' + '<select style="width: 100%;" class="appdrop skillLevel" for="level" id="skillLevel" name="skillLevel'+ skillCount +'">'
 									+ '<option value="" disabled selected>Level</option>'    
 									+ '<option class="appoption dropdown-item" href="#">Professional</option>'
 									+ '<option class="appoption dropdown-item" href="#">Intermediate</option>'
 									+ '<option class="appoption dropdown-item" href="#">Beginner</option>'
 							+ '</select>' + '</p>';
 		$('#skillContainer').append(skillHTML);
+		
 	});	
 	
-	$('div button#addCert').on("click", function() {		
-		var certHTML = '<p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName"></p>'
-					 + '<p><input style="width: 100%;" placeholder="Certified From" class="certFrom"></p>'
-					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear"></p>';
+	$('div button#addCert').on("click", function() {	
+		certCount++;
+		var certHTML = '<p><input style="width: 100%;" placeholder="Certificate or Award Title" class="certName" name="certName'+ certCount +'"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Certified From" class="certFrom" name="certFrom'+ certCount +'"></p>'
+					 + '<p><input style="width: 100%;" placeholder="Year" class="certYear" name="certYear'+ certCount +'"></p>';
 		$('#certContainer').append(certHTML);
 	});
 
