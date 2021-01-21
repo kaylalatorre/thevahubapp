@@ -117,19 +117,19 @@ function getApplicInfo(applicID){
             
             $("object#resume").prop("data", "data:application/pdf;base64," + res.encoded);
             
-			$('#tab-6 p').empty();
-			$('#tab-7 p').empty();
+			$('#tab-6').empty();
+			$('#tab-7').empty();
 			
             for (let i=0; i<res.applic.skills.length; i++){
                 var skillHTML = '<label>' + res.applic.skills[i].title + '</label>'
                                 + '<p>' + res.applic.skills[i].level + '</p>';
-                $('#tab-6 p').append(skillHTML);
+                $('#tab-6').append(skillHTML);
             }
             
             for (let i=0; i<res.applic.certifications.length; i++){
                 var certHTML = '<label>' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
                                 + '<p>' + res.applic.certifications[i].certFrom + '</p>';
-                $('#tab-7 p').append(certHTML);
+                $('#tab-7').append(certHTML);
             }            
         },
 		error: res => console.log(res)
@@ -148,7 +148,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/accept-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});
@@ -160,7 +160,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/reject-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});
@@ -173,7 +173,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/remove-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});
