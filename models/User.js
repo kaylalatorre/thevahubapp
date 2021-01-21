@@ -19,8 +19,7 @@ var userSchema = new mongoose.Schema({
 		isDeactivated: Boolean,
 		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
 	},
-	isVerified: Boolean,
-	isDeactivated: Boolean
+	isDeactivated: Boolean,
 }, {collection: "User"});
 
 module.exports = mongoose.model('User', userSchema);
