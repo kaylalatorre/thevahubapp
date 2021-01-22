@@ -390,19 +390,6 @@ const rendFunctions = {
 			console.log(e);
 			res.send(e);
 		}		
-	},
-
-	postRemoveApplic: async function(req, res) {
-		try {
-			if(req.session.user.userType === "HRadmin"){
-                let applic = await db.updateOne(ApplicantDB, {applicantID: req.body.applicantID}, {screenStatus: "PENDING"});
-				console.log(applic.screenStatus);
-                res.sendStatus(200);
-			}			 
-		} catch(e){
-			console.log(e);
-			res.send(e);
-		}		
 	}
 };
 

@@ -2,9 +2,12 @@
 var skillCount = 1;
 var certCount = 1;
 
+<<<<<<< HEAD
 var accrejBtn = false;
 var removeBtn = false;
 
+=======
+>>>>>>> parent of fbff761... Revert "Revert "debugging remove-btn (in hr-screening)""
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -72,6 +75,7 @@ function changeTab3Class(elClass) {
 // hr-screening update buttons
 function updateButtons(tabpane) {
   var tab = tabpane.id;
+<<<<<<< HEAD
   if (tab === "acceptedTab" || tab === "rejectedTab") {
 //    document.getElementById("acceptApplcnt").style.display = "none";
 //    document.getElementById("rejectApplcnt").style.display = "none";
@@ -96,6 +100,14 @@ function updateButtons(tabpane) {
 	$("#acceptApplcnt").show();
 	$("#rejectApplcnt").show();
 	$("#removeApplcnt").hide();
+=======
+  if (tab == "acceptedTab" || tab == "rejectedTab") {
+    document.getElementById("acceptApplcnt").style.display = "none";
+    document.getElementById("rejectApplcnt").innerHTML = "Remove";
+  } else {
+    document.getElementById("acceptApplcnt").style.display = "block";
+    document.getElementById("rejectApplcnt").innerHTML = "Reject";
+>>>>>>> parent of fbff761... Revert "Revert "debugging remove-btn (in hr-screening)""
   }
 }
 
@@ -165,6 +177,7 @@ $(document).ready(function() {
 		});
 	});
 	
+<<<<<<< HEAD
 	$('button#removeApplcnt').on("click", function() {
 		let applicID = $("input#hide-applicID").val();
 		
@@ -178,6 +191,8 @@ $(document).ready(function() {
 		});
 	});
 	
+=======
+>>>>>>> parent of fbff761... Revert "Revert "debugging remove-btn (in hr-screening)""
 	$('button#addSkill').on("click", function() {	
 		skillCount++;
 		var skillHTML = '<p> <input style="width: 100%;" placeholder="Skill" id="skillTitle" class="skillTitle" name="skillTitle'+ skillCount +'"> </p>'
