@@ -2,7 +2,9 @@
 var skillCount = 1;
 var certCount = 1;
 
+var accrejBtn = false;
 var removeBtn = false;
+
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
@@ -71,18 +73,29 @@ function changeTab3Class(elClass) {
 function updateButtons(tabpane) {
   var tab = tabpane.id;
   if (tab === "acceptedTab" || tab === "rejectedTab") {
-    document.getElementById("acceptApplcnt").style.display = "none";
-    document.getElementById("rejectApplcnt").style.display = "none";
-	 
-	if (!removeBtn){
-		var removeHTML = '<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>';
-		$('div#applic-container').append(removeHTML);		
-		removeBtn = true;
-	}
+//    document.getElementById("acceptApplcnt").style.display = "none";
+//    document.getElementById("rejectApplcnt").style.display = "none";
+//	 
+//	if (!removeBtn){
+//		var removeHTML = '<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>';
+//		$('div#applic-container').append(removeHTML);		
+//		removeBtn = true;
+//	}
+	$("#acceptApplcnt").hide();
+	$("#rejectApplcnt").hide();
+	$("#removeApplcnt").show();
 
-  } else {
-    document.getElementById("acceptApplcnt").style.display = "block";
-    document.getElementById("rejectApplcnt").innerHTML = "Reject";
+    } else { // for Pending tab
+//    document.getElementById("acceptApplcnt").style.display = "block";
+//    document.getElementById("rejectApplcnt").innerHTML = "Reject";
+	
+//	if (!accrejBtn){
+//		document.getElementById("removeApplcnt").style.display = "none";
+//		accrejBtn = true;
+//	}
+	$("#acceptApplcnt").show();
+	$("#rejectApplcnt").show();
+	$("#removeApplcnt").hide();
   }
 }
 
@@ -96,7 +109,7 @@ function getApplicInfo(applicID){
         success: function(res) {
             console.log(res);
             
-			$("input#hide-applicID").val(res.applic.applicantID);
+			$("input#hide-applicID").val(applicID);
 			$("label#applic-name").text(res.applic.fName + " " + res.applic.lName);
 			
             for (let i=0; i<res.applic.sys_reqs.length; i++)
@@ -104,19 +117,19 @@ function getApplicInfo(applicID){
             
             $("object#resume").prop("data", "data:application/pdf;base64," + res.encoded);
             
-			$('#tab-6 p').empty();
-			$('#tab-7 p').empty();
+			$('#tab-6').empty();
+			$('#tab-7').empty();
 			
             for (let i=0; i<res.applic.skills.length; i++){
                 var skillHTML = '<label>' + res.applic.skills[i].title + '</label>'
                                 + '<p>' + res.applic.skills[i].level + '</p>';
-                $('#tab-6 p').append(skillHTML);
+                $('#tab-6').append(skillHTML);
             }
             
             for (let i=0; i<res.applic.certifications.length; i++){
                 var certHTML = '<label>' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
                                 + '<p>' + res.applic.certifications[i].certFrom + '</p>';
-                $('#tab-7 p').append(certHTML);
+                $('#tab-7').append(certHTML);
             }            
         },
 		error: res => console.log(res)
@@ -124,6 +137,9 @@ function getApplicInfo(applicID){
 }
 
 $(document).ready(function() {	
+
+	$("#removeApplcnt").hide();
+
 	
 	$('button#acceptApplcnt').on("click", function() {
 		let applicID = $("input#hide-applicID").val();
@@ -132,7 +148,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/accept-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});
@@ -144,7 +160,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/reject-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});
@@ -157,7 +173,7 @@ $(document).ready(function() {
 			method: 'POST',
 			url: '/remove-applicant',
 			data: {applicantID: applicID},
-			success: location.reload(),
+			success: window.location.reload(true),
 			error: res => console.log(res)
 		});
 	});

@@ -11,6 +11,7 @@ const ApplicantDB = require('../models/Applicant');
 const ClassDB = require('../models/Class');
 const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
+const IntervDB = require('../models/Interview');
 
 const rendFunctions = {
 /* GET FUNCTIONS */	
@@ -327,8 +328,8 @@ const rendFunctions = {
 	},
 			
 	getTest: function(req, res){
-		res.render('hr-screening', {});
-//		res.render('hr-schedule', {});
+//		res.render('hr-screening', {});
+		res.render('hr-schedule', {});
 //		res.render('int-applicants', {});
 	},
 
