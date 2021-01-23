@@ -75,33 +75,38 @@ const rendFunctions = {
  */
 	
 	getHRScreening: async function(req, res) {
-		if(req.session.user.userType === "HRadmin"){
-			let applicants = await db.findMany(ApplicantDB, {});
+		if(req.session.user) {
+			if(req.session.user.userType === "HRadmin"){
+				let applicants = await db.findMany(ApplicantDB, {});
+				
+				let acceptApps = [];
+				let pendApps = [];
+				let rejectApps = [];
+							
+				
+				//test var
+	//			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
 			
-			let acceptApps = [];
-			let pendApps = [];
-			let rejectApps = [];
-						
-			
-			//test var
-//			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
-		
 
-		//	
-			for(let i=0; i< applicants.length; i++){
-				if(applicants[i].screenStatus === "ACCEPTED")
-					acceptApps.push(applicants[i]);
-				else if(applicants[i].screenStatus === "PENDING")
-					pendApps.push(applicants[i]);
-				else if(applicants[i].screenStatus === "REJECTED")
-					rejectApps.push(applicants[i]);				
+			//	
+				for(let i=0; i< applicants.length; i++){
+					if(applicants[i].screenStatus === "ACCEPTED")
+						acceptApps.push(applicants[i]);
+					else if(applicants[i].screenStatus === "PENDING")
+						pendApps.push(applicants[i]);
+					else if(applicants[i].screenStatus === "REJECTED")
+						rejectApps.push(applicants[i]);				
+				}
+							
+				res.render('hr-screening', {
+					accepted: acceptApps,
+					pending: pendApps,
+					rejected: rejectApps
+				});			
 			}
-						
-			res.render('hr-screening', {
-				accepted: acceptApps,
-				pending: pendApps,
-				rejected: rejectApps
-			});			
+		}
+		else {
+			res.redirect('/');
 		}
 	},
 	

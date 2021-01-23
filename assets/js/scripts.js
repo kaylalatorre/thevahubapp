@@ -122,14 +122,14 @@ function getApplicInfo(applicID){
 			$('#tab-7').empty();
 			
             for (let i=0; i<res.applic.skills.length; i++){
-                var skillHTML = '<label>' + res.applic.skills[i].title + '</label>'
+                var skillHTML = '<label style="font-weight: bold; margin-bottom: 20px;">' + res.applic.skills[i].title + '</label>'
                                 + '<p>' + res.applic.skills[i].level + '</p>';
                 $('#tab-6').append(skillHTML);
             }
             
             for (let i=0; i<res.applic.certifications.length; i++){
-                var certHTML = '<label>' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
-                                + '<p>' + res.applic.certifications[i].certFrom + '</p>';
+                var certHTML = '<label  style="font-weight: bold;">' + res.applic.certifications[i].title + ' (' + res.applic.certifications[i].year + ')</label>'
+                                + '<p style="margin-bottom: 20px;">' + res.applic.certifications[i].certFrom + '</p>';
                 $('#tab-7').append(certHTML);
             }            
         },
