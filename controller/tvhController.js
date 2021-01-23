@@ -196,6 +196,11 @@ const rendFunctions = {
 		});
 	},
 
+	getDetailedReport: function(req, res, next) {
+		res.render('detailed-report', {
+		});
+	},
+
 	getTRSchedule: function(req, res, next) {
 	// if (req.session.user){
 	// 	res.redirect('/');

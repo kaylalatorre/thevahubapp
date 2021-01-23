@@ -46,6 +46,7 @@ a {
 
 button {
   background-color: #6dc63f;
+  border: none;
   color: #ffffff;
   border-radius: 8px;
   padding: 7px 14px;

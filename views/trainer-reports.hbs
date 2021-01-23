@@ -3,11 +3,68 @@
 {{> trainer-navbar}}
 
 <div style="padding: 70px 20px 20px 20px;">
-	<div>
-    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Classes Summary Report</strong></label>
-        <hr>
-    </div>
-    <div>
-    	will code pag nakuha q slides ni ms jane
+	
+    <div style="width: 98%;">
+    	<div class="report-filter">
+    		<label style="font-size: 18px;font-weight: bold;">Filters</label><br><br>
+    		<input placeholder="Search" style="padding: 4px 10px;margin-bottom: 10px; width:100%;"></input><hr>
+
+    		<label>Course</label>
+		    <select style="width:100%"class="appdrop" name="applyFor">    
+		      <option class="appoption dropdown-item" href="#">Marketing</option>
+		      <option class="appoption dropdown-item" href="#">Real Estate</option>
+		    </select> <br><br>
+
+			<label>Start Date</label>
+			<input style="width:100%" type="date"><br><br>
+
+			<label>End Date</label>
+			<input style="width:100%"  type="date"><br><br>
+			<button style="width:100%">Apply filters</button>
+    	</div>
+    	<div class="class-report">
+    		<div style="text-align: center; margin-bottom: 10px;">
+		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Classes Summary Report</strong></label> <br>
+		    	<label>Date: MM/DD/YYYY - MM/DD/YYYY</label> <br>
+		    	<label>Course/s: Marketing, Real Estate </label> <br>
+		    </div>
+		    <!--table -->
+		    <div class="table-responsive" style="width: 98%; margin: 00px auto;">
+		        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
+		            <thead>
+		                <tr style="background: #efefef;color: rgb(0,148,68);">
+		                    <th style="width: 10%;">Class ID</th>
+		                    <th style="width: 15%;">Course</th>
+		                    <th style="width: 10%;">Section</th>
+		                    <th style="width: 20%;">Duration</th>
+		                    <th style="width: 20%;">Schedule</th>
+		                    <th style="width: 5%;">Students</th>
+		                    <th style="width: 5%;">Passed</th>
+		                    <th style="width: 5%;">Failed</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		                <tr class="report-det">
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                    <td> bebot </td>
+		                </tr>
+		                <!--for totals-->
+		            	<tr style="font-weight: bold;">
+		            		<td colspan="5">Total</td>
+		            		<td>10</td>
+		            		<td>10</td>
+		            		<td>10</td>
+		            	</tr>
+		            </tbody>
+		        </table>
+		    </div>
+		    <p class="page-footer">Page 1 of 1</p>
+    	</div>
     </div>
 </div>
