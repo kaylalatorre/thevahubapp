@@ -18,7 +18,7 @@ $(document).ready(function() {
 
 	// ADD CLASSES TO TRAINER LIST
 	$('button#createClass').click(function() {
-        var course = $('#courseName').val();
+        var courseName = $('#courseName').val();
         var dateToday = new Date();
 		var startDate = new Date($('#startDate').val());
 		var endDate = new Date($('#endDate').val());
@@ -28,7 +28,7 @@ $(document).ready(function() {
         // var coursePhoto = ;
 
 		// just to check to see if data is received
-		console.log(course, dateToday, startDate, endDate, startTime, endTime, meetLink);
+		console.log(courseName, dateToday, startDate, endDate, startTime, endTime, meetLink);
 
         // values for error-checking
         var numDays = Math.round(endDate- startDate) / (1000 * 60 * 60 * 24) + 1;
@@ -79,7 +79,7 @@ $(document).ready(function() {
 		// if no errors, submit to backend
 		if (!dateErrors && !timeErrors) {
 			console.log("no errors");
-			$.post('/create-class', {course: course, startDate: startDate, endDate: endDate,
+			$.post('/create-class', {courseName: courseName, startDate: startDate, endDate: endDate,
 				startTime: startTime, endTime: endTime, meetLink: meetLink}, function(res) {
 				switch (res.status){
 					case 200: {

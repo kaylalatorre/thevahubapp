@@ -25,10 +25,10 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, course, startDate, endDate, startTime, endTime, meetLink) {
+function createClass(classID, courseName, startDate, endDate, startTime, endTime, meetLink) {
 	var tempClass = {
 		classID: classID,
-		course: course,
+		courseName: courseName,
 		startDate: startDate,
 		endDate: endDate,
 		startTime: startTime,
@@ -407,14 +407,19 @@ const rendFunctions = {
 	},
 
 	postCreateClass: function(req, res) {
-		let { course, startDate, endDate, startTime, endTime, meetLink } = req.body;
-		console.log(course, startDate, endDate, startTime, endTime, meetLink)
+		let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+		// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+
 		// generate classID
 		var classID = generateClassID();
 		console.log("ClassID : " + classID);
 
+		var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+		var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+		// console.log(sTime, eTime);
+
 		// create the class
-		var tempClass = createClass(classID, course, startDate, endDate, startTime, endTime, meetLink);
+		var tempClass = createClass(classID, courseName, startDate, endDate, sTime, eTime, meetLink);
 
 		// put into classesModel
 			ClassDB.create(tempClass, function(error) {
