@@ -62,16 +62,32 @@ const rendFunctions = {
 
 /* [] Schedule Interview
  */
-	getHRSched: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('hr-schedule', {
-		});
-	// }
+	getHRSched: function(req, res) {
+		if(req.session.user.userType === "HRadmin"){
+			
+			
+			res.render('hr-schedule', {
+			});
+		}
+
+
+	},
+	
+	getIntervApplic: async function(req, res) {
+		try {
+			let interviewers = await db.findMany(UserDB, {userType: "HR interv"}, '');
+			let applicants = await db.findMany(ApplicantDB, {screenStatus: "ACCEPTED"}, '');
+			res.send({intervs: interviewers, applics: applicants});
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);
+		}
+		
+		
 	},
 
-/* [] Screen Applicants
+/* [..] Screen Applicants
  */
 	
 	getHRScreening: async function(req, res) {
@@ -81,13 +97,7 @@ const rendFunctions = {
 			let acceptApps = [];
 			let pendApps = [];
 			let rejectApps = [];
-						
-			
-			//test var
-//			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
-		
-
-		//	
+					
 			for(let i=0; i< applicants.length; i++){
 				if(applicants[i].screenStatus === "ACCEPTED")
 					acceptApps.push(applicants[i]);
@@ -204,7 +214,7 @@ const rendFunctions = {
 		if (req.session.user) {
 			if(req.session.user.userType === "Trainee")
 				res.render('deactivate', {
-					userID: req.params.userID,
+					userID: req.params.userID
 				});
 			
 			else res.redirect('login');
