@@ -408,21 +408,23 @@ const rendFunctions = {
 	},
 
 	postCreateClass: function(req, res) {
-		let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
-		// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+		try{
+			let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
 
-		// generate classID
-		var classID = generateClassID();
-		console.log("ClassID : " + classID);
+			// generate classID
+			var classID = generateClassID();
+			// console.log("ClassID: " + classID);
 
-		var sTime = new Date("Jan 01 2021 " + startTime + ":00");
-		var eTime = new Date("Jan 01 2021 " + endTime + ":00");
-		// console.log(sTime, eTime);
+			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+			// console.log(sTime, eTime);
 
-		// create the class
-		var tempClass = createClass(classID, courseName, startDate, endDate, sTime, eTime, meetLink);
+			// create the class
+			var tempClass = createClass(classID, courseName, startDate, endDate, sTime, eTime, meetLink);
 
-		// add into Class model
+			
+			// add into Class model
 			ClassDB.create(tempClass, function(error) {
 			if (error) {
 				res.send({status: 500, mssg: 'Error in adding class.'});
@@ -435,10 +437,14 @@ const rendFunctions = {
 					{useFindAndModify: false}, function(err) {
 						if (err) 
 							res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+				
+						else res.send({status: 200});	
 					});
-				res.send({status: 200});
-			}
-		});
+				}
+			});
+		} catch(e){
+			res.send({status: 500, mssg: 'Cannot connect to db.'});
+		}
 	},
 	
 	//there might be a way to optimize
