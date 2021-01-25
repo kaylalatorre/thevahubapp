@@ -33,8 +33,9 @@ function createClass(classID, courseName, startDate, endDate, startTime, endTime
 		endDate: endDate,
 		startTime: startTime,
 		endTime: endTime,
-		meetLink: meetLink
-		//coursePhoto: coursePhoto
+		meetLink: meetLink,
+		//coursePhoto: coursePhoto,
+		trainees: []
 	};
 
 	return tempClass;
@@ -421,13 +422,22 @@ const rendFunctions = {
 		// create the class
 		var tempClass = createClass(classID, courseName, startDate, endDate, sTime, eTime, meetLink);
 
-		// put into classesModel
+		// add into Class model
 			ClassDB.create(tempClass, function(error) {
 			if (error) {
-				res.send({status: 500});
+				res.send({status: 500, mssg: 'Error in adding class.'});
 				console.log("create-class error: " + error);
 			}
-			else res.send({status: 200});
+			// add into TrainerInfo array
+			else {
+				UserDB.findOneAndUpdate({userID: req.session.user.userID},
+					{$push: {TrainerInfo: tempClass}}, 
+					{useFindAndModify: false}, function(err) {
+						if (err) 
+							res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+					});
+				res.send({status: 200});
+			}
 		});
 	},
 	

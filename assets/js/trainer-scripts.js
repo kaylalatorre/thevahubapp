@@ -88,7 +88,7 @@ $(document).ready(function() {
                         break;
 					}
 					case 500: {
-						alert("Error in adding class.");
+						alert(res.mssg);
 						break;
 					}
 				}
