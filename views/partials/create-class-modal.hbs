@@ -13,26 +13,27 @@
     	<form id="createClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
     		<div style="margin-bottom: 12px;">
 				<label id="courseName" style="display: inline-block; width: 30%">Course</label>
-				<select id="courseName" for="courseName" class="appdrop" style="width: 68%">     
-					<option class="appoption dropdown-item" href="#">Marketing</option>
-					<option class="appoption dropdown-item" href="#">Real Estate</option>
+				<select id="courseName" for="courseName" class="appdrop" style="width: 68%">  
+					{{#each courseList}}   
+					<option class="appoption dropdown-item" href="#">{{courseName}}</option>
+					{{/each}}
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
-				<label id="startDate" style="display: inline-block; width: 30%">Start Date</label>
-				<input for="startDate" type="date">
+				<label style="display: inline-block; width: 30%">Start Date</label>
+				<input id="startDate" type="date">
 			</div>
 			<div style="margin-bottom: 12px;">
-				<label id="endDate" style="display: inline-block; width: 30%">End Date</label>
-				<input for="endDate" type="date">
+				<label style="display: inline-block; width: 30%">End Date</label>
+				<input id="endDate" type="date">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
-				<input for="timeSlot" type="time" min="17:00" max="5:00"> - <input for="timeSlot" type="time" min="17:00" max="5:00">
+				<input id="startTime" type="time" min="17:00" max="5:00"> - <input id="endTime" type="time" min="17:00" max="5:00">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-				<input for="meet-link" placeholder="Meeting Link" style="width: 68%">
+				<input id="meetLink" placeholder="Meeting Link" style="width: 68%">
 			</div>
     	</form>
 

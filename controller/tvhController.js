@@ -193,8 +193,20 @@ const rendFunctions = {
 	},
 
 	getTrainerClasses: function(req, res, next) {
-		res.render('trainer-classes', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			CourseDB.find({}, function(err, data) {
+				var details = JSON.parse(JSON.stringify(data));
+				var courseDet = details;	
+
+				// console.log(details);
+				res.render('trainer-classes', {
+					courseList: courseDet,
+				});
+			});
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 
@@ -396,7 +408,7 @@ const rendFunctions = {
 
 	postCreateClass: function(req, res) {
 		let { course, startDate, endDate, startTime, endTime, meetLink } = req.body;
-
+		console.log(course, startDate, endDate, startTime, endTime, meetLink)
 		// generate classID
 		var classID = generateClassID();
 		console.log("ClassID : " + classID);
