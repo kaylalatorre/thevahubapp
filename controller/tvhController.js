@@ -12,6 +12,34 @@ const ClassDB = require('../models/Class');
 const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
 
+/* FUNCTIONS and CONSTRUCTORS */
+//function to generate random classID
+function generateClassID() {
+	var classID = "C";
+	var idLength = 6;
+
+	for (var i = 0; i < idLength; i++) {
+		classID += (Math.round(Math.random() * 10)).toString();	}
+
+	return classID;
+}
+
+// constructor for class
+function createClass(classID, course, startDate, endDate, startTime, endTime, meetLink) {
+	var tempClass = {
+		classID: classID,
+		course: course,
+		startDate: startDate,
+		endDate: endDate,
+		startTime: startTime,
+		endTime: endTime,
+		meetLink: meetLink
+		//coursePhoto: coursePhoto
+	};
+
+	return tempClass;
+}
+
 const rendFunctions = {
 /* GET FUNCTIONS */	
 
@@ -367,10 +395,23 @@ const rendFunctions = {
 	},
 
 	postCreateClass: function(req, res) {
-		if(req.session.user) {
-			
-		}
-		else res.redirect('/login');
+		let { course, startDate, endDate, startTime, endTime, meetLink } = req.body;
+
+		// generate classID
+		var classID = generateClassID();
+		console.log("ClassID : " + classID);
+
+		// create the class
+		var tempClass = createClass(classID, course, startDate, endDate, startTime, endTime, meetLink);
+
+		// put into classesModel
+			ClassDB.create(tempClass, function(error) {
+			if (error) {
+				res.send({status: 500});
+				console.log("create-class error: " + error);
+			}
+			else res.send({status: 200});
+		});
 	},
 	
 	//there might be a way to optimize
