@@ -8,17 +8,18 @@ const session = require('express-session'); //keeps track of who's logged in
 const mongoose = require('mongoose');
 const path = require('path');
 const FilePond = require('filepond'); //for uploading files
+const base64 = require("byte-base64"); //for embedding resume .pdf files
 
 /* EXPRESS APPLICATION */
 const app = express();
 const port = process.env.port || 9000;
  
+/* INITIALIZING DOTENV (for db access info)*/
+require('dotenv').config(); 
+ 
 /* CONNECT DB */ 
  const db = require('./models/db');
  db.connect();
- 
-/* INITIALIZING DOTENV (for db access info)*/
-require('dotenv').config();
 
 /* INITIALIZING COOKIES & SESSION, BODYPARSER */
  app.use(cookieParser());
@@ -31,8 +32,8 @@ require('dotenv').config();
  }));
 
 /* BODY PARSER */
- app.use(bodyParser.urlencoded({extended: true}));
- app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 /* FILEPOND */
 // Create a multi file upload component
@@ -46,8 +47,18 @@ const pond = FilePond.create({
 app.engine('hbs', exphbs({  
   extname: 'hbs',
   defaultView: 'main',
-layoutsDir: path.join(__dirname, '/views/layouts'),
-partialsDir: path.join(__dirname, '/views/partials')
+  runtimeOptions: {
+	allowProtoPropertiesByDefault: true,
+	allowProtoMethodsByDefault: true
+  },
+  layoutsDir: path.join(__dirname, '/views/layouts'),
+  partialsDir: path.join(__dirname, '/views/partials'),
+  helpers: {
+	 genApplicName: function(applic){
+//		 console.log(applic);
+		 return applic.lName + ", " + applic.fName;
+	 } 
+  }
 }));
 
 app.set('view engine', 'hbs');
