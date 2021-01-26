@@ -200,7 +200,7 @@ const rendFunctions = {
 			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
 				var classDet = classes;	
-				console.log(classes);
+				// console.log(classes);
 				
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
@@ -221,7 +221,16 @@ const rendFunctions = {
 
 
 	getTRClassDetails: function(req, res, next) {
-		res.render('tr-class-details', {
+		var classID = req.params.classID;
+		
+		ClassDB.find({classID: classID}, function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			var classDet = classVar;	
+			console.log(classVar);
+		
+			res.render('tr-class-details', {
+				class: classDet,
+			});
 		});
 	},
 
