@@ -31,11 +31,13 @@ router.get('/certificate', controller.getCertificate);
 
 	// trainer
 router.get('/trainer-classes', controller.getTrainerClasses);
+router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/trainer-schedule', controller.getTRSchedule);
-router.get('/trainer-class-details', controller.getTRClassDet);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees', controller.getTraineeList);
 router.get('/trainer-reports', controller.getSummaryReport);
+router.get('/detailed-report', controller.getDetailedReport);
+
 
 /* POST */
 
@@ -58,5 +60,9 @@ router.post('/create-intsched', controller.postIntervSched);
 
 	//trainees
 router.post('/deactivate', controller.postDeactivate);
+
+	//trainers
+router.post('/create-class', controller.postCreateClass);
+
 
 module.exports = router;

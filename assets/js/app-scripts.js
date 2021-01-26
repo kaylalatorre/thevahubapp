@@ -36,7 +36,7 @@ function nextPrev(n) {
 	
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-    document.getElementById("appForm").submit();
+  submitAppForm(); // document.getElementById("appForm").submit();
     return false;
   }
   // Otherwise, display the correct tab:

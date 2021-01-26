@@ -13,6 +13,36 @@ const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
 const InterviewDB = require('../models/Interview');
 
+/* FUNCTIONS and CONSTRUCTORS */
+//function to generate random classID
+function generateClassID() {
+	var classID = "C";
+	var idLength = 6;
+
+	for (var i = 0; i < idLength; i++) {
+		classID += (Math.round(Math.random() * 10)).toString();	}
+
+	return classID;
+}
+
+// constructor for class
+function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink) {
+	var tempClass = {
+		classID: classID,
+		trainerID: trainerID,
+		courseName: courseName,
+		startDate: startDate,
+		endDate: endDate,
+		startTime: startTime,
+		endTime: endTime,
+		meetLink: meetLink,
+		//coursePhoto: coursePhoto,
+		trainees: []
+	};
+
+	return tempClass;
+}
+
 const rendFunctions = {
 /* GET FUNCTIONS */	
 
@@ -90,27 +120,32 @@ const rendFunctions = {
  */
 	
 	getHRScreening: async function(req, res) {
-		if(req.session.user.userType === "HRadmin"){
-			let applicants = await db.findMany(ApplicantDB, {});
-			
-			let acceptApps = [];
-			let pendApps = [];
-			let rejectApps = [];
+		if(req.session.user) {
+			if(req.session.user.userType === "HRadmin"){
+				let applicants = await db.findMany(ApplicantDB, {});
+				
+				let acceptApps = [];
+				let pendApps = [];
+				let rejectApps = [];
 					
-			for(let i=0; i< applicants.length; i++){
-				if(applicants[i].screenStatus === "ACCEPTED")
-					acceptApps.push(applicants[i]);
-				else if(applicants[i].screenStatus === "PENDING")
-					pendApps.push(applicants[i]);
-				else if(applicants[i].screenStatus === "REJECTED")
-					rejectApps.push(applicants[i]);				
+				for(let i=0; i< applicants.length; i++){
+					if(applicants[i].screenStatus === "ACCEPTED")
+						acceptApps.push(applicants[i]);
+					else if(applicants[i].screenStatus === "PENDING")
+						pendApps.push(applicants[i]);
+					else if(applicants[i].screenStatus === "REJECTED")
+						rejectApps.push(applicants[i]);				
+				}
+				
+				res.render('hr-screening', {
+					accepted: acceptApps,
+					pending: pendApps,
+					rejected: rejectApps
+				});
 			}
-						
-			res.render('hr-screening', {
-				accepted: acceptApps,
-				pending: pendApps,
-				rejected: rejectApps
-			});			
+		}
+		else {
+			res.redirect('/');
 		}
 	},
 	
@@ -133,12 +168,22 @@ const rendFunctions = {
 	
 
 	getTraineeProf: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('trainee-profile', {
-		});
-	// }
+		if (req.session.user){
+
+			// will determine trainee status (on-going, graduated)
+
+			// will collect classes of trainee
+
+			res.render('trainee-profile', {
+				fName: req.session.user.fName,
+				lName: req.session.user.lName,
+				userID: req.session.user.userID,
+				
+			});
+			
+		} else {
+			res.redirect('/');
+		}
 	},
 
 	getTraineeClasses: function(req, res, next) {
@@ -165,12 +210,32 @@ const rendFunctions = {
 	},
 
 	getTrainerClasses: function(req, res, next) {
-		res.render('trainer-classes', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				var classDet = classes;	
+				console.log(classes);
+				
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					var courseDet = courses;	
+					// console.log(courses);
+					
+					res.render('trainer-classes', {
+						classList: classDet,
+						courseList: courseDet,
+					});
+				});	
+			});
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 
-	getTRClassDet: function(req, res, next) {
+	getTRClassDetails: function(req, res, next) {
 		res.render('tr-class-details', {
 		});
 	},
@@ -187,6 +252,11 @@ const rendFunctions = {
 
 	getSummaryReport: function(req, res, next) {
 		res.render('trainer-reports', {
+		});
+	},
+
+	getDetailedReport: function(req, res, next) {
+		res.render('detailed-report', {
 		});
 	},
 
@@ -210,14 +280,12 @@ const rendFunctions = {
 	},
 
 	getDeactivate: function(req, res, next) {
-		if (req.session.user) {
-			if(req.session.user.userType === "Trainee")
-				res.render('deactivate', {
-					userID: req.params.userID
-				});
-			
-			else res.redirect('login');
-		}
+		if(req.session.user.userType === "Trainee")
+			res.render('deactivate', {
+				userID: req.session.user.userID,
+				fName: req.session.user.fName,
+			});
+		
 		else res.redirect('login');
 	},
 
@@ -235,24 +303,28 @@ const rendFunctions = {
 		if (!user) // USER NOT IN DB
 			res.send({status: 401});
 		else { // SUCCESS
-			bcrypt.compare(password, user.password, function(err, match) {
-					if (match){
-						req.session.user = user;
-						res.send({status: 200});
-					} else
-						res.send({status: 401});
-			});
+			if(!user.isDeactivated){ // user can not log in once deactivated
+				bcrypt.compare(password, user.password, function(err, match) {
+						if (match){
+							req.session.user = user;
+							res.send({status: 200});
+						} else
+							res.send({status: 401});
+				});
+			}
+			else res.send({status: 410});
 		}
 	},		
 		
 // for console register w password hashing
 	postRegister: async function(req, res) {
 		try {
+			// console.log("Hello " + req.body.fName, req.body.lName);
 			let hashPass = await bcrypt.hash(req.body.password, saltRounds);
 			console.log(hashPass);
 			let insertUser = await db.insertOne(UserDB,
-				{userID: req.body.userID, firstName: req.body.firstName, lastName: req.body.lastName, 
-					email: req.body.email, password: hashPass, isVerified: true, userType: req.body.userType});
+				{ userID: req.body.userID, fName: req.body.fName, lName: req.body.lName, 
+					email: req.body.email, password: hashPass, userType: req.body.userType, isDeactivated: false });
 				
 			console.log("db: Created user/n" + insertUser);
 		} catch(e) {
@@ -337,23 +409,69 @@ const rendFunctions = {
 		if(req.session.user) {
 			let { password } = req.body;
 
-			var userIDtemp = req.session.user.userID;
+			console.log(req.session.user.password, password);
 
-			UserDB.findOneAndUpdate(
-				{userID: userIDtemp},
-				{ $set: { isDeactivated: true }},
-				{ useFindAndModify: false},
-				function(err, match) {
-					if (err) {
-						res.send({status: 500, mssg:'There has been an error in deactivating your account.'});
-					}
-					else {
-					res.send({status: 200, mssg:'Account deactivated succesfully.'});
-					req.session.destroy();
-					}
-			});	
+			bcrypt.compare(password, req.session.user.password, function(err, match) {
+				if (match){ 
+					UserDB.findOneAndUpdate(
+						{userID: req.session.user.userID},
+						{ $set: { isDeactivated: true }},
+						{ useFindAndModify: false},
+						function(err, match) {
+							if (err) {
+								res.send({status: 500});
+							}
+							else {
+								res.send({status: 200});
+								req.session.destroy();
+							}
+					});	
+				}
+				else res.send({status: 401});
+			});
 		}
-		else res.redirect('/');
+		else res.redirect('/login');
+	},
+
+	postCreateClass: function(req, res) {
+		try{
+			let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+
+			// generate classID
+			var classID = generateClassID();
+			// console.log("ClassID: " + classID);
+
+			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+			// console.log(sTime, eTime);
+
+			// create the class
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink);
+
+			
+			// add into Class model
+			ClassDB.create(tempClass, function(error) {
+			if (error) {
+				res.send({status: 500, mssg: 'Error in adding class.'});
+				console.log("create-class error: " + error);
+			}
+			// add into TrainerInfo array
+			else {
+				res.send({status: 200});	
+				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
+				// 	{$push: {TrainerInfo: tempClass}}, 
+				// 	{useFindAndModify: false}, function(err) {
+				// 		if (err) 
+				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+				
+				// 		else res.send({status: 200});	
+				// 	});
+				}
+			});
+		} catch(e){
+			res.send({status: 500, mssg: 'Cannot connect to db.'});
+		}
 	},
 	
 	//there might be a way to optimize
