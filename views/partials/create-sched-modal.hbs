@@ -35,15 +35,17 @@
 			<div style="margin-bottom: 12px;">
 				<label id="interviewerName" style="display: inline-block; width: 30%">Interviewer</label>
 				<select id="interv-dropdown" for="interviewerName" class="appdrop" style="width: 68%">     
-					<option class="appoption dropdown-item" href="#">Interviewer Name</option>
-					<option class="appoption dropdown-item" href="#">Interviewer Name</option>
+					<option value="none" selected disabled hidden> 
+						Interviewer Name
+				    </option> 
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="applicantName" style="display: inline-block; width: 30%">Applicant</label>
 				<select id="applic-dropdown" for="applicantName" class="appdrop" style="width: 68%">    
-					<option class="appoption dropdown-item" href="#">Applicant Name</option>
-					<option class="appoption dropdown-item" href="#">Applicant Name</option>
+					<option value="none" selected disabled hidden> 
+						Applicant Name
+				    </option> 
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
@@ -51,7 +53,7 @@
 				<input id="meeting-link" for="meet-link" placeholder="Meeting Link" style="width: 68%">
 			</div>
     	</form>
-    	<button type="button" id="createSched" style="border: none;float:right;" disabled="true">Save</button>
+    	<button type="button" id="createSched" style="border: none;float:right;">Save</button>
     </div>
   </div>
 

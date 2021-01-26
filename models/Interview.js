@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 var interviewSchema = new mongoose.Schema({
-//	intervID: String,
+	intervID: String,
 	phase: String,
 	date: Date,
 	timeStart: Date,

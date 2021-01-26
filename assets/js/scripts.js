@@ -128,15 +128,18 @@ $(document).ready(function() {
 			success: function(res) {
 				console.log(res);
 				
+				$('select#interv-dropdown').empty();
+				$('select#applic-dropdown').empty();
+				
 				// render interviewer names in dropdown
 				for(let i=0; i<res.intervs.length; i++){
-					var intervHTML = '<option class="appoption dropdown-item" href="#">' + res.intervs[i].fName + res.intervs[i].lName + '</option>';
+					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>'
 					$('select#interv-dropdown').append(intervHTML);
 				}
 				
 				// render applicant names in dropdown
 				for(let i=0; i<res.applics.length; i++){
-					var applicHTML = '<option class="appoption dropdown-item" href="#">' + res.applics[i].fName + res.applics[i].lName + '</option>';
+					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>'
 					$('select#applic-dropdown').append(applicHTML);
 				}				
 					
@@ -151,8 +154,14 @@ $(document).ready(function() {
 		let schDate = $('input#sched-date').val();
 		let tStart = $('input#time-start').val();
 		let tEnd = $('input#time-end').val();
-		let interv = $("select#interv-dropdown").children("option:selected").val();
-		let applic = $("select#applic-dropdown").children("option:selected").val();
+		console.log(tStart);
+		console.log(tEnd);
+		
+		let intervid = $("select#interv-dropdown").children("option:selected").val();
+		console.log("intervID: "+ intervid);
+		let applicid = $("select#applic-dropdown").children("option:selected").val();
+		console.log("applicID: "+ applicid);
+		
 		let meetLink = $('input#meeting-link').val();
 		
 		$.ajax({
@@ -162,11 +171,11 @@ $(document).ready(function() {
 					schedDate: schDate,
 					timeStart: tStart,
 					timeEnd: tEnd,
-					interviewer: interv,
-					applicant: applic,
+					intervID: intervid,
+					applicID: applicid,
 					meetingLink: meetLink
 				},
-			success: window.location.reload(true),
+			success: /*window.location.reload(true)*/ console.log("/// POSTING INTERVIEW!"),
 			error: res => console.log(res)
 		});		
 
