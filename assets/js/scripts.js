@@ -238,18 +238,6 @@ $(document).ready(function() {
     }
   });
 
-  // // Deactivate client-side validation
-  // $('button#deact-btn').click(function() {
-  //   var deactPass = prompt("Please enter your password to deactivate.", "");
-  //   if (deactPass == null || deactPass == "") {
-  //     window.location.href = '/deactivate';
-  //   } else {
-  //     alert("Account deactivated.");
-  //     window.location.href = '/';
-  //   }
-  // });
-
-
   // View certificate
   $('button#viewCert').click(function() {
     // get data 

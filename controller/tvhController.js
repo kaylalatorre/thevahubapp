@@ -13,6 +13,36 @@ const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
 const IntervDB = require('../models/Interview');
 
+/* FUNCTIONS and CONSTRUCTORS */
+//function to generate random classID
+function generateClassID() {
+	var classID = "C";
+	var idLength = 6;
+
+	for (var i = 0; i < idLength; i++) {
+		classID += (Math.round(Math.random() * 10)).toString();	}
+
+	return classID;
+}
+
+// constructor for class
+function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink) {
+	var tempClass = {
+		classID: classID,
+		trainerID: trainerID,
+		courseName: courseName,
+		startDate: startDate,
+		endDate: endDate,
+		startTime: startTime,
+		endTime: endTime,
+		meetLink: meetLink,
+		//coursePhoto: coursePhoto,
+		trainees: []
+	};
+
+	return tempClass;
+}
+
 const rendFunctions = {
 /* GET FUNCTIONS */	
 
@@ -171,8 +201,28 @@ const rendFunctions = {
 	},
 
 	getTrainerClasses: function(req, res, next) {
-		res.render('trainer-classes', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				var classDet = classes;	
+				console.log(classes);
+				
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					var courseDet = courses;	
+					// console.log(courses);
+					
+					res.render('trainer-classes', {
+						classList: classDet,
+						courseList: courseDet,
+					});
+				});	
+			});
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 
@@ -221,15 +271,12 @@ const rendFunctions = {
 	},
 
 	getDeactivate: function(req, res, next) {
-		if (req.session.user) {
-			if(req.session.user.userType === "Trainee")
-				res.render('deactivate', {
-					userID: req.session.user.userID,
-					fName: req.session.user.fName,
-				});
-			
-			else res.redirect('login');
-		}
+		if(req.session.user.userType === "Trainee")
+			res.render('deactivate', {
+				userID: req.session.user.userID,
+				fName: req.session.user.fName,
+			});
+		
 		else res.redirect('login');
 	},
 
@@ -375,6 +422,47 @@ const rendFunctions = {
 			});
 		}
 		else res.redirect('/login');
+	},
+
+	postCreateClass: function(req, res) {
+		try{
+			let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+
+			// generate classID
+			var classID = generateClassID();
+			// console.log("ClassID: " + classID);
+
+			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+			// console.log(sTime, eTime);
+
+			// create the class
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink);
+
+			
+			// add into Class model
+			ClassDB.create(tempClass, function(error) {
+			if (error) {
+				res.send({status: 500, mssg: 'Error in adding class.'});
+				console.log("create-class error: " + error);
+			}
+			// add into TrainerInfo array
+			else {
+				res.send({status: 200});	
+				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
+				// 	{$push: {TrainerInfo: tempClass}}, 
+				// 	{useFindAndModify: false}, function(err) {
+				// 		if (err) 
+				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+				
+				// 		else res.send({status: 200});	
+				// 	});
+				}
+			});
+		} catch(e){
+			res.send({status: 500, mssg: 'Cannot connect to db.'});
+		}
 	},
 	
 	//there might be a way to optimize

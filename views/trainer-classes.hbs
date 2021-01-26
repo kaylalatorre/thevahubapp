@@ -9,6 +9,7 @@
         <hr>
     </div>
     <div id="trainer-classes">
+        {{#each classList}}
         <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
             <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
             </div>
@@ -17,11 +18,11 @@
                 <hr>
                 <div style="display: inline-block; width: 85%">
                     <div class="d-flex">
-                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
+                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>{{classID}}</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>{{courseName}}</strong></label>
                     </div>
                     <div class="d-flex">
                         <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
-                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
+                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;">{{numTrainees}}</label>
                     </div>
                 </div>
                 <div style="display: inline-block; float: right; vertical-align: top;">
@@ -30,46 +31,7 @@
                 
             </div>
         </div>
-        <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
-            <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
-            </div>
-            
-            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 35%; margin-bottom: 10px;">
-                <hr>
-                <div style="display: inline-block; width: 85%">
-                    <div class="d-flex">
-                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
-                    </div>
-                    <div class="d-flex">
-                        <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
-                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
-                    </div>
-                </div>
-                <div style="display: inline-block; float: right; vertical-align: top;">
-                    <div class="edit-class d-inline" style="color: #2b2b2b; border-color: #2b2b2b; font-size: 12px"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></div>
-                </div>
-            </div>
-        </div>
-        <div class="shadow-sm d-inline-block class-card" style="padding: 20px; margin-right: 20px;">
-            <div style="height: 60%;"><img style="min-width: 310px;min-height: 140px;margin: 0 auto;border-color: none;" alt="image" src="assets/img/default-cover.png" width="310px" height="140px">
-            </div>
-            
-            <div class="class-card-det" style="color: rgb(0,0,0);background: rgba(247,247,247,0);height: 35%; margin-bottom: 10px;">
-                <hr>
-                <div style="display: inline-block; width: 85%">
-                    <div class="d-flex">
-                        <label class="d-inline class-nbr" style="width: 30%;font-size: 14px;"><strong>Class No.</strong></label><label class="d-inline class-nbr" style="width: 50%;font-size: 14px;"><strong>Course Name</strong></label>
-                    </div>
-                    <div class="d-flex">
-                        <label class="d-inline class-nbr" style="width: 30%;font-size: 12px;">Schedule</label>
-                        <label class="d-inline class-nbr" style="width: 50%;font-size: 12px;"># of Trainees</label>
-                    </div>
-                </div>
-                <div style="display: inline-block; float: right; vertical-align: top;">
-                    <div class="edit-class d-inline" style="color: #2b2b2b; border-color: #2b2b2b; font-size: 12px"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></div>
-                </div>
-            </div>
-        </div>
+        {{/each}}
         
     </div>
 </div>

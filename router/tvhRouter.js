@@ -55,4 +55,8 @@ router.post('/reject-applicant', controller.postRejectApplic);
 	//trainees
 router.post('/deactivate', controller.postDeactivate);
 
+	//trainers
+router.post('/create-class', controller.postCreateClass);
+
+
 module.exports = router;

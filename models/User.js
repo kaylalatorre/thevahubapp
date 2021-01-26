@@ -9,8 +9,11 @@ var userSchema = new mongoose.Schema({
 	userType: String,
 	TrainerInfo: {
 		classes: [{
-			className: {type: mongoose.Schema.Types.ObjectId, ref: 'Class'}, 
-			date: Date, 
+			classID: {type: mongoose.Schema.Types.ObjectId, ref: 'Class'}, 
+			startDate: Date,
+			endDate: Date,
+			startTime: Date,
+			endTime: Date,
 			score: mongoose.Schema.Types.Mixed //test for 2D-array
 		}]			
 	},
