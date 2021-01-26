@@ -25,9 +25,10 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, courseName, startDate, endDate, startTime, endTime, meetLink) {
+function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink) {
 	var tempClass = {
 		classID: classID,
+		trainerID: trainerID,
 		courseName: courseName,
 		startDate: startDate,
 		endDate: endDate,
@@ -195,14 +196,22 @@ const rendFunctions = {
 
 	getTrainerClasses: function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
-			CourseDB.find({}, function(err, data) {
-				var details = JSON.parse(JSON.stringify(data));
-				var courseDet = details;	
-
-				// console.log(details);
-				res.render('trainer-classes', {
-					courseList: courseDet,
-				});
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				var classDet = classes;	
+				console.log(classes);
+				
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					var courseDet = courses;	
+					// console.log(courses);
+					
+					res.render('trainer-classes', {
+						classList: classDet,
+						courseList: courseDet,
+					});
+				});	
 			});
 		}
 		else {
@@ -251,15 +260,12 @@ const rendFunctions = {
 	},
 
 	getDeactivate: function(req, res, next) {
-		if (req.session.user) {
-			if(req.session.user.userType === "Trainee")
-				res.render('deactivate', {
-					userID: req.session.user.userID,
-					fName: req.session.user.fName,
-				});
-			
-			else res.redirect('login');
-		}
+		if(req.session.user.userType === "Trainee")
+			res.render('deactivate', {
+				userID: req.session.user.userID,
+				fName: req.session.user.fName,
+			});
+		
 		else res.redirect('login');
 	},
 
@@ -421,7 +427,7 @@ const rendFunctions = {
 			// console.log(sTime, eTime);
 
 			// create the class
-			var tempClass = createClass(classID, courseName, startDate, endDate, sTime, eTime, meetLink);
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink);
 
 			
 			// add into Class model
@@ -432,14 +438,15 @@ const rendFunctions = {
 			}
 			// add into TrainerInfo array
 			else {
-				UserDB.findOneAndUpdate({userID: req.session.user.userID},
-					{$push: {TrainerInfo: tempClass}}, 
-					{useFindAndModify: false}, function(err) {
-						if (err) 
-							res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+				res.send({status: 200});	
+				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
+				// 	{$push: {TrainerInfo: tempClass}}, 
+				// 	{useFindAndModify: false}, function(err) {
+				// 		if (err) 
+				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
 				
-						else res.send({status: 200});	
-					});
+				// 		else res.send({status: 200});	
+				// 	});
 				}
 			});
 		} catch(e){
