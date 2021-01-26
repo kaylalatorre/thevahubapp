@@ -220,7 +220,7 @@ const rendFunctions = {
 	},
 
 
-	getTRClassDet: function(req, res, next) {
+	getTRClassDetails: function(req, res, next) {
 		res.render('tr-class-details', {
 		});
 	},
