@@ -15,6 +15,9 @@ router.get('/hr-schedule', controller.getHRSched);
 router.get('/hr-screening', controller.getHRScreening);
 router.get('/rend-applicant', controller.getApplicInfo);
 
+router.get('/get-intervapplic', controller.getIntervApplic);
+
+
 	// interviewer
 router.get('/int-applicants', controller.getIntApplicants);
 router.get('/int-schedule', controller.getIntSchedule);
@@ -51,6 +54,9 @@ router.post('/login-test', controller.postLogin);
 	//hr admin
 router.post('/accept-applicant', controller.postAcceptApplic);	
 router.post('/reject-applicant', controller.postRejectApplic);	
+router.post('/remove-applicant', controller.postRemoveApplic);
+
+router.post('/create-intsched', controller.postIntervSched);	
 
 	//trainees
 router.post('/deactivate', controller.postDeactivate);

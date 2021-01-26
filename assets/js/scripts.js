@@ -2,20 +2,17 @@
 var skillCount = 1;
 var certCount = 1;
 
-var accrejBtn = false;
-var removeBtn = false;
-
 // calendar
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
   var calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
-    initialDate: '2020-12-07',
+    initialDate: '2021-01-25',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
+    }
     // events: data
   });  
 
@@ -74,26 +71,11 @@ function updateButtons(tabpane) {
   var tab = tabpane.id;
 
   if (tab === "acceptedTab" || tab === "rejectedTab") {
-//    document.getElementById("acceptApplcnt").style.display = "none";
-//    document.getElementById("rejectApplcnt").style.display = "none";
-//	 
-//	if (!removeBtn){
-//		var removeHTML = '<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>';
-//		$('div#applic-container').append(removeHTML);		
-//		removeBtn = true;
-//	}
 	$("#acceptApplcnt").hide();
 	$("#rejectApplcnt").hide();
 	$("#removeApplcnt").show();
 
-    } else { // for Pending tab
-//    document.getElementById("acceptApplcnt").style.display = "block";
-//    document.getElementById("rejectApplcnt").innerHTML = "Reject";
-	
-//	if (!accrejBtn){
-//		document.getElementById("removeApplcnt").style.display = "none";
-//		accrejBtn = true;
-//	}
+  } else { // for Pending tab
 	$("#acceptApplcnt").show();
 	$("#rejectApplcnt").show();
 	$("#removeApplcnt").hide();
@@ -138,9 +120,70 @@ function getApplicInfo(applicID){
 }
 
 $(document).ready(function() {	
+	
+	$("button#create-schedBtn").on("click", function() {
+		$.ajax({
+			method: 'GET',
+			url: '/get-intervapplic',
+			data: {},
+			success: function(res) {
+				console.log(res);
+				
+				$('select#interv-dropdown').empty();
+				$('select#applic-dropdown').empty();
+				
+				// render interviewer names in dropdown
+				for(let i=0; i<res.intervs.length; i++){
+					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>'
+					$('select#interv-dropdown').append(intervHTML);
+				}
+				
+				// render applicant names in dropdown
+				for(let i=0; i<res.applics.length; i++){
+					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>'
+					$('select#applic-dropdown').append(applicHTML);
+				}				
+					
+			},
+			error: res => console.log(res)
+		});				
+	});
+	
+	$("button#createSched").on("click", function() {
+		
+		let intPhase = $("input[name='int-phase']:checked").val();
+		let schDate = $('input#sched-date').val();
+		let tStart = $('input#time-start').val();
+		let tEnd = $('input#time-end').val();
+		console.log(tStart);
+		console.log(tEnd);
+		
+		let intervid = $("select#interv-dropdown").children("option:selected").val();
+		console.log("intervID: "+ intervid);
+		let applicid = $("select#applic-dropdown").children("option:selected").val();
+		console.log("applicID: "+ applicid);
+		
+		let meetLink = $('input#meeting-link').val();
+		
+		$.ajax({
+			method: 'POST',
+			url: '/create-intsched',
+			data: {intervPhase: intPhase,
+					schedDate: schDate,
+					timeStart: tStart,
+					timeEnd: tEnd,
+					intervID: intervid,
+					applicID: applicid,
+					meetingLink: meetLink
+				},
+			success: /*window.location.reload(true)*/ console.log("/// POSTING INTERVIEW!"),
+			error: res => console.log(res)
+		});		
+
+	});
+
 
 	$("#removeApplcnt").hide();
-
 	
 	$('button#acceptApplcnt').on("click", function() {
 		let applicID = $("input#hide-applicID").val();
@@ -165,6 +208,19 @@ $(document).ready(function() {
 			error: res => console.log(res)
 		});
 	});
+	
+	$('button#removeApplcnt').on("click", function() {
+		let applicID = $("input#hide-applicID").val();
+		
+		console.log("in remove applicant///");
+		$.ajax({
+			method: 'POST',
+			url: '/remove-applicant',
+			data: {applicantID: applicID},
+			success: window.location.reload(true),
+			error: res => console.log(res)
+		});
+	});	
 	
 
 	$('button#addSkill').on("click", function() {	

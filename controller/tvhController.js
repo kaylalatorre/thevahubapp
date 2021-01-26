@@ -11,7 +11,7 @@ const ApplicantDB = require('../models/Applicant');
 const ClassDB = require('../models/Class');
 const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
-const IntervDB = require('../models/Interview');
+const InterviewDB = require('../models/Interview');
 
 /* FUNCTIONS and CONSTRUCTORS */
 //function to generate random classID
@@ -62,7 +62,7 @@ const rendFunctions = {
 		if(req.session.user) {
 			if (req.session.user.userType === "HRadmin")
 				res.render('hr-home', {});
-			else if (req.session.user.userType === "HRinterv1")
+			else if (req.session.user.userType === "HRinterv")
 				res.render('int-home', {});		
 			else if (req.session.user.userType === "Trainee")
 				res.render('trainee-home', {});
@@ -92,16 +92,31 @@ const rendFunctions = {
 
 /* [] Schedule Interview
  */
-	getHRSched: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('hr-schedule', {
-		});
-	// }
+	getHRSched: function(req, res) {
+		if(req.session.user.userType === "HRadmin"){
+			
+			
+			res.render('hr-schedule', {
+			});
+		}
+
+
+	},
+	
+	getIntervApplic: async function(req, res) {
+		try {
+			let interviewers = await db.findMany(UserDB, {userType: "HRinterv"}, '');
+			let applicants = await db.findMany(ApplicantDB, {screenStatus: "ACCEPTED"}, '');
+//			console.log("in getIntervApplic(): /" + interviewers + applicants);
+			res.send({intervs: interviewers, applics: applicants});
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);
+		}
 	},
 
-/* [] Screen Applicants
+/* [..] Screen Applicants
  */
 	
 	getHRScreening: async function(req, res) {
@@ -112,13 +127,7 @@ const rendFunctions = {
 				let acceptApps = [];
 				let pendApps = [];
 				let rejectApps = [];
-							
-				
-				//test var
-	//			let testApp = await db.findOne(ApplicantDB, {applicantID: "AP28799"}, '');			
-			
-
-			//	
+					
 				for(let i=0; i< applicants.length; i++){
 					if(applicants[i].screenStatus === "ACCEPTED")
 						acceptApps.push(applicants[i]);
@@ -127,12 +136,12 @@ const rendFunctions = {
 					else if(applicants[i].screenStatus === "REJECTED")
 						rejectApps.push(applicants[i]);				
 				}
-							
+				
 				res.render('hr-screening', {
 					accepted: acceptApps,
 					pending: pendApps,
 					rejected: rejectApps
-				});			
+				});
 			}
 		}
 		else {
@@ -497,6 +506,57 @@ const rendFunctions = {
 			console.log(e);
 			res.send(e);
 		}		
+	},
+
+	postRemoveApplic: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRadmin"){
+                let applic = await db.updateOne(ApplicantDB, {applicantID: req.body.applicantID}, {screenStatus: "PENDING"});
+//				console.log(applic.screenStatus);
+                res.sendStatus(200);
+			}			 
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}		
+	},
+	
+	postIntervSched: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRadmin"){
+				let intID = generateID("IN");
+				let {intervPhase, schedDate, timeStart, timeEnd, intervID, applicID, meetingLink} = req.body;
+				
+				// find Interviewer and Applicant
+				let interv = await db.findOne(UserDB, {userID: intervID}, '');
+				let applic = await db.findOne(ApplicantDB, {applicantID: applicID}, '');
+				
+				// format timeSlot to Date type
+				let tStart = schedDate + timeStart;
+				let tEnd = schedDate + timeEnd;
+				console.log("timeStart: " + timeStart);
+				console.log("timeEnd: " + timeEnd);				
+				console.log(tStart);
+				console.log(tEnd);
+				
+				let intervSched = await db.insertOne(InterviewDB, {
+								intervID: intID,
+								phase: intervPhase,
+								date: schedDate,
+								timeStart: tStart,
+								timeEnd: tEnd,
+								interviewer: interv,
+								applicant: applic,
+								meetingLink: meetingLink
+							});
+				
+				if(intervSched) res.sendStatus(200);
+			}
+			
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
 	}
 };
 
