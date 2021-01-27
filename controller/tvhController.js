@@ -523,18 +523,21 @@ const rendFunctions = {
 				let applic = await db.findOne(ApplicantDB, {applicantID: applicID}, '');
 				
 				// format timeSlot to Date type
-				let tStart = schedDate + timeStart;
-				let tEnd = schedDate + timeEnd;
+				let tStart = schedDate + "T" + timeStart;
+				let testStart = new Date(tStart);
+				
+				let tEnd = schedDate + "T" + timeEnd;
 				console.log("timeStart: " + timeStart);
 				console.log("timeEnd: " + timeEnd);				
-				console.log(tStart);
-				console.log(tEnd);
+//				console.log(tStart);
+//				console.log(tEnd);
+				console.log("test format Date: " + testStart); //this increments Time +4 hours
 				
 				let intervSched = await db.insertOne(InterviewDB, {
 								intervID: intID,
 								phase: intervPhase,
 								date: schedDate,
-								timeStart: tStart,
+								timeStart: testStart,
 								timeEnd: tEnd,
 								interviewer: interv,
 								applicant: applic,
