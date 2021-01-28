@@ -43,6 +43,14 @@ function createClass(classID, trainerID, courseName, startDate, endDate, startTi
 	return tempClass;
 }
 
+function toDate(date, time) {
+    let d = new Date(date);
+    d.setHours(time.substr(0, time.indexOf(":")));
+    d.setMinutes(time.substr(time.indexOf(":") + 1));
+    d.setSeconds(0);
+    return d.toString();
+}
+
 const rendFunctions = {
 /* GET FUNCTIONS */	
 
@@ -523,21 +531,23 @@ const rendFunctions = {
 				let applic = await db.findOne(ApplicantDB, {applicantID: applicID}, '');
 				
 				// format timeSlot to Date type
-				let tStart = schedDate + "T" + timeStart;
-				let testStart = new Date(tStart);
+				let tStart = toDate(schedDate, timeStart);
+				let tEnd = toDate(schedDate, timeEnd);
 				
-				let tEnd = schedDate + "T" + timeEnd;
-				console.log("timeStart: " + timeStart);
-				console.log("timeEnd: " + timeEnd);				
-//				console.log(tStart);
-//				console.log(tEnd);
-				console.log("test format Date: " + testStart); //this increments Time +4 hours
+				console.log("tStart: " + tStart); 
+				console.log("tStart: " + tEnd); 
+				
+				// parse first in db findOne
+//				let schedule = await db.findOne(InterviewDB, {intervID: "IN40153"}, '');
+//				
+//				 let testSched = new Date(schedule.timeStart);
+//				 console.log("testSched: "+ testSched);
 				
 				let intervSched = await db.insertOne(InterviewDB, {
 								intervID: intID,
 								phase: intervPhase,
-								date: schedDate,
-								timeStart: testStart,
+								date: new Date(schedDate),
+								timeStart: tStart,
 								timeEnd: tEnd,
 								interviewer: interv,
 								applicant: applic,
@@ -545,6 +555,7 @@ const rendFunctions = {
 							});
 				
 				if(intervSched) res.sendStatus(200);
+
 			}
 			
 		} catch(e){
