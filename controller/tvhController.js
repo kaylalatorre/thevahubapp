@@ -102,8 +102,6 @@ const rendFunctions = {
  */
 	getHRSched: function(req, res) {
 		if(req.session.user.userType === "HRadmin"){
-			
-			
 			res.render('hr-schedule', {
 			});
 		}
@@ -111,11 +109,22 @@ const rendFunctions = {
 
 	},
 	
+	getInterviews: async function(req, res) {
+		try {
+			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
+			console.log(interviews);
+			res.send(interviews);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}
+	},
+	
 	getIntervApplic: async function(req, res) {
 		try {
 			let interviewers = await db.findMany(UserDB, {userType: "HRinterv"}, '');
 			let applicants = await db.findMany(ApplicantDB, {screenStatus: "ACCEPTED"}, '');
-//			console.log("in getIntervApplic(): /" + interviewers + applicants);
 			res.send({intervs: interviewers, applics: applicants});
 			
 		} catch(e) {
@@ -536,12 +545,6 @@ const rendFunctions = {
 				
 				console.log("tStart: " + tStart); 
 				console.log("tStart: " + tEnd); 
-				
-				// parse first in db findOne
-//				let schedule = await db.findOne(InterviewDB, {intervID: "IN40153"}, '');
-//				
-//				 let testSched = new Date(schedule.timeStart);
-//				 console.log("testSched: "+ testSched);
 				
 				let intervSched = await db.insertOne(InterviewDB, {
 								intervID: intID,

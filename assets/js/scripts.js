@@ -2,23 +2,6 @@
 var skillCount = 1;
 var certCount = 1;
 
-// calendar
-//document.addEventListener('DOMContentLoaded', function() {
-//  var calendarEl = document.getElementById('calendar');
-//  const calendar = new FullCalendar.Calendar(calendarEl, {
-//    initialView: 'dayGridMonth',
-//    initialDate: '2021-01-25', //set to Current date
-//    headerToolbar: {
-//      left: 'prev,next today',
-//      center: 'title',
-//      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-//    }
-//    // events: data
-//  });  
-//
-//  calendar.render();
-//});
-
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -121,26 +104,12 @@ function getApplicInfo(applicID){
 
 $(document).ready(function() {	
 	
-	if(window.location.href === "/hr-schedule"){
-		$.ajax({
-			method: 'GET',
-			url: '/get-calFilter',
-			data: {},
-			success: function(res) {
-				// for loop (res.[array])
-				
-				
-			},
-			error: res => console.log(res)
-		});
-	}
-	
 	let calendar;	
 	var calendarEl = document.getElementById('calendar');
 	if(calendarEl !== null){
 		calendar = new FullCalendar.Calendar(calendarEl, {
 		  initialView: 'dayGridMonth',
-		  initialDate: '2021-01-25', //set to Current date
+//		  initialDate: '2021-01-25', //set to Current date
 		  headerToolbar: {
 			left: 'prev,next today',
 			center: 'title',
@@ -152,6 +121,46 @@ $(document).ready(function() {
 		calendar.render();			
 	}
 	
+	console.log(window.location.href);
+	if(window.location.pathname === "/hr-schedule"){
+		console.log("in AJAX get interv()");
+		$.ajax({
+			method: 'GET',
+			url: '/get-interviews',
+			data: {},
+			success: function(res) {
+				
+				for (let i=0; i<res.length; i++){
+					// render for main Calendar 
+					var parseDate = new Date(res[i].timeStart);
+					calendar.addEvent({
+						title: res[i].applicant.fName + " " + res[i].applicant.lName,
+						start: parseDate,
+						allDay: false
+					});
+					
+					// render for sidebar filter
+					$('div#applic-filter').empty();
+					$('div#interv-filter').empty();		
+					
+					var applicHTML = '<div class="sched-list">'
+										+ '<input class="form-check-input applicantName" type="checkbox">'
+										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
+									+ '</div>';
+					$('div#applic-filter').append(applicHTML);
+					
+					var intervHTML = '<div class="sched-list">'
+										+ '<input class="form-check-input interviewerName" type="checkbox">'
+										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
+									+ '</div>';
+					$('div#interv-filter').append(intervHTML);					
+				}
+
+			},
+			error: res => console.log(res)
+		});
+	}
+
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
@@ -210,7 +219,6 @@ $(document).ready(function() {
 			success: function(res) {
 				
 				var parseDate = new Date(res.timeStart);
-				
 				calendar.addEvent({
 					title: res.applicant.fName + " " + res.applicant.lName,
 					start: parseDate,
