@@ -221,17 +221,17 @@ const rendFunctions = {
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
-				var classDet = classes;	
+				// var classDet = classes;	
 				// console.log(classes);
 				
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
-					var courseDet = courses;	
+					// var courseDet = courses;	
 					// console.log(courses);
 					
 					res.render('trainer-classes', {
-						classList: classDet,
-						courseList: courseDet,
+						classList: classes,
+						courseList: courses,
 					});
 				});	
 			});
@@ -247,11 +247,17 @@ const rendFunctions = {
 		
 		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			var classDet = classVar;	
-			console.log(classVar);
+			// var classDet = classVar;	
+			console.log(classVar[0].courseName);
 		
 			res.render('tr-class-details', {
-				class: classDet,
+				courseName: classVar[0].courseName,
+				// numTrainees: ,
+				// date: ,
+				// time: ,
+				meetLink: classVar[0].meetLink,
+
+				// scoresheet
 			});
 		});
 	},
