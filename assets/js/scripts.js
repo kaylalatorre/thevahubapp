@@ -3,21 +3,21 @@ var skillCount = 1;
 var certCount = 1;
 
 // calendar
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    initialDate: '2021-01-25',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    }
-    // events: data
-  });  
-
-  calendar.render();
-});
+//document.addEventListener('DOMContentLoaded', function() {
+//  var calendarEl = document.getElementById('calendar');
+//  const calendar = new FullCalendar.Calendar(calendarEl, {
+//    initialView: 'dayGridMonth',
+//    initialDate: '2021-01-25', //set to Current date
+//    headerToolbar: {
+//      left: 'prev,next today',
+//      center: 'title',
+//      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+//    }
+//    // events: data
+//  });  
+//
+//  calendar.render();
+//});
 
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
@@ -121,6 +121,37 @@ function getApplicInfo(applicID){
 
 $(document).ready(function() {	
 	
+	if(window.location.href === "/hr-schedule"){
+		$.ajax({
+			method: 'GET',
+			url: '/get-calFilter',
+			data: {},
+			success: function(res) {
+				// for loop (res.[array])
+				
+				
+			},
+			error: res => console.log(res)
+		});
+	}
+	
+	let calendar;	
+	var calendarEl = document.getElementById('calendar');
+	if(calendarEl !== null){
+		calendar = new FullCalendar.Calendar(calendarEl, {
+		  initialView: 'dayGridMonth',
+		  initialDate: '2021-01-25', //set to Current date
+		  headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+		  }
+		  // events: data
+		});  
+
+		calendar.render();			
+	}
+	
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
@@ -176,7 +207,16 @@ $(document).ready(function() {
 					applicID: applicid,
 					meetingLink: meetLink
 				},
-			success: /*window.location.reload(true)*/ console.log("/// POSTING INTERVIEW!"),
+			success: function(res) {
+				
+				var parseDate = new Date(res.timeStart);
+				
+				calendar.addEvent({
+					title: res.applicant.fName + " " + res.applicant.lName,
+					start: parseDate,
+					allDay: false
+				});
+			},
 			error: res => console.log(res)
 		});		
 

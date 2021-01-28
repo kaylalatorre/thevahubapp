@@ -554,8 +554,11 @@ const rendFunctions = {
 								meetingLink: meetingLink
 							});
 				
-				if(intervSched) res.sendStatus(200);
-
+				if(intervSched) {
+					let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
+					console.log(sched);
+					res.status(200).send(sched);
+				}
 			}
 			
 		} catch(e){
