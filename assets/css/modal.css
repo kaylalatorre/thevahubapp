@@ -17,7 +17,7 @@
 .modal-content {
   background-color: #fefefe;
   margin: auto;
-  padding: 20px;
+  padding: 38px;
   border: 1px solid #888;
 }
 
@@ -26,6 +26,11 @@
 }
 
 #create-class-mod {
+  width: 50%;
+}
+
+#contact-client-mod {
+  text-align: left;
   width: 50%;
 }
 

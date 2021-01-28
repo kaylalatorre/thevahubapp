@@ -119,6 +119,20 @@ function getApplicInfo(applicID){
 	});
 }
 
+// for deployment valist page
+function switchTabContent(tabpane) {
+	var tab = tabpane.id;
+
+	if(tab === "waitlistTab") {
+		$('#waitList').show();
+		$('#hiredList').hide();
+	}
+	else if(tab === "hiredTab"){
+		$('#waitList').hide();
+		$('#hiredList').show();
+	}
+}
+
 $(document).ready(function() {	
 	
 	$("button#create-schedBtn").on("click", function() {

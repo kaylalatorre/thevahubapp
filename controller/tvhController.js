@@ -68,6 +68,8 @@ const rendFunctions = {
 				res.render('trainee-home', {});
 			else if (req.session.user.userType === "Trainer")
 				res.render('trainer-home', {});
+			else if (req.session.user.userType === "SLadmin")
+				res.render('sales-home', {});
 			else 
 				res.render('login');
 		} else 
@@ -300,6 +302,21 @@ const rendFunctions = {
 
 	getError: function(req, res, next) {
 		res.render('error', {
+		});
+	},
+
+	getSalesHome: function(req, res, next) {
+		res.render('sales-home', {
+		});
+	},
+
+	getVAList: function(req, res, next) {
+		res.render('sales-valist', {
+		});
+	},
+
+	getClientList: function(req, res, next) {
+		res.render('sales-clientlist', {
 		});
 	},
 
