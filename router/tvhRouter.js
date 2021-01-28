@@ -16,7 +16,7 @@ router.get('/hr-screening', controller.getHRScreening);
 router.get('/rend-applicant', controller.getApplicInfo);
 
 router.get('/get-intervapplic', controller.getIntervApplic);
-
+router.get('/application-reports', controller.getHRReports);
 
 	// interviewer
 router.get('/int-applicants', controller.getIntApplicants);
@@ -35,8 +35,7 @@ router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
-router.get('/trainer-reports', controller.getSummaryReport);
-router.get('/detailed-report', controller.getDetailedReport);
+router.get('/trainer-reports', controller.getTrainingReports);
 
 	// sales admin screen prototypes 
 router.get('/sales-valist', controller.getVAList);

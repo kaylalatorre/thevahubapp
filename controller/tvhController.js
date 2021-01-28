@@ -166,6 +166,11 @@ const rendFunctions = {
 			res.send(e);
 		}
 	},
+
+	getHRReports: function(req, res, next) {
+		res.render('application-reports', {
+		});
+	},
 	
 	
 
@@ -261,13 +266,8 @@ const rendFunctions = {
 		});
 	},
 
-	getSummaryReport: function(req, res, next) {
+	getTrainingReports: function(req, res, next) {
 		res.render('trainer-reports', {
-		});
-	},
-
-	getDetailedReport: function(req, res, next) {
-		res.render('detailed-report', {
 		});
 	},
 

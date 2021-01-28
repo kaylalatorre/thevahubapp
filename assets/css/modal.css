@@ -25,13 +25,9 @@
   width: 35%;
 }
 
-#create-class-mod {
+#create-class-mod, #edit-class-mod, #contact-client-mod {
   width: 50%;
-}
-
-#contact-client-mod {
   text-align: left;
-  width: 50%;
 }
 
 #int-dets {

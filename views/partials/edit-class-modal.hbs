@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<div id="createClassModal" class="modal">
+<div id="editClassModal" class="modal">
 
   <!-- Modal content -->
-  <div  id="create-class-mod" class="modal-content">
+  <div  id="edit-class-mod" class="modal-content">
     <div>
-    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Create </strong>Class</label>
+    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Edit </strong>Class</label>
     	<span class="close">&times;</span>
     </div>
     <div>
     	<hr>
-    	<form id="createClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
+    	<form id="editClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
     		<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Course</label>
 				<select id="courseName" class="appdrop" style="width: 68%">  
@@ -43,7 +43,8 @@
 	    	</div>
 	    		<button type="button" class="outlined-btn" style="margin: 2px;"><i class="material-icons" style="margin: 0 auto; position: relative; top: 2px; font-size: 12px;">upload</i><label style="margin-left: 3px;">Upload Course Photo</button>
     	</div>
-    	<button type="button" id="createClass" style="display: block; border: 1px solid #6dc63f;">Save</button>
+    	<button type="button" id="updateClass" style="border: 1px solid #6dc63f;">Save</button>
+		<button type="button" id="deleteClass" style="border: 1px solid red; background: none; color: red;">Delete</button>
     </div>
   </div>
 </div>
