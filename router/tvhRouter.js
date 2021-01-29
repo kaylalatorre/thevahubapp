@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express();
 // const middleware = require('../middleware/tvhMiddleware');
+const upload = require('../middleware/upload'); // for multer
+const uploadController = require("../controller/upload")
 const controller = require('../controller/tvhController');
 
 /* GET */
@@ -65,6 +67,7 @@ router.post('/deactivate', controller.postDeactivate);
 
 	//trainers
 router.post('/create-class', controller.postCreateClass);
+// router.post("/upload", uploadController.uploadFile);
 
 
 module.exports = router;

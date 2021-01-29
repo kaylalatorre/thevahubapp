@@ -4,7 +4,8 @@
 
 <div style="padding: 70px 20px 20px 20px;">
     <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Classes</strong></label>
-        <button type="button" id="create-class" class="myBtn" style="border: none; display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createClassModal"><i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
+        <button type="button" id="create-class" class="myBtn" style="border: none; display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createClassModal">
+        <i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
         {{> create-class-modal}}
         <hr>
     </div>
@@ -30,7 +31,8 @@
             </div>
         </div>
         <div style="display: block; text-align: right; vertical-align: top; padding-top: 4px;">
-            <button type="button" id="edit-class" class="outlined-btn d-inline myBtn" style="color: #2b2b2b; border: none; background: none; font-size: 10px" href="#editClassModal"><i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></button>
+            <button type="button" id="edit-class" class="outlined-btn d-inline myBtn" style="color: #2b2b2b; border: none; background: none; font-size: 10px" href="#editClassModal">
+                <i class="material-icons" style="font-size: 12px; position: relative; top: 2px;">create</i><label>Edit</label></button>
             <!--modal here // edit class-->
             {{> edit-class-modal}}
         </div>
