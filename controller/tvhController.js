@@ -43,6 +43,85 @@ function createClass(classID, trainerID, courseName, startDate, endDate, startTi
 	return tempClass;
 }
 
+// format date
+function formatDate(date) {
+	var newDate = new Date(date);
+
+	var mm = newDate.getMonth() + 1;
+	switch(mm) {
+		case 1: mm = "January"; break;
+		case 2: mm = "February"; break;
+		case 3: mm = "March"; break;
+		case 4: mm = "April"; break;
+		case 5: mm = "May"; break;
+		case 6: mm = "June"; break;
+		case 7: mm = "July"; break;
+		case 8: mm = "August"; break;
+		case 9: mm = "September"; break;
+		case 10: mm = "October"; break;
+		case 11: mm = "November"; break;
+		case 12: mm = "December"; break;
+	}
+
+	var dd = newDate.getDate();
+
+	return mm + " " + dd;
+}
+
+function formatShortDate(date) {
+	var newDate = new Date(date);
+
+	var mm = newDate.getMonth() + 1;
+	switch(mm) {
+		case 1: mm = "Jan"; break;
+		case 2: mm = "Feb"; break;
+		case 3: mm = "Mar"; break;
+		case 4: mm = "Apr"; break;
+		case 5: mm = "May"; break;
+		case 6: mm = "Jun"; break;
+		case 7: mm = "Jul"; break;
+		case 8: mm = "Aug"; break;
+		case 9: mm = "Sep"; break;
+		case 10: mm = "Oct"; break;
+		case 11: mm = "Nov"; break;
+		case 12: mm = "Dec"; break;
+	}
+
+	var dd = newDate.getDate();
+	var yy = newDate.getFullYear();
+
+	return mm + " " + dd;
+}
+
+function formatNiceDate(date) {
+	var newDate = new Date(date);
+	// adjust 0 before single digit date
+	let day = ("0" + newDate.getDate()).slice(-2);
+
+	// current month
+	let month = ("0" + (newDate.getMonth() + 1)).slice(-2);
+
+	// current year
+	let year = newDate.getFullYear();
+
+	return year + "-" + month + "-" + day;
+}
+
+// two digits
+function n(n) {
+    return n > 9 ? "" + n: "0" + n;
+}
+
+//format time
+function formatTime(time) {
+	var time = new Date(time);
+
+	var hh = n(time.getHours());
+	var min = n(time.getMinutes());
+
+	return hh + ":" + min; 
+}
+
 const rendFunctions = {
 /* GET FUNCTIONS */	
 
@@ -223,7 +302,18 @@ const rendFunctions = {
 				var classes = JSON.parse(JSON.stringify(data));
 				// var classDet = classes;	
 				// console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					sDate = formatShortDate(classes[i].startDate);
+					eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].startDate = sDate;
+					classes[i].endDate = eDate;
+				}
 				
+				// console.log(classes);
+
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
 					// var courseDet = courses;	
@@ -248,13 +338,29 @@ const rendFunctions = {
 		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
-			console.log(classVar[0].courseName);
+			console.log(classVar);
 		
+			// count number of trainees in class
+
+			// fix format of dates
+			sDate = formatDate(classVar[0].startDate);
+			eDate = formatDate(classVar[0].endDate);
+
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
+
+			// fix format of time
+			sTime = formatTime(classVar[0].startTime);
+			eTime = formatTime(classVar[0].endTime);
+
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
+
 			res.render('tr-class-details', {
 				courseName: classVar[0].courseName,
 				// numTrainees: ,
-				// date: ,
-				// time: ,
+				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
+				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
 
 				// scoresheet
