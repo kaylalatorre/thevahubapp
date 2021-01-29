@@ -105,11 +105,12 @@ function getApplicInfo(applicID){
 $(document).ready(function() {	
 	
 	let calendar;	
+	let currDate = new Date();
 	var calendarEl = document.getElementById('calendar');
 	if(calendarEl !== null){
 		calendar = new FullCalendar.Calendar(calendarEl, {
 		  initialView: 'dayGridMonth',
-//		  initialDate: '2021-01-25', //set to Current date
+		  initialDate: currDate, //set to Current date
 		  headerToolbar: {
 			left: 'prev,next today',
 			center: 'title',
@@ -140,20 +141,27 @@ $(document).ready(function() {
 					});
 					
 					// render for sidebar filter
-					$('div#applic-filter').empty();
-					$('div#interv-filter').empty();		
+					$('div#INTapplic-filter').empty();
+					$('div#INTinterv-filter').empty();		
+					$('div#FINapplic-filter').empty();
+					$('div#FINinterv-filter').empty();
 					
 					var applicHTML = '<div class="sched-list">'
 										+ '<input class="form-check-input applicantName" type="checkbox">'
 										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
 									+ '</div>';
-					$('div#applic-filter').append(applicHTML);
-					
 					var intervHTML = '<div class="sched-list">'
 										+ '<input class="form-check-input interviewerName" type="checkbox">'
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
-					$('div#interv-filter').append(intervHTML);					
+							
+					if(res[i].phase === "Initial"){
+						$('div#INTapplic-filter').append(applicHTML);
+						$('div#INTinterv-filter').append(intervHTML);							
+					} else {
+						$('div#FINapplic-filter').append(applicHTML);
+						$('div#FINinterv-filter').append(intervHTML);							
+					}				
 				}
 
 			},

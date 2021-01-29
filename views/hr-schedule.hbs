@@ -5,7 +5,7 @@
 <div style="padding: 70px 20px 20px 20px;">
 	<div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Schedule </strong>Interviews</label></div>
     <hr>
-    <div style="width: 15%; float: left;">
+    <div style="width: 20%; float: left;">
     	<div style="margin-bottom: 25px;">
 	    	<button id="create-schedBtn"type="button" class="myBtn" style="border: none;display:flex; margin-bottom: 10px; width:90%; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createSchedModal"><i class="material-icons" style="margin: 0px 10px; color:#ffffff; font-size: 18px;">add</i> Create Schedule</button>
 	    	{{> create-sched-modal}}
@@ -25,7 +25,7 @@
 	                <div class="wrap-collabsible" for="applicants" style="margin-bottom: 20px;">
 	                    <input id="app-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="app-collapsible" class="lbl-toggle">Applicants</label>
-	                    <div id="applic-filter" class="collapsible-content" style="margin-left: 20px">
+	                    <div id="INTapplic-filter" class="collapsible-content" style="margin-left: 20px">
 
         				</div>
 	                </div>
@@ -33,7 +33,7 @@
 	                <div class="wrap-collabsible" for="interviewers" style="margin-bottom: 20px;">
 	                    <input id="int-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="int-collapsible" class="lbl-toggle">Interviewers</label>
-	                    <div id="interv-filter" class="collapsible-content" style="margin-left: 20px">
+	                    <div id="INTinterv-filter" class="collapsible-content" style="margin-left: 20px">
 
         				</div>
 	                </div>
@@ -43,33 +43,16 @@
 	                <div class="wrap-collabsible" for="applicants" style="margin-bottom: 20px;">
 	                    <input id="app2-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="app2-collapsible" class="lbl-toggle">Applicants</label>
-	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div class="sched-list">
-			                    <input class="form-check-input applicantName" type="checkbox">
-		        				<label class="form-check-label" for="applicantName" style="font-size: 14px;">Applicant Name</label>
-	        				</div>
-	        				<div class="sched-list">
-			                    <input class="form-check-input applicantName" type="checkbox">
-		        				<label class="form-check-label" for="applicantName" style="font-size: 14px;">Applicant Name</label>
-	        				</div>
-	        				<div class="sched-list">
-			                    <input class="form-check-input applicantName" type="checkbox">
-		        				<label class="form-check-label" for="applicantName" style="font-size: 14px;">Applicant Name</label>
-	        				</div>
+	                    <div id="FINapplic-filter" class="collapsible-content" style="margin-left: 20px">
+
         				</div>
 	                </div>
+
 	                <div class="wrap-collabsible" for="interviewers" style="margin-bottom: 20px;">
 	                    <input id="int2-collapsible" class="collapsible-check toggle" type="checkbox" checked>
 	                    <label for="int2-collapsible" class="lbl-toggle">Interviewers</label>
-	                    <div class="collapsible-content" style="margin-left: 20px">
-	                    	<div class="sched-list">
-			                    <input class="form-check-input interviewerName" type="checkbox">
-		        				<label class="form-check-label" for="interviewerName" style="font-size: 14px;">Interviewer Name</label>
-	        				</div>
-	        				<div class="sched-list">
-			                    <input class="form-check-input interviewerName" type="checkbox">
-		        				<label class="form-check-label" for="interviewerName" style="font-size: 14px;">Interviewer Name</label>
-	        				</div>
+	                    <div id="FINinterv-filter" class="collapsible-content" style="margin-left: 20px">
+
         				</div>
 	                </div>
 	            </div>
@@ -77,7 +60,7 @@
 	    </div>
 	</div>
 	<!-- Calendar -->
-    <div style="width: 85%; float: right;">
+    <div style="width: 80%; float: right;">
     	<div id="calendar"></div>
     </div>
 </div>
