@@ -20,6 +20,7 @@
     "express-session": "^1.17.1",
     "filepond": "^4.25.1",
     "hbs": "^4.1.1",
+    "jquery-filepond": "^1.0.0",
     "mongoose": "^5.11.10",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.2.0",
