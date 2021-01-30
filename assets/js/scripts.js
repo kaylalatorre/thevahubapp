@@ -124,18 +124,22 @@ $(document).ready(function() {
 	
 	console.log(window.location.href);
 	if(window.location.pathname === "/hr-schedule"){
-		console.log("in AJAX get interv()");
 		$.ajax({
 			method: 'GET',
 			url: '/get-interviews',
 			data: {},
 			success: function(res) {
-
+				
 				$('div#INTapplic-filter').empty();
 				$('div#INTinterv-filter').empty();		
 				$('div#FINapplic-filter').empty();
 				$('div#FINinterv-filter').empty();
 					
+				let applicArrINT = [];
+				let intervArrINT = [];
+				let applicArrFIN = [];
+				let intervArrFIN = [];
+				
 				for (let i=0; i<res.length; i++){
 					// render for main Calendar 
 					var parseDate = new Date(res[i].timeStart);
@@ -155,12 +159,27 @@ $(document).ready(function() {
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
 							
-					if(res[i].phase === "Initial"){ //applic/interv name duplicates bc of this
-						$('div#INTapplic-filter').append(applicHTML);
-						$('div#INTinterv-filter').append(intervHTML);							
+					if(res[i].phase === "Initial"){ // for INITIAL tab
+						if(!applicArrINT.includes(res[i].applicant.applicantID)){
+							$('div#INTapplic-filter').append(applicHTML);
+							applicArrINT.push(res[i].applicant.applicantID);
+						}
+						
+						if(!intervArrINT.includes(res[i].interviewer.userID)){
+							$('div#INTinterv-filter').append(intervHTML);
+							intervArrINT.push(res[i].interviewer.userID);
+						}
+	
 					} else {
-						$('div#FINapplic-filter').append(applicHTML);
-						$('div#FINinterv-filter').append(intervHTML);							
+						if(!applicArrFIN.includes(res[i].applicant.applicantID)){
+							$('div#FINapplic-filter').append(applicHTML);
+							applicArrFIN.push(res[i].applicant.applicantID);
+						}
+						
+						if(!intervArrFIN.includes(res[i].interviewer.userID)){
+							$('div#FINinterv-filter').append(intervHTML);
+							intervArrFIN.push(res[i].interviewer.userID);
+						}						
 					}				
 				}
 
