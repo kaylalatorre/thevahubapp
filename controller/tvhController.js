@@ -380,29 +380,25 @@ const rendFunctions = {
 		});
 	},
 
-	getTraineeList: function(req, res, next) {
+	getTraineeList: async function(req, res, next) {
 		var classID = req.params.classID;
 		
-		// get all trainees that are not yet part of the class
-		UserDB.find({userType: "Trainee"}, function(err, data) {
-			var trainees = JSON.parse(JSON.stringify(data));
-			
-			console.log(trainees);
+		var classVar = await db.findOne(ClassDB, {classID: classID});
+		console.log(classVar);
+
+		// get all trainees not part of the class
+		var trainees = await UserDB.find({userType: "Trainee"});
+		// console.log(trainees);
 				
-			// get all trainees that are already part of the class
-			UserDB.find({userType: "Trainee", }, function(err, data) {
-				var classTrainees = JSON.parse(JSON.stringify(data));
+		// // get all trainees that are already part of the class
+		// var classDet = await UserDB.find({: "Trainee"});
+	
+			res.render('manage-trainees', {
+				classID: classID,
+				traineeList: trainees,
+				// classList: classTrainees,
 
-				res.render('manage-trainees', {
-					classID: classID,
-					traineeList: trainees,
-					classList: classTrainees,
-		
-				});
 			});
-		});
-
-
 	},
 
 	getTrainingReports: function(req, res, next) {
