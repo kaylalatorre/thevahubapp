@@ -19,7 +19,6 @@ var userSchema = new mongoose.Schema({
 	},
 	TraineeInfo: {
 		trainingStatus: String,
-		isDeactivated: Boolean,
 		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
 	},
 	isDeactivated: Boolean,

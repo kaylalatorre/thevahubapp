@@ -359,6 +359,7 @@ const rendFunctions = {
 			classVar[0].endTime = eTime;
 
 			res.render('tr-class-details', {
+				classID: classID,
 				courseName: classVar[0].courseName,
 				// numTrainees: ,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
@@ -371,13 +372,37 @@ const rendFunctions = {
 	},
 
 	getScoresheet: function(req, res, next) {
+		var classID = req.params.classID;
+
 		res.render('update-scoresheet', {
+			classID: classID,
+
 		});
 	},
 
 	getTraineeList: function(req, res, next) {
-		res.render('manage-trainees', {
+		var classID = req.params.classID;
+		
+		// get all trainees that are not yet part of the class
+		UserDB.find({userType: "Trainee"}, function(err, data) {
+			var trainees = JSON.parse(JSON.stringify(data));
+			
+			console.log(trainees);
+				
+			// get all trainees that are already part of the class
+			UserDB.find({userType: "Trainee", }, function(err, data) {
+				var classTrainees = JSON.parse(JSON.stringify(data));
+
+				res.render('manage-trainees', {
+					classID: classID,
+					traineeList: trainees,
+					classList: classTrainees,
+		
+				});
+			});
 		});
+
+
 	},
 
 	getTrainingReports: function(req, res, next) {
