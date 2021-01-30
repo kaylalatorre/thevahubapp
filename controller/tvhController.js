@@ -110,7 +110,6 @@ const rendFunctions = {
 	getInterviews: async function(req, res) {
 		try {
 			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
-			console.log(interviews);
 			res.send(interviews);
 			
 		} catch(e) {
@@ -129,6 +128,12 @@ const rendFunctions = {
 			console.log(e);
 			res.send(e);
 		}
+	},
+	
+	getFilterIntervs: async function(req, res) {
+		console.log("in FilterIntervs(): " + req.query.filterID);
+		let interviews = await InterviewDB.find({intervID: req.query.filterID}, '').populate("interviewer applicant");
+		res.send(interviews);
 	},
 
 /* [..] HR Screening
@@ -209,9 +214,9 @@ const rendFunctions = {
 	
 	getHRInterviews: async function(req, res) {
 		try {
-			let interviews = await InterviewDB.find({/*interviewer ID*/}, '').populate("interviewer applicant");
-			console.log(interviews);
-			res.send(interviews);
+			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
+			let filterIntervs = interviews.filter(elem => elem.interviewer.userID === req.session.user.userID);
+			res.send(filterIntervs);
 			
 		} catch(e) {
 			console.log(e);

@@ -17,6 +17,7 @@ router.get('/rend-applicant', controller.getApplicInfo);
 
 router.get('/get-intervapplic', controller.getIntervApplic);
 router.get('/get-interviews', controller.getInterviews);
+router.get('/get-filterIntervs', controller.getFilterIntervs);
 
 
 // interviewer

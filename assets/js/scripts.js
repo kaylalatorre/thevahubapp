@@ -151,11 +151,13 @@ $(document).ready(function() {
 					
 					// render for sidebar filter
 					var applicHTML = '<div class="sched-list">'
-										+ '<input class="form-check-input applicantName" type="checkbox">'
+//									    + '<input type="hidden" value='+ res[i].applicant.applicantID +'>'
+										+ '<input class="form-check-input applicantName check-filter" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
 									+ '</div>';
 					var intervHTML = '<div class="sched-list">'
-										+ '<input class="form-check-input interviewerName" type="checkbox">'
+//									    + '<input type="hidden" value='+ res[i].interviewer.userID +'>'
+										+ '<input class="form-check-input interviewerName check-filter" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
 							
@@ -187,6 +189,36 @@ $(document).ready(function() {
 			error: res => console.log(res)
 		});
 	}
+	
+//	// for HR-interviewer sidebar filter
+//	$('.check-filter').on("click", function() {
+//		alert("in check-filter function()");
+//		if($(this).prop('checked')){
+//			alert("in check-filter function()");
+//			let filterID = $(this).val(); //get value of the checkbox input --> intervID
+//			console.log(filterID);
+//			$.ajax({
+//				method: 'GET',
+//				url: '/get-filterIntervs',
+//				data: filterID,
+//				success: function(res) {
+//					//empty the Calendar
+//					
+//					// render Calendar grids
+//					for (let i=0; i<res.length; i++){
+//						var parseDate = new Date(res[i].timeStart);
+//						calendar.addEvent({
+//							title: res[i].applicant.fName + " " + res[i].applicant.lName,
+//							start: parseDate,
+//							allDay: false
+//						});
+//					}
+//				},
+//				error: res => console.log(res)
+//			});
+//		}
+//	});
+	
 
 	// for HR-interviewer Calendar render
 	if(window.location.pathname === "/int-schedule"){
@@ -223,13 +255,13 @@ $(document).ready(function() {
 				
 				// render interviewer names in dropdown
 				for(let i=0; i<res.intervs.length; i++){
-					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>'
+					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>';
 					$('select#interv-dropdown').append(intervHTML);
 				}
 				
 				// render applicant names in dropdown
 				for(let i=0; i<res.applics.length; i++){
-					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>'
+					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>';
 					$('select#applic-dropdown').append(applicHTML);
 				}				
 					
