@@ -98,15 +98,13 @@ const rendFunctions = {
 		res.render('form-submitted', {});
 	},
 
-/* [] Schedule Interview
+/* [..] HR Schedule
  */
 	getHRSched: function(req, res) {
 		if(req.session.user.userType === "HRadmin"){
 			res.render('hr-schedule', {
 			});
 		}
-
-
 	},
 	
 	getInterviews: async function(req, res) {
@@ -133,7 +131,7 @@ const rendFunctions = {
 		}
 	},
 
-/* [..] Screen Applicants
+/* [..] HR Screening
  */
 	
 	getHRScreening: async function(req, res) {
@@ -181,7 +179,45 @@ const rendFunctions = {
 		}
 	},
 	
+/* [] HR Interviewer
+ */	
+	getApplicList: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRinterv"){
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let applics = [];
+				let phase;
+				
+				for(i=0; i<intervs.length;i++){
+					if(intervs[i].interviewer.userID === req.session.user.userID){
+						phase = intervs[i].phase;
+						applics.push(intervs[i].applicant);
+					}
+						
+				}
+				
+				res.render('int-applicants', {
+					applicants: applics,
+					intervPhase: phase
+				});
+			}			
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}		
+	},
 	
+	getHRInterviews: async function(req, res) {
+		try {
+			let interviews = await InterviewDB.find({/*interviewer ID*/}, '').populate("interviewer applicant");
+			console.log(interviews);
+			res.send(interviews);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}		
+	},
 
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
@@ -283,11 +319,6 @@ const rendFunctions = {
 		res.render('tr-schedule', {
 		});
 	// }
-	},
-
-	getIntApplicants: function(req, res, next) {
-		res.render('int-applicants', {
-		});
 	},
 
 	getIntSchedule: function(req, res, next) {
@@ -409,13 +440,6 @@ const rendFunctions = {
 		
 	},
 			
-	getTest: function(req, res){
-//		res.render('hr-screening', {});
-		res.render('hr-schedule', {});
-//		res.render('int-applicants', {});
-	},
-
-
 	postLogout: function(req, res) {
 		req.session.destroy();
 		res.redirect('/login');
@@ -541,14 +565,13 @@ const rendFunctions = {
 				// format timeSlot to Date type
 				let tStart = toDate(schedDate, timeStart);
 				let tEnd = toDate(schedDate, timeEnd);
-				
 				console.log("tStart: " + tStart); 
 				console.log("tStart: " + tEnd); 
-
-				if(interv.intervCap !== 0){
-					let maxCap = interv.intervCap--;
-					let updateInterv = await db.updateOne(UserDB, {userID: intervID}, {intervCap: maxCap});
-					
+				
+				let maxCap = interv.intervCap;
+				console.log("intervCap: " + maxCap);
+				
+				if(maxCap !== 0){
 					let intervSched = await db.insertOne(InterviewDB, {
 									intervID: intID,
 									phase: intervPhase,
@@ -559,7 +582,10 @@ const rendFunctions = {
 									applicant: applic,
 									meetingLink: meetingLink
 								});
-
+					maxCap--;
+					let updateInterv = await db.updateOne(UserDB, {userID: intervID}, {intervCap: maxCap});
+					console.log("intervCap: " + maxCap);
+					
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
@@ -568,7 +594,7 @@ const rendFunctions = {
 					
 				} else {
 					console.log("Sorry, interview slots of this Interviewer is full.");
-					// res.send()
+					res.status(400).send("Sorry, interview slots of this Interviewer is full.");
 				}
 			}
 			
@@ -576,6 +602,12 @@ const rendFunctions = {
 			console.log(e);
 			res.send(e);
 		}
+	},
+	
+	getTest: function(req, res){
+//		res.render('hr-screening', {});
+//		res.render('hr-schedule', {});
+		res.render('int-applicants', {});
 	}
 };
 

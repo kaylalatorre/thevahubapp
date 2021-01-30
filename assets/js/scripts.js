@@ -122,7 +122,7 @@ $(document).ready(function() {
 		calendar.render();			
 	}
 	
-	console.log(window.location.href);
+	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
 		$.ajax({
 			method: 'GET',
@@ -188,6 +188,28 @@ $(document).ready(function() {
 		});
 	}
 
+	// for HR-interviewer Calendar render
+	if(window.location.pathname === "/int-schedule"){
+		$.ajax({
+			method: 'GET',
+			url: '/get-HRinterviews',
+			data: {},
+			success: function(res) {
+				// render for main Calendar
+				for (let i=0; i<res.length; i++){
+					var parseDate = new Date(res[i].timeStart);
+					calendar.addEvent({
+						title: res[i].applicant.fName + " " + res[i].applicant.lName,
+						start: parseDate,
+						allDay: false
+					});
+				}
+			},
+			error: res => console.log(res)
+		});
+	}	
+	
+	
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
@@ -245,12 +267,16 @@ $(document).ready(function() {
 				},
 			success: function(res) {
 				
-				var parseDate = new Date(res.timeStart);
-				calendar.addEvent({
-					title: res.applicant.fName + " " + res.applicant.lName,
-					start: parseDate,
-					allDay: false
-				});
+				if(res.status !== 400){
+					var parseDate = new Date(res.timeStart);
+					calendar.addEvent({
+						title: res.applicant.fName + " " + res.applicant.lName,
+						start: parseDate,
+						allDay: false
+					});
+				} else {
+					alert(res);
+				}
 			},
 			error: res => console.log(res)
 		});		
