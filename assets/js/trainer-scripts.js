@@ -97,7 +97,7 @@ $(document).ready(function() {
 
 	});
 
-	$('.editClass').each(function() {
+	$('#editClass').click(function() {
 		var classID = $('#classID').val();
 		var courseName = $('#courseName').val();
         var dateToday = new Date();
@@ -178,8 +178,23 @@ $(document).ready(function() {
 
 	}); 
 
-	$('.deleteClass').each(function() {
+	$('#deleteClass').click(function() {
+		var classID = $('#classID').text();
+		// alert(classID);
 
+		$.post('/delete-class', { classID: classID }, function(res) {
+			switch (res.status){
+				case 200: {
+					alert("Class deleted successfully.");
+					window.location.href = '/trainer-classes';
+					break;
+				}
+				case 500: {
+					alert(res.mssg);
+					break;
+				}
+			}
+		});
 	}); 
 	
 

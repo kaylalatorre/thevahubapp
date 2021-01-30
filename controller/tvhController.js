@@ -645,7 +645,15 @@ const rendFunctions = {
 	postDeleteClass: function(req, res) {
 		let { classID } = req.body;
 
-
+		ClassDB.findOne({classID: classID}, function(err, match) {
+			if (err) {
+				res.send({status: 500, mssg:'Error in deleting class.'});
+			}			
+			else {
+				match.remove();
+				res.send({status: 200});
+			}
+		});
 
 	},
 
