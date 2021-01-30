@@ -65,6 +65,9 @@ router.post('/deactivate', controller.postDeactivate);
 
 	//trainers
 router.post('/create-class', controller.postCreateClass);
+router.post('/edit-class', controller.postEditClass);
+router.post('/delete-class', controller.postDeleteClass);
+
 
 
 module.exports = router;

@@ -5,7 +5,7 @@
   <!-- Modal content -->
   <div  id="edit-class-mod" class="modal-content">
     <div>
-    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Edit </strong>Class</label>
+    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Edit </strong>Class {{classID}} </label>
     	<span class="close">&times;</span>
     </div>
     <div>
@@ -21,19 +21,19 @@
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Start Date</label>
-				<input id="startDate" type="date">
+				<input id="startDate" type="date" value="{{startDate}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">End Date</label>
-				<input id="endDate" type="date">
+				<input id="endDate" type="date" value="{{endDate}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
-				<input id="startTime" type="time" min="17:00" max="5:00"> - <input id="endTime" type="time" min="17:00" max="5:00">
+				<input id="startTime" type="time" min="17:00" max="5:00" value="{{startTime}}"> - <input id="endTime" type="time" min="17:00" max="5:00" value="{{endTime}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-				<input id="meetLink" placeholder="Meeting Link" style="width: 68%">
+				<input id="meetLink" placeholder="Meeting Link" style="width: 68%" value="{{meetingLink}}">
 			</div>
     	</form>
 

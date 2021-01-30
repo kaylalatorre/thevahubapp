@@ -300,6 +300,8 @@ const rendFunctions = {
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
+				var classes2 = JSON.parse(JSON.stringify(data));
+
 				// var classDet = classes;	
 				// console.log(classes);
 
@@ -308,8 +310,8 @@ const rendFunctions = {
 					sDate = formatShortDate(classes[i].startDate);
 					eDate = formatShortDate(classes[i].endDate);
 
-					classes[i].startDate = sDate;
-					classes[i].endDate = eDate;
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
 				}
 				
 				// console.log(classes);
@@ -612,6 +614,54 @@ const rendFunctions = {
 		}
 	},
 	
+	postEditClass: function(req, res) {
+		try{
+			let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
+			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+
+			// generate classID
+			var classID = generateClassID();
+			// console.log("ClassID: " + classID);
+
+			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+			// console.log(sTime, eTime);
+
+			// create the class
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+
+			
+			// add into Class model
+			ClassDB.create(tempClass, function(error) {
+			if (error) {
+				res.send({status: 500, mssg: 'Error in adding class.'});
+				console.log("create-class error: " + error);
+			}
+			// add into TrainerInfo array
+			else {
+				res.send({status: 200});	
+				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
+				// 	{$push: {TrainerInfo: tempClass}}, 
+				// 	{useFindAndModify: false}, function(err) {
+				// 		if (err) 
+				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
+				
+				// 		else res.send({status: 200});	
+				// 	});
+				}
+			});
+		} catch(e){
+			res.send({status: 500, mssg: 'Cannot connect to db.'});
+		}
+	},
+
+	postDeleteClass: function(req, res) {
+		let { classID } = req.body;
+
+
+
+	},
+
 	//there might be a way to optimize
 	postAcceptApplic: async function(req, res) {
 		try {
