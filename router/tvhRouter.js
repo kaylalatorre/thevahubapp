@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express();
 // const middleware = require('../middleware/tvhMiddleware');
-const upload = require('../middleware/upload'); // for multer
-const uploadController = require("../controller/upload")
+// const upload = require('../middleware/upload'); // for multer
+// const uploadController = require("../controller/upload")
 const controller = require('../controller/tvhController');
 
 /* GET */
