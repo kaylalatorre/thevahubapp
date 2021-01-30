@@ -169,8 +169,7 @@ const rendFunctions = {
 	getApplicInfo: async function(req, res) {
 		try {
 			if(req.session.user.userType === "HRadmin"){
-				console.log(req.query);
-				
+				// console.log(req.query);
                 let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicantID}, '');
                 let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
                 // console.log(encode);
@@ -545,22 +544,31 @@ const rendFunctions = {
 				
 				console.log("tStart: " + tStart); 
 				console.log("tStart: " + tEnd); 
-				
-				let intervSched = await db.insertOne(InterviewDB, {
-								intervID: intID,
-								phase: intervPhase,
-								date: new Date(schedDate),
-								timeStart: tStart,
-								timeEnd: tEnd,
-								interviewer: interv,
-								applicant: applic,
-								meetingLink: meetingLink
-							});
-				
-				if(intervSched) {
-					let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
-					console.log(sched);
-					res.status(200).send(sched);
+
+				if(interv.intervCap !== 0){
+					let maxCap = interv.intervCap--;
+					let updateInterv = await db.updateOne(UserDB, {userID: intervID}, {intervCap: maxCap});
+					
+					let intervSched = await db.insertOne(InterviewDB, {
+									intervID: intID,
+									phase: intervPhase,
+									date: new Date(schedDate),
+									timeStart: tStart,
+									timeEnd: tEnd,
+									interviewer: interv,
+									applicant: applic,
+									meetingLink: meetingLink
+								});
+
+					if(intervSched){
+						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
+						console.log(sched);
+						res.status(200).send(sched);
+					}
+					
+				} else {
+					console.log("Sorry, interview slots of this Interviewer is full.");
+					// res.send()
 				}
 			}
 			

@@ -23,6 +23,7 @@ var userSchema = new mongoose.Schema({
 		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
 	},
 	isDeactivated: Boolean,
+	intervCap: Number
 }, {collection: "User"});
 
 module.exports = mongoose.model('User', userSchema);
