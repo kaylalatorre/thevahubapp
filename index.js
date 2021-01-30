@@ -9,8 +9,6 @@ const mongoose = require('mongoose');
 const path = require('path');
 const FilePond = require('filepond'); //for uploading files
 const base64 = require("byte-base64"); //for embedding resume .pdf files
-const multer  = require('multer'); //for uploading images
-const upload = multer();
 
 /* EXPRESS APPLICATION */
 const app = express();
