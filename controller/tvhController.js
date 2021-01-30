@@ -26,7 +26,7 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink) {
+function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
 	var tempClass = {
 		classID: classID,
 		trainerID: trainerID,
@@ -36,7 +36,7 @@ function createClass(classID, trainerID, courseName, startDate, endDate, startTi
 		startTime: startTime,
 		endTime: endTime,
 		meetLink: meetLink,
-		//coursePhoto: coursePhoto,
+		classPhoto: classPhoto,
 		trainees: []
 	};
 
@@ -573,7 +573,7 @@ const rendFunctions = {
 
 	postCreateClass: function(req, res) {
 		try{
-			let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+			let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
 			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
 
 			// generate classID
@@ -585,7 +585,7 @@ const rendFunctions = {
 			// console.log(sTime, eTime);
 
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink);
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 
 			
 			// add into Class model

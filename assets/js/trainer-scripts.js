@@ -25,7 +25,7 @@ $(document).ready(function() {
 		var startTime = $('#startTime').val();
 		var endTime = $('#endTime').val();
         var meetLink = $('#meetLink').val();
-        // var coursePhoto = ;
+        var classPhoto = $('#classPhoto').val();
 
 		// just to check to see if data is received
 		console.log(courseName, dateToday, startDate, endDate, startTime, endTime, meetLink);
@@ -80,7 +80,7 @@ $(document).ready(function() {
 		if (!dateErrors && !timeErrors) {
 			console.log("no errors");
 			$.post('/create-class', {courseName: courseName, startDate: startDate, endDate: endDate,
-				startTime: startTime, endTime: endTime, meetLink: meetLink}, function(res) {
+				startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto}, function(res) {
 				switch (res.status){
 					case 200: {
 						alert("Class added successfully.");
