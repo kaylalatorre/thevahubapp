@@ -384,7 +384,6 @@ const rendFunctions = {
 			// console.log(traineesVar);
 
 		// find the class
-		// ClassDB.find({classID: classID}, function(err, data) {
 		var classD = await db.findOne(ClassDB, {classID: classID});
 		var classVar = JSON.parse(JSON.stringify(classD));
 			console.log(classVar);
@@ -392,10 +391,28 @@ const rendFunctions = {
 		// // find trainees in class --> not working
 		// var classTR = [];
 		for(var i = 0; i < traineesVar.length; i++){
-			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
-			var classTrainees = JSON.parse(JSON.stringify(classTR));
+			var classX = await ScoreDB.aggregate([
+				{$match: {traineeID: traineesVar[i].userID}},
+				{$lookup: {
+					 from: "classes",
+					 localField: "classID",
+					 foreignField: "classID",
+					 as: "classList"
+				}},
+				{$unwind: "$classList"},
+				// {$lookup: {
+				// 	 from: "courses",
+				// 	 localField: "classList.courseID",
+				// 	 foreignField: "courseID",
+				// 	 as: "course"
+				//  }},
+				//  {$unwind: "$course"},
+		 	]);
+			
+			// var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
+			// var classTrainees = JSON.parse(JSON.stringify(classTR));
 		}
-		console.log(classTrainees);
+		console.log(classX);
 
 		// var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
 		// var user01 = JSON.parse(JSON.stringify(user));
@@ -409,7 +426,7 @@ const rendFunctions = {
 		res.render('update-scoresheet', {
 			classID: classID,
 			courseName: classVar.courseName,
-			classList: userX,
+			// classList: userX,
 		});
 		// });
 	},
