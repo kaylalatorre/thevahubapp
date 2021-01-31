@@ -376,35 +376,27 @@ const rendFunctions = {
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
 		
+		// get all trainees
+		var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+			// console.log(traineesVar);
+
+			// var he = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID});
+			// var hey = JSON.parse(JSON.stringify(he));
+			// 	console.log(hey);
+
 		// find the class
 		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 				// console.log(classVar);
 
-			// get all trainees
-			var traineesDump = db.findMany(UserDB, {userType: "Trainee"});
-			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-				// console.log(traineesVar);
-					
-			// get trainees of said class
-			var classTraineesDump = [];
-			var x = 0;
+			// // find trainees in class
+			// var classTrainees = [];
 			for(var i = 0; i < traineesVar.length; i++){
-				classTraineesDump[x] = ScoreDB.findOne({classID: classID, traineeID: traineesVar[i].userID});
-				x++;
+				var classTR = db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID});
+				var classTrainees = JSON.parse(JSON.stringify(classTR));
 			}
-				var classList = JSON.parse(JSON.stringify(classTraineesDump));
-
-				console.log(classList);
-
-
-			// // get trainee details
-			// for(var x = 0; x < classTrainees.length; x++){
-			// 	var cltD = UserDB.find({ userID: classTrainees[x].traineeID});
-			// }
-			// 	// var cltDetails = JSON.parse(JSON.stringify(cltD));
-
-				// console.log(cltD);
+			console.log(classTrainees);
 
 			res.render('update-scoresheet', {
 				classID: classID,
