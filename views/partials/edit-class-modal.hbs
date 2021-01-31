@@ -41,13 +41,12 @@
    			<form id="uploadPhoto-form" action="/upload" method="POST" enctype="multipart/form-data">
 	    	<div for="course-image" style="align-items: center;border-style: solid; border-width: 1px; border-color: #ebf5ee; overflow: hidden; vertical-align: top;">
 	    		{{!-- <img class="preview-images" style="max-width: 320px; max-height: 170px;" src="/assets/img/hr-admin-pic.jpg"> --}}
-	    		<img class="preview-images" style="max-width: 320px; max-height: 170px;">
+	    		<img class="preview-images" src="#" style="max-width: 340px; max-height: 170px;">
 	    	</div>
-	    		<button type="button" class="outlined-btn" style="margin: 2px;">
-				<i class="material-icons" style="margin: 0 auto; position: relative; top: 2px; font-size: 12px;">upload</i>
+
+	    		<label style="font-size: 10px; margin-left: 3px;">Upload Class Photo (optional)</label>
 				{{!-- <input id="classPhoto" type="file"> --}}
-    			<input type="file" class="my-pond" id="classPhoto" name="classPhoto">
-				<label style="margin-left: 3px;">Upload Class Photo</button>
+    			<input type="file" class="my-pond" id="classPhoto" name="classPhoto" style="width: 90%;">
 			</form>
     	</div>
     	<button type="button" id="updateClass" style="border: 1px solid #6dc63f;">Save</button>
