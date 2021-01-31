@@ -373,12 +373,25 @@ const rendFunctions = {
 		});
 	},
 
-	getScoresheet: function(req, res, next) {
+	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
+		
+		// find the class
+		var classVar = await db.findOne(ScoreDB, {classID: classID});
+			console.log(classVar);
+
+		// get all trainees
+		var traineesVar = await UserDB.find({userType: "Trainee"});
+			// console.log(trainees);
+				
+		// get trainees of said class
+		for(var i = 0; i < traineesVar.length; i++){
+			var classTrainees = await ScoreDB.find({classID: classID, traineeID: traineesVar[i].traineeID});
+		}
 
 		res.render('update-scoresheet', {
 			classID: classID,
-
+			classList: classTrainees,
 		});
 	},
 

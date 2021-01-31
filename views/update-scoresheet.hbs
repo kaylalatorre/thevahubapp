@@ -43,16 +43,17 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-				<!--for each trainee-->
+					{{#each classTrainees}}
 	                <tr>
-	                    <td> Name </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
+	                    <td> {{lName}}, {{fName}} </td>
+	                    <td> {{score[0]}} </td>
+	                    <td> {{score[1]}} </td>
+	                    <td> {{score[2]}} </td>
+	                    <td> {{score[3]}} </td>
+	                    <td> {{score[4]}} </td>
+	                    <td> {{score[5]}} </td>
 	                </tr>
+					{{/each}}
 	            </tbody>
 	        </table>
 	    </div>
