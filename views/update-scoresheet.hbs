@@ -4,14 +4,14 @@
 
 <div style="padding: 70px 20px 20px 20px;">
 	<div>
-    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/tr-class-details/{{{classID}}}">Class #</a> > <strong>Update Scoresheet</strong></label>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/tr-class-details/{{{classID}}}">Class {{classID}}</a> > <strong>Update Scoresheet</strong></label>
         <hr>
     </div>
     <div>
         <div name="class_dets"  style="width: 100%; display: block; margin-bottom: 65px;">
         	<div style="display: inline-block;padding: 5px;">
         		<label style="margin-right: 10px;"><strong>Course</strong></label>
-        		<label>Course Name</label>
+        		<label>{{courseName}}</label>
         	</div>
             <div class="wrap-collabsible" name="grade-legend" style="float: right; margin: 5px auto; padding-right:35px;">
                 {{> grade-legend-collapse}}
@@ -43,15 +43,15 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-					{{#each classTrainees}}
+					{{#each classList}}
 	                <tr>
 	                    <td> {{lName}}, {{fName}} </td>
-	                    <td> {{score[0]}} </td>
+	                    {{!-- <td> {{TraineeInfo[0].score}} </td>
 	                    <td> {{score[1]}} </td>
 	                    <td> {{score[2]}} </td>
 	                    <td> {{score[3]}} </td>
 	                    <td> {{score[4]}} </td>
-	                    <td> {{score[5]}} </td>
+	                    <td> {{score[5]}} </td> --}}
 	                </tr>
 					{{/each}}
 	            </tbody>

@@ -342,7 +342,7 @@ const rendFunctions = {
 		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
-			console.log(classVar);
+			// console.log(classVar);
 		
 			// count number of trainees in class
 
@@ -377,21 +377,35 @@ const rendFunctions = {
 		var classID = req.params.classID;
 		
 		// find the class
-		var classVar = await db.findOne(ScoreDB, {classID: classID});
-			console.log(classVar);
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+				// console.log(classVar);
 
-		// get all trainees
-		var traineesVar = await UserDB.find({userType: "Trainee"});
-			// console.log(trainees);
-				
-		// get trainees of said class
-		for(var i = 0; i < traineesVar.length; i++){
-			var classTrainees = await ScoreDB.find({classID: classID, traineeID: traineesVar[i].traineeID});
-		}
+			// get all trainees
+			var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
+					
+			// get trainees of said class
+			for(var i = 0; i < traineesVar.length; i++){
+				var classTraineesDump = db.findMany(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID});
+			}
+				console.log(classTraineesDump);
 
-		res.render('update-scoresheet', {
-			classID: classID,
-			classList: classTrainees,
+
+			// // get trainee details
+			// for(var x = 0; x < classTrainees.length; x++){
+			// 	var cltD = UserDB.find({ userID: classTrainees[x].traineeID});
+			// }
+			// 	// var cltDetails = JSON.parse(JSON.stringify(cltD));
+
+				// console.log(cltD);
+
+			res.render('update-scoresheet', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				// classList: cltD,
+			});
 		});
 	},
 
