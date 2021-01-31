@@ -275,12 +275,32 @@ const rendFunctions = {
 	},
 
 	getTraineeClasses: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('trainee-classes', {
-		});
-	// }
+		if (req.session.user.userType === "Trainee") {
+			//collect classes of the trainee
+			
+			ScoreDB.find({traineeID: req.session.user.userID}, function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					sDate = formatShortDate(classes[i].startDate);
+					eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
+				
+
+				res.render('trainee-classes', {
+					classList: classes,
+				});
+			});	
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 	getCertificate: function(req, res, next) {
@@ -308,15 +328,18 @@ const rendFunctions = {
 				// console.log(classes);
 
 				// fix format of dates
+				var traineeCount = 0;
 				for(let i = 0; i < classes.length; i++) {
 					sDate = formatShortDate(classes[i].startDate);
 					eDate = formatShortDate(classes[i].endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					classes[i].traineeCount = db.count(ScoreDB, {classID: classes[i].classID});
 				}
 				
-				// console.log(classes);
+				console.log(classes);
 
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
@@ -391,28 +414,10 @@ const rendFunctions = {
 		// // find trainees in class --> not working
 		// var classTR = [];
 		for(var i = 0; i < traineesVar.length; i++){
-			var classX = await ScoreDB.aggregate([
-				{$match: {traineeID: traineesVar[i].userID}},
-				{$lookup: {
-					 from: "classes",
-					 localField: "classID",
-					 foreignField: "classID",
-					 as: "classList"
-				}},
-				{$unwind: "$classList"},
-				// {$lookup: {
-				// 	 from: "courses",
-				// 	 localField: "classList.courseID",
-				// 	 foreignField: "courseID",
-				// 	 as: "course"
-				//  }},
-				//  {$unwind: "$course"},
-		 	]);
-			
-			// var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
-			// var classTrainees = JSON.parse(JSON.stringify(classTR));
+			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
+			var classTrainees = JSON.parse(JSON.stringify(classTR));
 		}
-		console.log(classX);
+		console.log(classTrainees);
 
 		// var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
 		// var user01 = JSON.parse(JSON.stringify(user));

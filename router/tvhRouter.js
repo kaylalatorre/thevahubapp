@@ -25,7 +25,7 @@ router.get('/int-schedule', controller.getIntSchedule);
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
-router.get('/trainee-class-details', controller.getTEClassDet);
+router.get('/trainee-class-details/:classID', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
 router.get('/certificate', controller.getCertificate);
 
