@@ -118,14 +118,12 @@ $(document).ready(function() {
 			},
 			// events: data	
 			eventClick: function(info) {
-				alert('Event: ' + info.event.title);
-				alert(info.event.description);
-				
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
 				$('#modal-resume').html(info.event.extendedProps.resume);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
 				$('#intervModal').modal();
+				$('.modal-backdrop').remove(); //removes overlaying modal-backdrop
 			}
 		});  
 
@@ -246,7 +244,7 @@ $(document).ready(function() {
 						start: parseDate,
 						allDay: false,
 						extendedProps: {
-						  resume: '', //pass encode from backend OR url to pdf viewer 
+						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
 						  meetLink: res[i].meetingLink
 						},
 						description: 'Interview Details'

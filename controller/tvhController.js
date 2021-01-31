@@ -561,10 +561,10 @@ const rendFunctions = {
 			console.log(e);
 			res.send(e);
 		}		
-	},
+	}, 
 	
 	postIntervSched: async function(req, res) {
-		try {
+		try {    
 			if(req.session.user.userType === "HRadmin"){
 				let intID = generateID("IN");
 				let {intervPhase, schedDate, timeStart, timeEnd, intervID, applicID, meetingLink} = req.body;
