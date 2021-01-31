@@ -51,14 +51,12 @@
 		                </tr>
 		            </thead>
 		            <tbody>
+						{{#each classTrainees}}
 		                <tr>
-		                    <td style="width: 80%;">Name</td>
-		                    <td style="width: 15%;  text-align: center;"> <i class="material-icons" style="border: solid; border-width: 2px; border-color:  #CD201F; border-radius: 4px; color:  #CD201F;">remove</i></td>
+		                    <td style="width: 80%;">{{lName}}, {{fName}}</td>
+		                    <td style="width: 15%;  text-align: center;"><i class="material-icons" style="border: solid; border-width: 2px; border-color:  #6dc63f; border-radius: 4px; color:  #6dc63f;">add</i></td>
 		                </tr>
-		                <tr>
-		                    <td style="width: 80%;">Name</td>
-		                    <td style="width: 15%;  text-align: center;"> <i class="material-icons" style="border: solid; border-width: 2px; border-color:  #CD201F; border-radius: 4px; color:  #CD201F;">remove</i></td>
-		                </tr>
+						{{/each}}
 		            </tbody>
 		        </table>
 		    </div>

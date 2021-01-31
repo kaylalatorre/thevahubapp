@@ -12,6 +12,8 @@ const ClassDB = require('../models/Class');
 const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
 const InterviewDB = require('../models/Interview');
+const ScoreDB = require('../models/Score');
+
 
 /* FUNCTIONS and CONSTRUCTORS */
 //function to generate random classID
@@ -384,20 +386,22 @@ const rendFunctions = {
 		var classID = req.params.classID;
 		
 		// find the class
-		var classVar = await db.findOne(ClassDB, {classID: classID});
-		console.log(classVar);
+		var classVar = await db.findOne(ScoreDB, {classID: classID});
+			console.log(classVar);
 
-		// get all trainees not part of the class
-		var trainees = await UserDB.find({userType: "Trainee"});
-		// console.log(trainees);
+		// get all trainees
+		var traineesVar = await UserDB.find({userType: "Trainee"});
+			// console.log(trainees);
 				
-		// // get all trainees that are already part of the class
-		// var classDet = await UserDB.find({: "Trainee"});
-	
+		// divide trainees
+		for(var i = 0; i < traineesVar.length; i++){
+			var classTrainees = await ScoreDB.find({classID: classID, traineeID: traineesVar[i].traineeID});
+		}
+
 			res.render('manage-trainees', {
 				classID: classID,
-				traineeList: trainees,
-				// classList: classTrainees,
+				// traineeList: trainees,
+				classList: classTrainees,
 
 			});
 	},

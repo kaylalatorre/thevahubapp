@@ -13,7 +13,6 @@ var userSchema = new mongoose.Schema({
 	TraineeInfo: [{
 		scores: [String]
 	}],
-	traineeStatus: String,
 	isDeactivated: Boolean,
 }, {collection: "User"});
 
