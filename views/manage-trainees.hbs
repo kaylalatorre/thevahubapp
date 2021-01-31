@@ -4,7 +4,7 @@
 
 <div style="padding: 70px 20px 20px 20px;">
 	<div>
-    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="#">Class #</a> > <strong>Manage Trainees</strong></label>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/tr-class-details/{{{classID}}}">Class {{classID}}</a> > <strong>Manage Trainees</strong></label>
         <hr>
     </div>
     <div style="margin-bottom: 20px;">
@@ -12,13 +12,13 @@
     		<input placeholder="Search for people" style="display: inline-block; width:85%; padding: 4px 10px;"></input>
     		<i class="material-icons" style="position: relative; top: 4px;margin: 0 auto; padding: 6px 8px;font-size: 18px; border: none; border-radius: 4px; background-color: #4CAF50; color: #fff;">search</i>
     	</div>
-    	<div style="display: inline-block; width: 25%;">
+    	{{!-- <div style="display: inline-block; width: 25%;">
     		<label style="display: inline-block; margin-right: 5px;">Course</label>
 			<select for="courseFilter" class="appdrop" style="padding: 4px 10px; width: 65%">     
 				<option class="appoption dropdown-item" href="#">Course Name</option>
 				<option class="appoption dropdown-item" href="#">Course Name</option>
 			</select>
-		</div>
+		</div> --}}
     </div>
     <div>
     	<div style="display: inline-block; width: 49%; vertical-align: top;">
@@ -31,14 +31,12 @@
 		                </tr>
 		            </thead>
 		            <tbody>
+						{{#each traineeList}}
 		                <tr>
-		                    <td style="width: 80%;">Name</td>
+		                    <td style="width: 80%;">{{lName}}, {{fName}}</td>
 		                    <td style="width: 15%;  text-align: center;"><i class="material-icons" style="border: solid; border-width: 2px; border-color:  #6dc63f; border-radius: 4px; color:  #6dc63f;">add</i></td>
 		                </tr>
-		                <tr>
-		                    <td style="width: 80%;">Name</td>
-		                    <td style="width: 15%;  text-align: center;"> <i class="material-icons" style="border: solid; border-width: 2px; border-color:  #6dc63f; border-radius: 4px; color:  #6dc63f;">add</i></td>
-		                </tr>
+						{{/each}}
 		            </tbody>
 		        </table>
 		    </div>
@@ -53,14 +51,12 @@
 		                </tr>
 		            </thead>
 		            <tbody>
+						{{#each classTrainees}}
 		                <tr>
-		                    <td style="width: 80%;">Name</td>
-		                    <td style="width: 15%;  text-align: center;"> <i class="material-icons" style="border: solid; border-width: 2px; border-color:  #CD201F; border-radius: 4px; color:  #CD201F;">remove</i></td>
+		                    <td style="width: 80%;">{{lName}}, {{fName}}</td>
+		                    <td style="width: 15%;  text-align: center;"><i class="material-icons" style="border: solid; border-width: 2px; border-color:  #6dc63f; border-radius: 4px; color:  #6dc63f;">add</i></td>
 		                </tr>
-		                <tr>
-		                    <td style="width: 80%;">Name</td>
-		                    <td style="width: 15%;  text-align: center;"> <i class="material-icons" style="border: solid; border-width: 2px; border-color:  #CD201F; border-radius: 4px; color:  #CD201F;">remove</i></td>
-		                </tr>
+						{{/each}}
 		            </tbody>
 		        </table>
 		    </div>

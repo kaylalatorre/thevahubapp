@@ -12,6 +12,8 @@ const ClassDB = require('../models/Class');
 const CourseDB = require('../models/Course');
 const ClientDB = require('../models/Client');
 const InterviewDB = require('../models/Interview');
+const ScoreDB = require('../models/Score');
+
 
 /* FUNCTIONS and CONSTRUCTORS */
 //function to generate random classID
@@ -26,7 +28,7 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink) {
+function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
 	var tempClass = {
 		classID: classID,
 		trainerID: trainerID,
@@ -36,7 +38,7 @@ function createClass(classID, trainerID, courseName, startDate, endDate, startTi
 		startTime: startTime,
 		endTime: endTime,
 		meetLink: meetLink,
-		//coursePhoto: coursePhoto,
+		classPhoto: classPhoto,
 		trainees: []
 	};
 
@@ -48,7 +50,86 @@ function toDate(date, time) {
     d.setHours(time.substr(0, time.indexOf(":")));
     d.setMinutes(time.substr(time.indexOf(":") + 1));
     d.setSeconds(0);
-    return d.toString();
+	return d.toString();
+}
+
+// format date
+function formatDate(date) {
+	var newDate = new Date(date);
+
+	var mm = newDate.getMonth() + 1;
+	switch(mm) {
+		case 1: mm = "January"; break;
+		case 2: mm = "February"; break;
+		case 3: mm = "March"; break;
+		case 4: mm = "April"; break;
+		case 5: mm = "May"; break;
+		case 6: mm = "June"; break;
+		case 7: mm = "July"; break;
+		case 8: mm = "August"; break;
+		case 9: mm = "September"; break;
+		case 10: mm = "October"; break;
+		case 11: mm = "November"; break;
+		case 12: mm = "December"; break;
+	}
+
+	var dd = newDate.getDate();
+
+	return mm + " " + dd;
+}
+
+function formatShortDate(date) {
+	var newDate = new Date(date);
+
+	var mm = newDate.getMonth() + 1;
+	switch(mm) {
+		case 1: mm = "Jan"; break;
+		case 2: mm = "Feb"; break;
+		case 3: mm = "Mar"; break;
+		case 4: mm = "Apr"; break;
+		case 5: mm = "May"; break;
+		case 6: mm = "Jun"; break;
+		case 7: mm = "Jul"; break;
+		case 8: mm = "Aug"; break;
+		case 9: mm = "Sep"; break;
+		case 10: mm = "Oct"; break;
+		case 11: mm = "Nov"; break;
+		case 12: mm = "Dec"; break;
+	}
+
+	var dd = newDate.getDate();
+	var yy = newDate.getFullYear();
+
+	return mm + " " + dd;
+}
+
+function formatNiceDate(date) {
+	var newDate = new Date(date);
+	// adjust 0 before single digit date
+	let day = ("0" + newDate.getDate()).slice(-2);
+
+	// current month
+	let month = ("0" + (newDate.getMonth() + 1)).slice(-2);
+
+	// current year
+	let year = newDate.getFullYear();
+
+	return year + "-" + month + "-" + day;
+}
+
+// two digits
+function n(n) {
+    return n > 9 ? "" + n: "0" + n;
+}
+
+//format time
+function formatTime(time) {
+	var time = new Date(time);
+
+	var hh = n(time.getHours());
+	var min = n(time.getMinutes());
+
+	return hh + ":" + min; 
 }
 
 const rendFunctions = {
@@ -283,17 +364,30 @@ const rendFunctions = {
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
-				var classDet = classes;	
+				var classes2 = JSON.parse(JSON.stringify(data));
+
+				// var classDet = classes;	
 				// console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					sDate = formatShortDate(classes[i].startDate);
+					eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
 				
+				// console.log(classes);
+
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
-					var courseDet = courses;	
+					// var courseDet = courses;	
 					// console.log(courses);
 					
 					res.render('trainer-classes', {
-						classList: classDet,
-						courseList: courseDet,
+						classList: classes,
+						courseList: courses,
 					});
 				});	
 			});
@@ -309,23 +403,95 @@ const rendFunctions = {
 		
 		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			var classDet = classVar;	
-			console.log(classVar);
+			// var classDet = classVar;	
+			// console.log(classVar);
 		
+			// count number of trainees in class
+
+			// fix format of dates
+			sDate = formatDate(classVar[0].startDate);
+			eDate = formatDate(classVar[0].endDate);
+
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
+
+			// fix format of time
+			sTime = formatTime(classVar[0].startTime);
+			eTime = formatTime(classVar[0].endTime);
+
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
+
 			res.render('tr-class-details', {
-				class: classDet,
+				classID: classID,
+				courseName: classVar[0].courseName,
+				// numTrainees: ,
+				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
+				time: classVar[0].startTime + " - " + classVar[0].endTime,
+				meetLink: classVar[0].meetLink,
+
+				// scoresheet
 			});
 		});
 	},
 
-	getScoresheet: function(req, res, next) {
+	getScoresheet: async function(req, res, next) {
+		var classID = req.params.classID;
+		
+		// get all trainees
+		var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+			// console.log(traineesVar);
+
+		// find the class
+		// ClassDB.find({classID: classID}, function(err, data) {
+		var classD = await db.findOne(ClassDB, {classID: classID});
+		var classVar = JSON.parse(JSON.stringify(classD));
+			console.log(classVar);
+
+		// // find trainees in class --> not working
+		// var classTR = [];
+		for(var i = 0; i < traineesVar.length; i++){
+			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
+			var classTrainees = JSON.parse(JSON.stringify(classTR));
+		}
+		// console.log(classTrainees);
+
+		var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
+		var user01 = JSON.parse(JSON.stringify(user));
+			console.log(user01);
+
+
 		res.render('update-scoresheet', {
+			classID: classID,
+			courseName: classVar.courseName,
+			classList: user01,
 		});
+		// });
 	},
 
-	getTraineeList: function(req, res, next) {
-		res.render('manage-trainees', {
-		});
+	getTraineeList: async function(req, res, next) {
+		var classID = req.params.classID;
+		
+		// find the class
+		var classVar = await db.findOne(ScoreDB, {classID: classID});
+			console.log(classVar);
+
+		// get all trainees
+		var traineesVar = await UserDB.find({userType: "Trainee"});
+			// console.log(trainees);
+				
+		// divide trainees
+		for(var i = 0; i < traineesVar.length; i++){
+			var classTrainees = await ScoreDB.find({classID: classID, traineeID: traineesVar[i].traineeID});
+		}
+
+			res.render('manage-trainees', {
+				classID: classID,
+				// traineeList: trainees,
+				classList: classTrainees,
+
+			});
 	},
 
 	getTrainingReports: function(req, res, next) {
@@ -511,7 +677,7 @@ const rendFunctions = {
 
 	postCreateClass: function(req, res) {
 		try{
-			let { courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
+			let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
 			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
 
 			// generate classID
@@ -523,7 +689,7 @@ const rendFunctions = {
 			// console.log(sTime, eTime);
 
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink);
+			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 
 			
 			// add into Class model
@@ -550,6 +716,49 @@ const rendFunctions = {
 		}
 	},
 	
+	postEditClass: function(req, res) {
+		try{
+			let { classID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
+	
+			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
+			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
+			// console.log(sTime, eTime);
+
+			ClassDB.findOneAndUpdate(
+				{ classID: classID },
+				{ $set: {
+					courseName: courseName, startDate: startDate, endDate: endDate,
+					startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto,
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if (err) {
+						res.send({status: 500, mssg: "Error in updating class."});
+					}
+					else{
+						res.send({status: 200});
+					}
+			});
+		} catch(e){
+			res.send({status: 500, mssg: 'Cannot connect to db.'});
+		}
+	},
+
+	postDeleteClass: function(req, res) {
+		let { classID } = req.body;
+
+		ClassDB.findOne({classID: classID}, function(err, match) {
+			if (err) {
+				res.send({status: 500, mssg:'Error in deleting class.'});
+			}			
+			else {
+				match.remove();
+				res.send({status: 200});
+			}
+		});
+
+	},
+
 	//there might be a way to optimize
 	postAcceptApplic: async function(req, res) {
 		try {

@@ -7,21 +7,12 @@ var userSchema = new mongoose.Schema({
 	email: String,
 	password: String,
 	userType: String,
-	TrainerInfo: {
-		classes: [{
-			classID: {type: mongoose.Schema.Types.ObjectId, ref: 'Class'}, 
-			startDate: Date,
-			endDate: Date,
-			startTime: Date,
-			endTime: Date,
-			score: mongoose.Schema.Types.Mixed //test for 2D-array
-		}]			
-	},
-	TraineeInfo: {
-		trainingStatus: String,
-		isDeactivated: Boolean,
-		classes: [{type: mongoose.Schema.Types.ObjectId, ref: 'Class'}]	
-	},
+	TrainerInfo: [{
+		type: mongoose.Schema.Types.ObjectId, ref: 'Class'
+	}],
+	TraineeInfo: [{
+		scores: [String]
+	}],
 	isDeactivated: Boolean,
 	intervCap: Number
 }, {collection: "User"});

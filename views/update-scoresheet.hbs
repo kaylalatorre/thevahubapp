@@ -4,14 +4,14 @@
 
 <div style="padding: 70px 20px 20px 20px;">
 	<div>
-    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="#">Class #</a> > <strong>Update Scoresheet</strong></label>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/tr-class-details/{{{classID}}}">Class {{classID}}</a> > <strong>Update Scoresheet</strong></label>
         <hr>
     </div>
     <div>
         <div name="class_dets"  style="width: 100%; display: block; margin-bottom: 65px;">
         	<div style="display: inline-block;padding: 5px;">
         		<label style="margin-right: 10px;"><strong>Course</strong></label>
-        		<label>Course Name</label>
+        		<label>{{courseName}}</label>
         	</div>
             <div class="wrap-collabsible" name="grade-legend" style="float: right; margin: 5px auto; padding-right:35px;">
                 {{> grade-legend-collapse}}
@@ -43,16 +43,17 @@
 	                </tr>
 	            </thead>
 	            <tbody>
-				<!--for each trainee-->
+					{{#each classList}}
 	                <tr>
-	                    <td> Name </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
-	                    <td>  </td>
+	                    <td> {{lName}}, {{fName}} </td>
+	                    <td> {{Day1.[0]}} </td>
+	                    <td> {{Day1.[1]}} </td>
+	                    <td> {{Day1.[2]}} </td>
+	                    <td> {{Day1.[3]}} </td>
+	                    <td> {{Day1.[4]}} </td>
+	                    <td> {{Day1.[5]}} </td>
 	                </tr>
+					{{/each}}
 	            </tbody>
 	        </table>
 	    </div>

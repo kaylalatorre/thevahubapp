@@ -38,14 +38,20 @@
     	</form>
 
     	<div style="display: inline-block; width:42%;">
+    		<form id="uploadPhoto-form" action="/upload" method="POST" enctype="multipart/form-data">
 	    	<div for="course-image" style="align-items: center;border-style: solid; border-width: 1px; border-color: #ebf5ee; overflow: hidden; vertical-align: top;">
-	    		<img style="max-width: 320px; max-height: 170px;" src="/assets/img/hr-admin-pic.jpg">
+	    		{{!-- <img class="preview-images" style="max-width: 320px; max-height: 170px;" src="/assets/img/hr-admin-pic.jpg"> --}}
+	    		<img class="preview-images" style="max-width: 320px; max-height: 170px;">
 	    	</div>
-	    		<button type="button" class="outlined-btn" style="margin: 2px;"><i class="material-icons" style="margin: 0 auto; position: relative; top: 2px; font-size: 12px;">upload</i><label style="margin-left: 3px;">Upload Course Photo</button>
+	    		<button type="button" class="outlined-btn" style="margin: 2px;">
+				<i class="material-icons" style="margin: 0 auto; position: relative; top: 2px; font-size: 12px;">upload</i>
+				{{!-- <input id="classPhoto" type="file"> --}}
+    			<input type="file" class="my-pond" id="classPhoto" name="classPhoto">
+				<label style="margin-left: 3px;">Upload Class Photo</button>
+			</form>
     	</div>
-    	{{!-- <button type="button" id="createClass" style="border: none;" disabled="true">Save</button> --}}
-    	<button type="button" id="createClass" style="border: none;">Save</button>
-		
+
+    	<button type="button" id="createClass" style="display: block; border: 1px solid #6dc63f;">Save</button>
     </div>
   </div>
 </div>

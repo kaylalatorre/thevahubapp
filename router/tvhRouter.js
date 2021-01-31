@@ -39,6 +39,7 @@ router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
+router.get('/update-scoresheet/:classID', controller.getScoresheet);
 router.get('/trainer-reports', controller.getTrainingReports);
 
 
@@ -70,6 +71,9 @@ router.post('/deactivate', controller.postDeactivate);
 
 	//trainers
 router.post('/create-class', controller.postCreateClass);
+router.post('/edit-class', controller.postEditClass);
+router.post('/delete-class', controller.postDeleteClass);
+
 
 
 module.exports = router;
