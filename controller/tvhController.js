@@ -383,6 +383,7 @@ const rendFunctions = {
 	getTraineeList: async function(req, res, next) {
 		var classID = req.params.classID;
 		
+		// find the class
 		var classVar = await db.findOne(ClassDB, {classID: classID});
 		console.log(classVar);
 
