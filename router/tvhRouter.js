@@ -24,6 +24,8 @@ router.get('/get-filterIntervs', controller.getFilterIntervs);
 router.get('/int-applicants', controller.getApplicList);
 router.get('/int-schedule', controller.getIntSchedule);
 router.get('/get-HRinterviews', controller.getHRInterviews);
+router.get('/get-applicPDF', controller.getApplicPDF);
+router.get('/view-resume', controller.getPDF);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);

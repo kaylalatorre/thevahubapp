@@ -120,10 +120,14 @@ $(document).ready(function() {
 			eventClick: function(info) {
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
-				$('#modal-resume').html(info.event.extendedProps.resume);
+//				$('#modal-resume').html(info.event.extendedProps.resume);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
 				$('#intervModal').modal();
 				$('.modal-backdrop').remove(); //removes overlaying modal-backdrop
+				
+				//test for pdf viewer
+				$('#modal-resume').val(info.event.extendedProps.applicID);
+				console.log("in eventClick(): "+ info.event.extendedProps.applicID);
 			}
 		});  
 
@@ -228,6 +232,53 @@ $(document).ready(function() {
 //		}
 //	});
 	
+	// TEST: for resume button view
+	$('#modal-resumeBtn').on("click", function(){
+		let applicID = $('#modal-resume').val();
+//		alert(applicID);
+		let fileName;
+		$.ajax({
+			method: 'GET',
+			url: '/get-applicPDF',
+			data: {applicID},
+			success: function(res) {
+				
+//				window.open('/view-resume');
+//				alert("in AJAX success..");
+//				fileName = res.encodePDF;
+				
+				$("#dialog").dialog({
+					modal: true, 
+		//			title: fileName,
+					width: 540,  
+					height: 450,
+					buttons: {
+						Close: function () {
+							$(this).dialog('close');
+						}
+					},
+					open: function () { 
+						
+//						var object = "<object data=\"{FileName}\" type=\"application/pdf\" width=\"500px\" height=\"300px\">";
+//						object += "If you are unable to view file, you can download from <a href=\"{FileName}\">here</a>";
+//						object += " or download <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> to view the file.";
+//						object += "</object>";
+//						object = object.replace(/{FileName}/g, "Files/" + fileName);
+
+//						var object = '<object id="modal-resumePDF" data="" type="application/pdf" style="width: 100%; height: 100vh;"></object>';
+						var object = '<object id="modal-resumePDF" data='+ res.encodePDF +' type="application/pdf" style="width: 100%; height: 100vh;"></object>';
+//						$("object#modal-resumePDF").prop("data", "data:application/pdf;base64," + res.encodePDF);
+						$("#dialog").html(object);
+//						$("#dialog").append(object);
+					}
+				});	
+			},
+			error: res => console.log(res)
+		}); 
+		
+		
+
+	});
 
 	// for HR-interviewer Calendar render
 	if(window.location.pathname === "/int-schedule"){
@@ -245,7 +296,8 @@ $(document).ready(function() {
 						allDay: false,
 						extendedProps: {
 						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
-						  meetLink: res[i].meetingLink
+						  meetLink: res[i].meetingLink,
+						  applicID: res[i].applicant.applicantID
 						},
 						description: 'Interview Details'
 					});

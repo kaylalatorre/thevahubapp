@@ -217,17 +217,25 @@ const rendFunctions = {
 			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
 			let filterIntervs = interviews.filter(elem => elem.interviewer.userID === req.session.user.userID);
 			res.send(filterIntervs);
-			
-////
-//                let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
-//                // console.log(encode);
-//                res.send({applic: applic, encoded: encode});
-////
-			
+				
 		} catch(e) {
 			console.log(e);
 			res.send(e);			
 		}		
+	},
+	
+	getApplicPDF: async function(req, res){
+////
+		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
+		console.log(req.query.applicID);
+		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
+		 console.log(encodePDF);
+		res.status(200).send(encodePDF);
+////		
+	},
+	
+	getPDF: function(req, res){
+		res.render('testpdf', {});
 	},
 
 	getTraineeProf: function(req, res, next) {
