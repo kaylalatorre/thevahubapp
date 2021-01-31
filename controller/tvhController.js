@@ -232,6 +232,10 @@ const rendFunctions = {
 		}		
 	},
 
+	getHRReports: function(req, res, next) {
+		res.render('application-reports');
+	},
+
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
 
@@ -324,13 +328,8 @@ const rendFunctions = {
 		});
 	},
 
-	getSummaryReport: function(req, res, next) {
+	getTrainingReports: function(req, res, next) {
 		res.render('trainer-reports', {
-		});
-	},
-
-	getDetailedReport: function(req, res, next) {
-		res.render('detailed-report', {
 		});
 	},
 
