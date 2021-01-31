@@ -279,22 +279,36 @@ const rendFunctions = {
 			//collect classes of the trainee
 			
 			ScoreDB.find({traineeID: req.session.user.userID}, function(err, data) {
-				var classes = JSON.parse(JSON.stringify(data));
-				console.log(classes);
+				var classDump = JSON.parse(JSON.stringify(data));
+				console.log(classDump);
 
-				
-				// fix format of dates
-				for(let i = 0; i < classes.length; i++) {
-					sDate = formatShortDate(classes[i].startDate);
-					eDate = formatShortDate(classes[i].endDate);
-
-					classes[i].sDate = sDate;
-					classes[i].eDate = eDate;
+				// find trainer details
+				for(let x = 0; x < classDump.length; x++){
+					// match classID from ScoreDB to ClassDB
+					var trainerX = db.findOne(ClassDB, {classID: classDump[x].classID});
+					var traineesY = JSON.parse(JSON.stringify(trainerX));	
 				}
+				console.log(traineesY);
+
+				for(let x = 0; x < traineesY.length; x++){			
+					// match traineeID from ClassDB to userID to UserDB
+					var trainerD = db.findOne(UserDB, {userID: traineesY[x].trainerID});
+					var trainerDetails = JSON.parse(JSON.stringify(trainerD));	
+				}
+				console.log(trainerDetails);
+
+				// // fix format of dates
+				// for(let i = 0; i < classes.length; i++) {
+				// 	sDate = formatShortDate(classes[i].startDate);
+				// 	eDate = formatShortDate(classes[i].endDate);
+
+				// 	classes[i].sDate = sDate;
+				// 	classes[i].eDate = eDate;
+				// }
 				
 
 				res.render('trainee-classes', {
-					classList: classes,
+					// classList: classes,
 				});
 			});	
 		}
