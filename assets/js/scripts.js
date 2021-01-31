@@ -126,7 +126,7 @@ $(document).ready(function() {
 		calendar = new FullCalendar.Calendar(calendarEl, {
 			initialView: 'dayGridMonth',
 			initialDate: currDate, //set to Current date
-			dayMaxEventRows: 2,
+			dayMaxEventRows: 3,
 			// dayMaxEvent: 3,
 			headerToolbar: {
 			  left: 'prev,next today',
@@ -340,6 +340,7 @@ $(document).ready(function() {
 						start: parseDate,
 						allDay: false
 					});
+					alert("Schedule created!");
 				} else {
 					alert(res);
 				}
