@@ -38,7 +38,8 @@ router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
-router.get('/trainer-reports', controller.getTrainingReports);
+router.get('/trainer-reports', controller.getSummaryReport);
+router.get('/detailed-report', controller.getDetailedReport);
 
 	// sales admin screen prototypes 
 router.get('/sales-valist', controller.getVAList);
