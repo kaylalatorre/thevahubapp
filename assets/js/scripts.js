@@ -2,23 +2,6 @@
 var skillCount = 1;
 var certCount = 1;
 
-// calendar
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    initialDate: '2021-01-25',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    }
-    // events: data
-  });  
-
-  calendar.render();
-});
-
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -135,6 +118,160 @@ function switchTabContent(tabpane) {
 
 $(document).ready(function() {	
 	
+	let calendar;	
+	let currDate = new Date();
+	var calendarEl = document.getElementById('calendar');
+	if(calendarEl !== null){
+		calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView: 'dayGridMonth',
+			initialDate: currDate, //set to Current date
+			headerToolbar: {
+			  left: 'prev,next today',
+			  center: 'title',
+			  right: 'dayGridMonth,timeGridWeek,timeGridDay'
+			},
+			// events: data	
+			eventClick: function(info) {
+				alert('Event: ' + info.event.title);
+				alert(info.event.description);
+				
+				$('#modal-applicName').html(info.event.title);
+				$('#modal-schedule').html(info.event.start);
+				$('#modal-resume').html(info.event.extendedProps.resume);
+				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
+				$('#intervModal').modal();
+			}
+		});  
+
+		calendar.render();	
+
+	}
+	
+	// for HR-schedule render
+	if(window.location.pathname === "/hr-schedule"){
+		$.ajax({
+			method: 'GET',
+			url: '/get-interviews',
+			data: {},
+			success: function(res) {
+				
+				$('div#INTapplic-filter').empty();
+				$('div#INTinterv-filter').empty();		
+				$('div#FINapplic-filter').empty();
+				$('div#FINinterv-filter').empty();
+					
+				let applicArrINT = [];
+				let intervArrINT = [];
+				let applicArrFIN = [];
+				let intervArrFIN = [];
+				
+				for (let i=0; i<res.length; i++){
+					// render for main Calendar 
+					var parseDate = new Date(res[i].timeStart);
+					calendar.addEvent({
+						title: res[i].applicant.fName + " " + res[i].applicant.lName,
+						start: parseDate,
+						allDay: false
+					});
+					
+					// render for sidebar filter
+					var applicHTML = '<div class="sched-list">'
+//									    + '<input type="hidden" value='+ res[i].applicant.applicantID +'>'
+										+ '<input class="form-check-input applicantName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
+									+ '</div>';
+					var intervHTML = '<div class="sched-list">'
+//									    + '<input type="hidden" value='+ res[i].interviewer.userID +'>'
+										+ '<input class="form-check-input interviewerName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
+									+ '</div>';
+							
+					if(res[i].phase === "Initial"){ // for INITIAL tab
+						if(!applicArrINT.includes(res[i].applicant.applicantID)){
+							$('div#INTapplic-filter').append(applicHTML);
+							applicArrINT.push(res[i].applicant.applicantID);
+						}
+						
+						if(!intervArrINT.includes(res[i].interviewer.userID)){
+							$('div#INTinterv-filter').append(intervHTML);
+							intervArrINT.push(res[i].interviewer.userID);
+						}
+	
+					} else {
+						if(!applicArrFIN.includes(res[i].applicant.applicantID)){
+							$('div#FINapplic-filter').append(applicHTML);
+							applicArrFIN.push(res[i].applicant.applicantID);
+						}
+						
+						if(!intervArrFIN.includes(res[i].interviewer.userID)){
+							$('div#FINinterv-filter').append(intervHTML);
+							intervArrFIN.push(res[i].interviewer.userID);
+						}						
+					}				
+				}
+
+			},
+			error: res => console.log(res)
+		});
+	}
+	
+//	// for HR-interviewer sidebar filter
+//	$('.check-filter').on("click", function() {
+//		alert("in check-filter function()");
+//		if($(this).prop('checked')){
+//			alert("in check-filter function()");
+//			let filterID = $(this).val(); //get value of the checkbox input --> intervID
+//			console.log(filterID);
+//			$.ajax({
+//				method: 'GET',
+//				url: '/get-filterIntervs',
+//				data: filterID,
+//				success: function(res) {
+//					//empty the Calendar
+//					
+//					// render Calendar grids
+//					for (let i=0; i<res.length; i++){
+//						var parseDate = new Date(res[i].timeStart);
+//						calendar.addEvent({
+//							title: res[i].applicant.fName + " " + res[i].applicant.lName,
+//							start: parseDate,
+//							allDay: false
+//						});
+//					}
+//				},
+//				error: res => console.log(res)
+//			});
+//		}
+//	});
+	
+
+	// for HR-interviewer Calendar render
+	if(window.location.pathname === "/int-schedule"){
+		$.ajax({
+			method: 'GET',
+			url: '/get-HRinterviews',
+			data: {},
+			success: function(res) {
+				// render for main Calendar
+				for (let i=0; i<res.length; i++){
+					var parseDate = new Date(res[i].timeStart);
+					calendar.addEvent({
+						title: res[i].applicant.fName + " " + res[i].applicant.lName,
+						start: parseDate,
+						allDay: false,
+						extendedProps: {
+						  resume: '', //pass encode from backend OR url to pdf viewer 
+						  meetLink: res[i].meetingLink
+						},
+						description: 'Interview Details'
+					});
+				}
+			},
+			error: res => console.log(res)
+		});
+	}	
+	
+	
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
@@ -148,13 +285,13 @@ $(document).ready(function() {
 				
 				// render interviewer names in dropdown
 				for(let i=0; i<res.intervs.length; i++){
-					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>'
+					var intervHTML = '<option class="appoption dropdown-item" value=' + res.intervs[i].userID +'>' + res.intervs[i].fName +" "+ res.intervs[i].lName + '</option>';
 					$('select#interv-dropdown').append(intervHTML);
 				}
 				
 				// render applicant names in dropdown
 				for(let i=0; i<res.applics.length; i++){
-					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>'
+					var applicHTML = '<option class="appoption dropdown-item" value=' + res.applics[i].applicantID +'>' + res.applics[i].fName +" "+ res.applics[i].lName + '</option>';
 					$('select#applic-dropdown').append(applicHTML);
 				}				
 					
@@ -190,7 +327,19 @@ $(document).ready(function() {
 					applicID: applicid,
 					meetingLink: meetLink
 				},
-			success: /*window.location.reload(true)*/ console.log("/// POSTING INTERVIEW!"),
+			success: function(res) {
+				
+				if(res.status !== 400){
+					var parseDate = new Date(res.timeStart);
+					calendar.addEvent({
+						title: res.applicant.fName + " " + res.applicant.lName,
+						start: parseDate,
+						allDay: false
+					});
+				} else {
+					alert(res);
+				}
+			},
 			error: res => console.log(res)
 		});		
 
