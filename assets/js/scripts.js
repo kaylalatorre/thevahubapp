@@ -109,17 +109,28 @@ $(document).ready(function() {
 	var calendarEl = document.getElementById('calendar');
 	if(calendarEl !== null){
 		calendar = new FullCalendar.Calendar(calendarEl, {
-		  initialView: 'dayGridMonth',
-		  initialDate: currDate, //set to Current date
-		  headerToolbar: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'dayGridMonth,timeGridWeek,timeGridDay'
-		  }
-		  // events: data
+			initialView: 'dayGridMonth',
+			initialDate: currDate, //set to Current date
+			headerToolbar: {
+			  left: 'prev,next today',
+			  center: 'title',
+			  right: 'dayGridMonth,timeGridWeek,timeGridDay'
+			},
+			// events: data	
+			eventClick: function(info) {
+				alert('Event: ' + info.event.title);
+				alert(info.event.description);
+				
+				$('#modal-applicName').html(info.event.title);
+				$('#modal-schedule').html(info.event.start);
+				$('#modal-resume').html(info.event.extendedProps.resume);
+				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
+				$('#intervModal').modal();
+			}
 		});  
 
-		calendar.render();			
+		calendar.render();	
+
 	}
 	
 	// for HR-schedule render
@@ -233,7 +244,12 @@ $(document).ready(function() {
 					calendar.addEvent({
 						title: res[i].applicant.fName + " " + res[i].applicant.lName,
 						start: parseDate,
-						allDay: false
+						allDay: false,
+						extendedProps: {
+						  resume: '', //pass encode from backend OR url to pdf viewer 
+						  meetLink: res[i].meetingLink
+						},
+						description: 'Interview Details'
 					});
 				}
 			},

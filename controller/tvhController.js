@@ -218,6 +218,12 @@ const rendFunctions = {
 			let filterIntervs = interviews.filter(elem => elem.interviewer.userID === req.session.user.userID);
 			res.send(filterIntervs);
 			
+////
+//                let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
+//                // console.log(encode);
+//                res.send({applic: applic, encoded: encode});
+////
+			
 		} catch(e) {
 			console.log(e);
 			res.send(e);			
