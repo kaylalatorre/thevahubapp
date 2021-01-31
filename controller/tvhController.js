@@ -376,6 +376,8 @@ const rendFunctions = {
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
 		
+		var classArray = [];
+
 		// get all trainees
 		var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
 		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
@@ -393,17 +395,21 @@ const rendFunctions = {
 			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
 			var classTrainees = JSON.parse(JSON.stringify(classTR));
 		}
-		// console.log(classTrainees);
+		console.log(classTrainees);
 
-		var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
-		var user01 = JSON.parse(JSON.stringify(user));
-			console.log(user01);
+		// var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
+		// var user01 = JSON.parse(JSON.stringify(user));
+		// 	console.log(user01);
 
+		// // get trainee details
+		// var userXD = await db.findOne(UserDB, {userID: traineesVar[1].userID});
+		// var userX = JSON.parse(JSON.stringify(userXD));
+		// 	console.log(userX);
 
 		res.render('update-scoresheet', {
 			classID: classID,
 			courseName: classVar.courseName,
-			classList: user01,
+			classList: userX,
 		});
 		// });
 	},
