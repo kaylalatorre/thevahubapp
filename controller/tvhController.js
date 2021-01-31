@@ -377,20 +377,25 @@ const rendFunctions = {
 		var classID = req.params.classID;
 		
 		// find the class
-		ClassDB.find({classID: classID}, async function(err, data) {
+		ClassDB.find({classID: classID}, function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 				// console.log(classVar);
 
 			// get all trainees
-			var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
+			var traineesDump = db.findMany(UserDB, {userType: "Trainee"});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 				// console.log(traineesVar);
 					
 			// get trainees of said class
+			var classTraineesDump = [];
+			var x = 0;
 			for(var i = 0; i < traineesVar.length; i++){
-				var classTraineesDump = db.findMany(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID});
+				classTraineesDump[x] = ScoreDB.findOne({classID: classID, traineeID: traineesVar[i].userID});
+				x++;
 			}
-				console.log(classTraineesDump);
+				var classList = JSON.parse(JSON.stringify(classTraineesDump));
+
+				console.log(classList);
 
 
 			// // get trainee details
