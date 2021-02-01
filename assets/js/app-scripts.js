@@ -4,27 +4,29 @@ showTab(currentTab); // Display the current tab
 function showTab(n) {
   // This function will display the specified tab of the form...
   var x = document.getElementsByClassName("tab");
-  x[n].style.display = "block";
-  //... and fix the Previous/Next buttons:
-  if (n == 0) {
-    document.getElementById("prevBtn").style.display = "none";
-  } else {
-    document.getElementById("prevBtn").style.display = "inline";
+  if(!!x[n]) {
+	x[n].style.display = "block";
+	//... and fix the Previous/Next buttons:
+	if (n === 0) {
+	  document.getElementById("prevBtn").style.display = "none";
+	} else {
+	  document.getElementById("prevBtn").style.display = "inline";
+	}
+	if (n === (x.length - 1)) {
+	  document.getElementById("nextBtn").innerHTML = "Submit";
+	} else {
+	  document.getElementById("nextBtn").innerHTML = "Next";
+	}
+	//... and run a function that will display the correct step indicator:
+	fixStepIndicator(n);	  
   }
-  if (n == (x.length - 1)) {
-    document.getElementById("nextBtn").innerHTML = "Submit";
-  } else {
-    document.getElementById("nextBtn").innerHTML = "Next";
-  }
-  //... and run a function that will display the correct step indicator:
-  fixStepIndicator(n)
 }
 
 function nextPrev(n) {
   // This function will figure out which tab to display
   var x = document.getElementsByClassName("tab");
   // Exit the function if any field in the current tab is invalid:
-  if (n == 1 && !validateForm()) return false;
+  if (n === 1 && !validateForm()) return false;
   // Hide the current tab:
   x[currentTab].style.display = "none";
   // Increase or decrease the current tab by 1:
@@ -36,7 +38,7 @@ function nextPrev(n) {
 	
   if (currentTab >= x.length) {
     // ... the form gets submitted:
-  submitAppForm(); // document.getElementById("appForm").submit();
+	document.getElementById("appForm").submit();
     return false;
   }
   // Otherwise, display the correct tab:

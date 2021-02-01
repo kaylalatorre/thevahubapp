@@ -14,6 +14,7 @@ var userSchema = new mongoose.Schema({
 		scores: [String]
 	}],
 	isDeactivated: Boolean,
+	intervCap: Number
 }, {collection: "User"});
 
 module.exports = mongoose.model('User', userSchema);
