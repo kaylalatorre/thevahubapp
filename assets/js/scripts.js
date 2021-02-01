@@ -366,21 +366,23 @@ $(document).ready(function() {
 	$("button#save-statBtn").on("click", function() {
 		
 		// get Array of applicant IDs
-		let applicArray = $(".hidden-appID").val();
-		for(let i=0; applicArray.length; i++){
-			console.log(".hidden-appID: " + applicArray[i] + "/n");
-		}
+		let arrIDs = [];
+		$(".hidden-appID").each(function(index, elem) {
+			console.log(".hidden-appID: " + $(elem).val());
+			arrIDs.push($(elem).val());
+		});
 
 		// get Array of corresponding statuses (PASS/FAIL)
-		let statusArray = $("input:radio[name='applic-stat']:checked").val(); //should be an array of applicants, w status to be changed
-		for(let i=0; statusArray.length; i++){
-			console.log("radio[name='applic-stat']: " + statusArray[i] + "/n");
-		} 
+		let arrStats = [];	
+		$("input:radio.applic-stat:checked").each(function(index, elem) {
+			console.log("input:radio.applic-stat:checked: " + $(elem).val());
+			arrStats.push($(elem).val());
+		});
 		
 		$.ajax({
 			method: 'POST',
 			url: '/update-applicStat',
-			data: {applicIDs: applicArray, stats: statusArray}, //send both Arrays for posting
+			data: {applicIDs: arrIDs, stats: arrStats}, //send both Arrays for posting
 			success: function(res) {
 				alert("in save statBtn success!");
 				

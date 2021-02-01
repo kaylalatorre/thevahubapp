@@ -888,9 +888,11 @@ const rendFunctions = {
 	
 	postApplicStatus: async function(req, res) {
 		try {    
-			if(req.session.user.userType === "HRadmin"){
+			if(req.session.user.userType === "HRinterv"){
 				let {applicIDs, stats} = req.body;
 				
+				console.log("applicIDs: "+ applicIDs);
+				console.log("stats: "+ stats);
 				
 				// search for Interview phase of HR interviewer
 				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
