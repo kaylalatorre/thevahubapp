@@ -837,16 +837,30 @@ const rendFunctions = {
 				let interv = await db.findOne(UserDB, {userID: intervID}, '');
 				let applic = await db.findOne(ApplicantDB, {applicantID: applicID}, '');
 				
-				// format timeSlot to Date type
-				let tStart = toDate(schedDate, timeStart);
-				let tEnd = toDate(schedDate, timeEnd);
-				console.log("tStart: " + tStart); 
-				console.log("tStart: " + tEnd); 
+				// get all interviews under that interviewer 
+				let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let filterIntervs = interviews.filter(elem => (elem.interviewer.userID === intervID) );
 				
-				let maxCap = interv.intervCap;
-				console.log("intervCap: " + maxCap);
+				// filter through interviews that have that same schedule Date
+				let sameIntervs = filterIntervs.filter(elem => 
+					((new Date(elem.date)).getFullYear() === new Date(schedDate).getFullYear())
+					&& ((new Date(elem.date)).getMonth() === new Date(schedDate).getMonth())
+					&& ((new Date(elem.date)).getDate() === new Date(schedDate).getDate()));
+					
+				console.log("sameIntervs length: "+ sameIntervs.length);
+				// check if those Interviews has reached max capacity of the day (7)
+				if (sameIntervs.length >= 7){
+					console.log("Sorry, interview slots of this Interviewer is full.");
+					res.send({status: 400, mssg: "Sorry, interview slots of this Interviewer is full."});
+					
+				} else { // if not, proceed to creating sched
 				
-				if(maxCap !== 0){
+					// format timeSlot to Date type
+					let tStart = toDate(schedDate, timeStart);
+					let tEnd = toDate(schedDate, timeEnd);
+					console.log("tStart: " + tStart); 
+					console.log("tStart: " + tEnd); 
+
 					let intervSched = await db.insertOne(InterviewDB, {
 									intervID: intID,
 									phase: intervPhase,
@@ -857,19 +871,12 @@ const rendFunctions = {
 									applicant: applic,
 									meetingLink: meetingLink
 								});
-					maxCap--;
-					let updateInterv = await db.updateOne(UserDB, {userID: intervID}, {intervCap: maxCap});
-					console.log("intervCap: " + maxCap);
 					
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
 						res.status(200).send(sched);
 					}
-					
-				} else {
-					console.log("Sorry, interview slots of this Interviewer is full.");
-					res.status(400).send("Sorry, interview slots of this Interviewer is full.");
 				}
 			}
 			

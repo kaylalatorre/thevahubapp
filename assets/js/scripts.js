@@ -446,7 +446,7 @@ $(document).ready(function() {
 					meetingLink: meetLink
 				},
 			success: function(res) {
-				
+					console.log("res.status: "+ res.status);
 				if(res.status !== 400){
 					var parseDate = new Date(res.timeStart);
 					calendar.addEvent({
@@ -456,7 +456,7 @@ $(document).ready(function() {
 					});
 					alert("Schedule created!");
 				} else {
-					alert(res);
+					alert(res.mssg);
 				}
 			},
 			error: res => console.log(res)
