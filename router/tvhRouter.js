@@ -29,7 +29,7 @@ router.get('/get-HRinterviews', controller.getHRInterviews);
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
-router.get('/trainee-class-details/:classID', controller.getTEClassDet);
+router.get('/te-class-details/:classID', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
 router.get('/certificate', controller.getCertificate);
 
@@ -42,7 +42,6 @@ router.get('/manage-trainees/:classID', controller.getTraineeList);
 router.get('/update-scoresheet/:classID', controller.getScoresheet);
 router.get('/update-scores/:classID', controller.getScores);
 router.get('/trainer-reports', controller.getTrainingReports);
-
 
 	// sales admin screen prototypes 
 router.get('/sales-valist', controller.getVAList);

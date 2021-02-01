@@ -320,57 +320,58 @@ const rendFunctions = {
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
 
-			// will determine trainee status (on-going, graduated)
+			//collect classes of the trainee
+			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
 
-			// will collect classes of trainee
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
 
-			res.render('trainee-profile', {
-				fName: req.session.user.fName,
-				lName: req.session.user.lName,
-				userID: req.session.user.userID,
-				
-			});
-			
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
+
+				res.render('trainee-profile', {
+					classList: classes,
+					fName: req.session.user.fName,
+					lName: req.session.user.lName,
+					userID: req.session.user.userID,
+				});
+			});			
 		} else {
 			res.redirect('/');
 		}
 	},
 
-	getTraineeClasses: function(req, res, next) {
+	getTraineeClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainee") {
 			//collect classes of the trainee
+			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
+
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
 			
-			ScoreDB.find({traineeID: req.session.user.userID}, function(err, data) {
-				var classDump = JSON.parse(JSON.stringify(data));
-				console.log(classDump);
-
-				// find trainer details
-				for(let x = 0; x < classDump.length; x++){
-					// match classID from ScoreDB to ClassDB
-					var trainerX = db.findOne(ClassDB, {classID: classDump[x].classID});
-					var traineesY = JSON.parse(JSON.stringify(trainerX));	
-				}
-				console.log(traineesY);
-
-				for(let x = 0; x < traineesY.length; x++){			
-					// match traineeID from ClassDB to userID to UserDB
-					var trainerD = db.findOne(UserDB, {userID: traineesY[x].trainerID});
-					var trainerDetails = JSON.parse(JSON.stringify(trainerD));	
-				}
-				console.log(trainerDetails);
-
-				// // fix format of dates
-				// for(let i = 0; i < classes.length; i++) {
-				// 	sDate = formatShortDate(classes[i].startDate);
-				// 	eDate = formatShortDate(classes[i].endDate);
-
-				// 	classes[i].sDate = sDate;
-				// 	classes[i].eDate = eDate;
-				// }
-				
-
 				res.render('trainee-classes', {
-					// classList: classes,
+					classList: classes,
 				});
 			});	
 		}
@@ -401,18 +402,18 @@ const rendFunctions = {
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
-					sDate = formatShortDate(classes[i].startDate);
-					eDate = formatShortDate(classes[i].endDate);
+					var sDate = formatShortDate(classes[i].startDate);
+					var eDate = formatShortDate(classes[i].endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
 
+					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
 					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 						// console.log(traineesVar);
 
 					classes[i].numTrainees = traineesVar.length;
-
 				}
 
 				console.log(classes);
@@ -442,20 +443,20 @@ const rendFunctions = {
 			// console.log(classVar);
 		
 			// fix format of dates
-			sDate = formatDate(classVar[0].startDate);
-			eDate = formatDate(classVar[0].endDate);
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
 
 			classVar[0].startDate = sDate;
 			classVar[0].endDate = eDate;
 
 			// fix format of time
-			sTime = formatTime(classVar[0].startTime);
-			eTime = formatTime(classVar[0].endTime);
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
 
 			classVar[0].startTime = sTime;
 			classVar[0].endTime = eTime;
 
-			// count number of trainees in class
+			// collect trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 				// console.log(traineesVar);
@@ -483,15 +484,15 @@ const rendFunctions = {
 			// console.log(classVar);
 		
 			// fix format of dates
-			sDate = formatDate(classVar[0].startDate);
-			eDate = formatDate(classVar[0].endDate);
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
 
 			classVar[0].startDate = sDate;
 			classVar[0].endDate = eDate;
 
 			// fix format of time
-			sTime = formatTime(classVar[0].startTime);
-			eTime = formatTime(classVar[0].endTime);
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
 
 			classVar[0].startTime = sTime;
 			classVar[0].endTime = eTime;
@@ -521,15 +522,15 @@ const rendFunctions = {
 			// console.log(classVar);
 		
 			// fix format of dates
-			sDate = formatDate(classVar[0].startDate);
-			eDate = formatDate(classVar[0].endDate);
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
 
 			classVar[0].startDate = sDate;
 			classVar[0].endDate = eDate;
 
 			// fix format of time
-			sTime = formatTime(classVar[0].startTime);
-			eTime = formatTime(classVar[0].endTime);
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
 
 			classVar[0].startTime = sTime;
 			classVar[0].endTime = eTime;
