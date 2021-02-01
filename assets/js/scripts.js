@@ -181,12 +181,12 @@ $(document).ready(function() {
 					// render for sidebar filter
 					var applicHTML = '<div class="sched-list">'
 //									    + '<input type="hidden" value='+ res[i].applicant.applicantID +'>'
-										+ '<input class="form-check-input applicantName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<input class="form-check-input applicantName check-filter HRcheckbox" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
 									+ '</div>';
 					var intervHTML = '<div class="sched-list">'
 //									    + '<input type="hidden" value='+ res[i].interviewer.userID +'>'
-										+ '<input class="form-check-input interviewerName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<input class="form-check-input interviewerName check-filter HRcheckbox" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
 							
