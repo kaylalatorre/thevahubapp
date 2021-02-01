@@ -69,6 +69,10 @@ router.post('/remove-applicant', controller.postRemoveApplic);
 
 router.post('/create-intsched', controller.postIntervSched);	
 
+//interviewer
+router.post('/update-applicStat', controller.postApplicStatus);
+
+
 	//trainees
 router.post('/deactivate', controller.postDeactivate);
 

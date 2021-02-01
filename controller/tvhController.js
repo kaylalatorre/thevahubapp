@@ -313,6 +313,7 @@ const rendFunctions = {
 	//		let filename = req.params.filename;
 	//		let file = await selectFileFromDb(filename);
 //			file = file.rows[0][0]; //Column that contains the blob content
+//			
 //			res.setHeader('content-type', 'text/javascript');
 			res.setHeader('Content-Length', file.length);
 			res.write(file, 'binary');
@@ -872,6 +873,40 @@ const rendFunctions = {
 				}
 			}
 			
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
+	},
+	
+	postApplicStatus: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRadmin"){
+				let {applicIDs, stats} = req.body;
+				
+				
+				// search for Interview phase of HR interviewer
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let phase;
+				
+				for(i=0; i<intervs.length;i++){
+					if(intervs[i].interviewer.userID === req.session.user.userID){
+						phase = intervs[i].phase;
+					}
+				}
+				
+				if (phase === "Initial")
+					for(i=0; i<applicIDs.length; i++){
+						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+					}
+				
+				if (phase === "Final")
+					for(i=0; i<applicIDs.length; i++){
+						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+					}
+				  
+				res.status(200).send();
+			}	
 		} catch(e){
 			console.log(e);
 			res.send(e);

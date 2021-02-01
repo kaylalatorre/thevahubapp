@@ -363,7 +363,33 @@ $(document).ready(function() {
 		});
 	}	
 	
-	
+	$("button#save-statBtn").on("click", function() {
+		
+		// get Array of applicant IDs
+		let applicArray = $(".hidden-appID").val();
+		for(let i=0; applicArray.length; i++){
+			console.log(".hidden-appID: " + applicArray[i] + "/n");
+		}
+
+		// get Array of corresponding statuses (PASS/FAIL)
+		let statusArray = $("input:radio[name='applic-stat']:checked").val(); //should be an array of applicants, w status to be changed
+		for(let i=0; statusArray.length; i++){
+			console.log("radio[name='applic-stat']: " + statusArray[i] + "/n");
+		} 
+		
+		$.ajax({
+			method: 'POST',
+			url: '/update-applicStat',
+			data: {applicIDs: applicArray, stats: statusArray}, //send both Arrays for posting
+			success: function(res) {
+				alert("in save statBtn success!");
+				
+				// disable or change the radio btn preset acc to the Applic status in the db
+			},
+			error: res => console.log(res)
+		});
+		
+	});
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
