@@ -136,7 +136,7 @@ function downloadFile(applicID){
 			
 			alert(blob);
 			//Check the Browser type and download the File.
-
+ 
 				var url = window.URL || window.webkitURL;
 				link = url.createObjectURL(blob);
 				var a = $("<a />");
@@ -387,6 +387,7 @@ $(document).ready(function() {
 				alert("in save statBtn success!");
 				
 				// disable or change the radio btn preset acc to the Applic status in the db
+				
 			},
 			error: res => console.log(res)
 		});

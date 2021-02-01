@@ -314,7 +314,7 @@ const rendFunctions = {
 	//		let file = await selectFileFromDb(filename);
 //			file = file.rows[0][0]; //Column that contains the blob content
 //			
-//			res.setHeader('content-type', 'text/javascript');
+			res.setHeader('content-type', 'blob');
 			res.setHeader('Content-Length', file.length);
 			res.write(file, 'binary');
 //			console.log(res);
