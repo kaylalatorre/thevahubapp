@@ -512,6 +512,44 @@ const rendFunctions = {
 		});
 	},
 
+	getScores: async function(req, res, next) {
+		var classID = req.params.classID;
+		
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			// var classDet = classVar;	
+			// console.log(classVar);
+		
+			// fix format of dates
+			sDate = formatDate(classVar[0].startDate);
+			eDate = formatDate(classVar[0].endDate);
+
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
+
+			// fix format of time
+			sTime = formatTime(classVar[0].startTime);
+			eTime = formatTime(classVar[0].endTime);
+
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
+
+			// count number of trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
+
+			// classes[0].numTrainees = traineesVar.length;
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
 	getTraineeList: async function(req, res, next) {
 		var classID = req.params.classID;
 		
@@ -787,6 +825,10 @@ const rendFunctions = {
 				res.send({status: 200});
 			}
 		});
+
+	},
+
+	postUpdateScores: function(req, res) {
 
 	},
 

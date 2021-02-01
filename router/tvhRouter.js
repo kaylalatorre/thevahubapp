@@ -40,6 +40,7 @@ router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
 router.get('/update-scoresheet/:classID', controller.getScoresheet);
+router.get('/update-scores/:classID', controller.getScores);
 router.get('/trainer-reports', controller.getTrainingReports);
 
 
@@ -73,6 +74,7 @@ router.post('/deactivate', controller.postDeactivate);
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
+router.post('/update-scores', controller.postUpdateScores);
 
 
 
