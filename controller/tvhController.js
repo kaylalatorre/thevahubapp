@@ -393,18 +393,13 @@ const rendFunctions = {
 		});
 	},
 
-	getTrainerClasses: function(req, res, next) {
+	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
 			//collect classes under current trainer
-			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
+			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
-				var classes2 = JSON.parse(JSON.stringify(data));
-
-				// var classDet = classes;	
-				// console.log(classes);
 
 				// fix format of dates
-				var traineeCount = 0;
 				for(let i = 0; i < classes.length; i++) {
 					sDate = formatShortDate(classes[i].startDate);
 					eDate = formatShortDate(classes[i].endDate);
@@ -412,15 +407,18 @@ const rendFunctions = {
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
 
-					classes[i].traineeCount = db.count(ScoreDB, {classID: classes[i].classID});
+					var traineesDump = await db.find(ScoreDB, {classID: classes[i].classID});
+					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+						// console.log(traineesVar);
+
+					classes[i].numTrainees = traineesVar.length;
+
 				}
-				
+
 				console.log(classes);
 
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
-					// var courseDet = courses;	
-					// console.log(courses);
 					
 					res.render('trainer-classes', {
 						classList: classes,
@@ -732,7 +730,6 @@ const rendFunctions = {
 
 			// create the class
 			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
-
 			
 			// add into Class model
 			ClassDB.create(tempClass, function(error) {
@@ -740,18 +737,8 @@ const rendFunctions = {
 				res.send({status: 500, mssg: 'Error in adding class.'});
 				console.log("create-class error: " + error);
 			}
-			// add into TrainerInfo array
 			else {
-				res.send({status: 200});	
-				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
-				// 	{$push: {TrainerInfo: tempClass}}, 
-				// 	{useFindAndModify: false}, function(err) {
-				// 		if (err) 
-				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
-				
-				// 		else res.send({status: 200});	
-				// 	});
-				}
+				res.send({status: 200}); }
 			});
 		} catch(e){
 			res.send({status: 500, mssg: 'Cannot connect to db.'});
