@@ -74,7 +74,7 @@ router.post('/deactivate', controller.postDeactivate);
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
-router.post('/update-scores', controller.postUpdateScores);
+router.post('/save-scores', controller.postSaveScores);
 
 
 

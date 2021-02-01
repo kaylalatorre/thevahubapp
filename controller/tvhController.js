@@ -542,7 +542,7 @@ const rendFunctions = {
 			// classes[0].numTrainees = traineesVar.length;
 			classVar[0].trainees = traineesVar;
 
-			res.render('update-scoresheet', {
+			res.render('update-scores', {
 				classID: classID,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
@@ -828,7 +828,7 @@ const rendFunctions = {
 
 	},
 
-	postUpdateScores: function(req, res) {
+	postSaveScores: function(req, res) {
 
 	},
 
