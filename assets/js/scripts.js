@@ -127,26 +127,32 @@ function downloadFile(applicID){
 		cache: false,
 		data: {applicID},
         success: function(res) {
-			alert(res);
-
-			//Convert the Byte Data to BLOB object.
-			var blob = new Blob([res], { type: "application/octetstream" });
-//			var blob = new Blob([res]);
-//			var blob = new Blob([new Uint8Array(buffer, byteOffset, length)]);
 			
-			alert(blob);
-			//Check the Browser type and download the File.
- 
-				var url = window.URL || window.webkitURL;
-				link = url.createObjectURL(blob);
-				var a = $("<a />");
-				a.attr("download", "resume.pdf");
-				a.attr("href", link);
-				$("body").append(a);
-				a[0].click();
-				$("body").remove(a);
-
+			let byteCharacters = atob(res); 
 			
+			const byteNumbers = new Array(byteCharacters.length);
+			for (let i = 0; i < byteCharacters.length; i++) {
+				byteNumbers[i] = byteCharacters.charCodeAt(i);
+			}
+			
+			const byteArray = new Uint8Array(byteNumbers);
+
+			// Convert the Byte Data to BLOB object
+			var blob = new Blob([byteArray], { type: "application/pdf" });
+
+			console.log("blob: " + blob);
+			console.log("[byteArray]: " + [byteArray]);
+
+			// Download the pdf file
+			var url = window.URL || window.webkitURL;
+			link = url.createObjectURL(blob);
+			var a = $("<a />");
+			a.attr("download", "resume-" + applicID + ".pdf");
+			a.attr("href", link);
+			$("body").append(a);
+			a[0].click();
+			$("body").remove(a);
+
 		},
 		error: res => console.log(res)
 	});

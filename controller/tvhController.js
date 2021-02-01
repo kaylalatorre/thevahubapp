@@ -307,14 +307,15 @@ const rendFunctions = {
 		try {
 			let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
 			console.log("in resumeDL(): "+ req.query.applicID);
-			let file = Buffer.from(applic.resume_cv.buffer);
+//			let file = Buffer.from(applic.resume_cv.buffer);
+			let file = Buffer.from(applic.resume_cv.buffer).toString('base64');
 
 
 	//		let filename = req.params.filename;
 	//		let file = await selectFileFromDb(filename);
 //			file = file.rows[0][0]; //Column that contains the blob content
 //			
-			res.setHeader('content-type', 'blob');
+//			res.setHeader('Content-Type', 'blob');
 			res.setHeader('Content-Length', file.length);
 			res.write(file, 'binary');
 //			console.log(res);
