@@ -45,6 +45,14 @@ function createClass(classID, trainerID, courseName, startDate, endDate, startTi
 	return tempClass;
 }
 
+function toDate(date, time) {
+    let d = new Date(date);
+    d.setHours(time.substr(0, time.indexOf(":")));
+    d.setMinutes(time.substr(time.indexOf(":") + 1));
+    d.setSeconds(0);
+	return d.toString();
+}
+
 // format date
 function formatDate(date) {
 	var newDate = new Date(date);
@@ -173,24 +181,30 @@ const rendFunctions = {
 		res.render('form-submitted', {});
 	},
 
-/* [] Schedule Interview
+/* [..] HR Schedule
  */
 	getHRSched: function(req, res) {
 		if(req.session.user.userType === "HRadmin"){
-			
-			
 			res.render('hr-schedule', {
 			});
 		}
-
-
+	},
+	
+	getInterviews: async function(req, res) {
+		try {
+			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
+			res.send(interviews);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}
 	},
 	
 	getIntervApplic: async function(req, res) {
 		try {
 			let interviewers = await db.findMany(UserDB, {userType: "HRinterv"}, '');
 			let applicants = await db.findMany(ApplicantDB, {screenStatus: "ACCEPTED"}, '');
-//			console.log("in getIntervApplic(): /" + interviewers + applicants);
 			res.send({intervs: interviewers, applics: applicants});
 			
 		} catch(e) {
@@ -198,8 +212,14 @@ const rendFunctions = {
 			res.send(e);
 		}
 	},
+	
+	getFilterIntervs: async function(req, res) {
+		console.log("in FilterIntervs(): " + req.query.filterID);
+		let interviews = await InterviewDB.find({intervID: req.query.filterID}, '').populate("interviewer applicant");
+		res.send(interviews);
+	},
 
-/* [..] Screen Applicants
+/* [..] HR Screening
  */
 	
 	getHRScreening: async function(req, res) {
@@ -235,8 +255,7 @@ const rendFunctions = {
 	getApplicInfo: async function(req, res) {
 		try {
 			if(req.session.user.userType === "HRadmin"){
-				console.log(req.query);
-				
+				// console.log(req.query);
                 let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicantID}, '');
                 let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
                 // console.log(encode);
@@ -247,13 +266,56 @@ const rendFunctions = {
 			res.send(e);
 		}
 	},
-
-	getHRReports: function(req, res, next) {
-		res.render('application-reports', {
-		});
+	
+/* [] HR Interviewer
+ */	
+	getApplicList: async function(req, res) {
+		try {
+			if(req.session.user.userType === "HRinterv"){
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let applics = [];
+				let phase;
+				
+				for(i=0; i<intervs.length;i++){
+					if(intervs[i].interviewer.userID === req.session.user.userID){
+						phase = intervs[i].phase;
+						applics.push(intervs[i].applicant);
+					}
+						
+				}
+				
+				res.render('int-applicants', {
+					applicants: applics,
+					intervPhase: phase
+				});
+			}			
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}		
 	},
 	
-	
+	getHRInterviews: async function(req, res) {
+		try {
+			let interviews = await InterviewDB.find({}, '').populate("interviewer applicant");
+			let filterIntervs = interviews.filter(elem => elem.interviewer.userID === req.session.user.userID);
+			res.send(filterIntervs);
+			
+////
+//                let encode = Buffer.from(applic.resume_cv.buffer).toString('base64');
+//                // console.log(encode);
+//                res.send({applic: applic, encoded: encode});
+////
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}		
+	},
+
+	getHRReports: function(req, res, next) {
+		res.render('application-reports');
+	},
 
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
@@ -474,11 +536,6 @@ const rendFunctions = {
 	// }
 	},
 
-	getIntApplicants: function(req, res, next) {
-		res.render('int-applicants', {
-		});
-	},
-
 	getIntSchedule: function(req, res, next) {
 		res.render('int-schedule', {
 		});
@@ -613,13 +670,6 @@ const rendFunctions = {
 		
 	},
 			
-	getTest: function(req, res){
-//		res.render('hr-screening', {});
-		res.render('hr-schedule', {});
-//		res.render('int-applicants', {});
-	},
-
-
 	postLogout: function(req, res) {
 		req.session.destroy();
 		res.redirect('/login');
@@ -786,31 +836,51 @@ const rendFunctions = {
 				let applic = await db.findOne(ApplicantDB, {applicantID: applicID}, '');
 				
 				// format timeSlot to Date type
-				let tStart = schedDate + timeStart;
-				let tEnd = schedDate + timeEnd;
-				console.log("timeStart: " + timeStart);
-				console.log("timeEnd: " + timeEnd);				
-				console.log(tStart);
-				console.log(tEnd);
+				let tStart = toDate(schedDate, timeStart);
+				let tEnd = toDate(schedDate, timeEnd);
+				console.log("tStart: " + tStart); 
+				console.log("tStart: " + tEnd); 
 				
-				let intervSched = await db.insertOne(InterviewDB, {
-								intervID: intID,
-								phase: intervPhase,
-								date: schedDate,
-								timeStart: tStart,
-								timeEnd: tEnd,
-								interviewer: interv,
-								applicant: applic,
-								meetingLink: meetingLink
-							});
+				let maxCap = interv.intervCap;
+				console.log("intervCap: " + maxCap);
 				
-				if(intervSched) res.sendStatus(200);
+				if(maxCap !== 0){
+					let intervSched = await db.insertOne(InterviewDB, {
+									intervID: intID,
+									phase: intervPhase,
+									date: new Date(schedDate),
+									timeStart: tStart,
+									timeEnd: tEnd,
+									interviewer: interv,
+									applicant: applic,
+									meetingLink: meetingLink
+								});
+					maxCap--;
+					let updateInterv = await db.updateOne(UserDB, {userID: intervID}, {intervCap: maxCap});
+					console.log("intervCap: " + maxCap);
+					
+					if(intervSched){
+						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
+						console.log(sched);
+						res.status(200).send(sched);
+					}
+					
+				} else {
+					console.log("Sorry, interview slots of this Interviewer is full.");
+					res.status(400).send("Sorry, interview slots of this Interviewer is full.");
+				}
 			}
 			
 		} catch(e){
 			console.log(e);
 			res.send(e);
 		}
+	},
+	
+	getTest: function(req, res){
+//		res.render('hr-screening', {});
+//		res.render('hr-schedule', {});
+		res.render('int-applicants', {});
 	}
 };
 
