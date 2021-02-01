@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 
-<div id="createClassModal" class="modal">
+<div id="editClassModal" class="modal">
 
   <!-- Modal content -->
-  <div  id="create-class-mod" class="modal-content">
+  <div  id="edit-class-mod" class="modal-content">
     <div>
-    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Create </strong>Class</label>
+    	<label class="h4" style="color: #2c2c2c; float: left; display: inline-block;"><strong>Edit </strong>Class <label id="classID"> {{classID}} </label>  </label>
     	<span class="close">&times;</span>
     </div>
     <div>
     	<hr>
-    	<form id="createClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
+    	<form id="editClass-form" style="margin-bottom: 30px; margin-right: 10px;display: inline-block; width: 54%; vertical-align: top;">
     		<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Course</label>
 				<select id="courseName" class="appdrop" style="width: 68%">  
@@ -21,24 +21,24 @@
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Start Date</label>
-				<input id="startDate" type="date">
+				<input id="startDate" type="date" value="{{startDate}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">End Date</label>
-				<input id="endDate" type="date">
+				<input id="endDate" type="date" value="{{endDate}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
-				<input id="startTime" type="time" min="17:00" max="5:00"> - <input id="endTime" type="time" min="17:00" max="5:00">
+				<input id="startTime" type="time" min="17:00" max="5:00" value="{{startTime}}"> - <input id="endTime" type="time" min="17:00" max="5:00" value="{{endTime}}">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-				<input id="meetLink" placeholder="Meeting Link" style="width: 68%">
+				<input id="meetLink" placeholder="Meeting Link" style="width: 68%" value="{{meetingLink}}">
 			</div>
     	</form>
 
     	<div style="display: inline-block; width:42%;">
-    		<form id="uploadPhoto-form" action="/upload" method="POST" enctype="multipart/form-data">
+   			<form id="uploadPhoto-form" action="/upload" method="POST" enctype="multipart/form-data">
 	    	<div for="course-image" style="align-items: center;border-style: solid; border-width: 1px; border-color: #ebf5ee; overflow: hidden; vertical-align: top;">
 	    		{{!-- <img class="preview-images" style="max-width: 320px; max-height: 170px;" src="/assets/img/hr-admin-pic.jpg"> --}}
 	    		<img class="preview-images" src="#" style="max-width: 340px; max-height: 170px;">
@@ -47,11 +47,10 @@
 	    		<label style="font-size: 10px; margin-left: 3px;">Upload Class Photo (optional)</label>
 				{{!-- <input id="classPhoto" type="file"> --}}
     			<input type="file" class="my-pond" id="classPhoto" name="classPhoto" style="width: 90%;">
-				
 			</form>
     	</div>
-
-    	<button type="button" id="createClass" style="display: block; border: 1px solid #6dc63f;">Save</button>
+    	<button type="button" id="updateClass" style="border: 1px solid #6dc63f;">Save</button>
+		<button type="button" id="deleteClass" style="border: 1px solid red; background: none; color: red;">Delete</button>
     </div>
   </div>
 </div>

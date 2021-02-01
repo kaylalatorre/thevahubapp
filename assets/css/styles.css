@@ -110,6 +110,11 @@ button {
   text-align: center;
 }
 
+.bold {
+  font-weight: bold;
+  color: #6dc63f;
+}
+
 .footer {
   position: fixed;
   left: -10px;
@@ -136,4 +141,8 @@ button:disabled {
 
 .tabActive {
   background-color: #f7f7f7;
+}
+
+input[type="checkbox"] {
+  visibility: hidden;
 }

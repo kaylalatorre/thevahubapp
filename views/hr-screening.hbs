@@ -3,7 +3,13 @@
 {{> hr-navbar}}
 
 <div style="padding: 70px 20px 20px 20px;">
-    <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Screen </strong>Resumes</label></div>
+    <div>
+        <label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Screen </strong>Applications</label>
+        <div style="padding: 5px; float: right">
+            <input type="checkbox" id="sort-sysreq">
+            <label for="sort-sysreq" style="margin-left: 8px;"><strong>Sort by</strong> System Requirements</label>
+        </div>
+    </div>
     <hr>
     <div style="height: 100%;">
         <div class="float-left" style="width: 35%;margin: 0;">
@@ -41,7 +47,7 @@
         </div>
 
         <div class="border rounded float-right" style="width: 65%;padding: 10px;background: #f7f7f7;margin: 0;">
-            <div class="d-flex"><label id="applic-name" class="d-inline-flex float-left h3" style="width: 80%;padding: 0px;padding-left: 10px;">Applicant Name</label>
+            <div class="d-flex"><label id="applic-name" class="d-inline-flex float-left h3" style="width: 80%;padding: 0px;padding-left: 10px;">Applicant Details</label>
                 <button type="button" id="acceptApplcnt" style="border: none;display:flex; margin-bottom: 10px; margin-right: 5px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Accept</button>
                 <button type="button" id="rejectApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Reject</button>
 				<button type="button" id="removeApplcnt" style="background-color: #fff; color: red; border-style: solid; border-width: 0.5px;border-color: #cd201f; display:flex; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Remove</button>
@@ -67,14 +73,14 @@
 							</div>
 							<div class="form-check" style="margin-top: 25px;">
 							  <input class="form-check-input" type="checkbox" id="formCheck-2" name="check2" disabled/>
-							  <label class="form-check-label" style="font-size: 14px;"><strong>Internet speed</strong><br><em>Internet speed of 3 Mbps or higher with 2.5 Mbps running speed.</em><br></label>
+							  <label class="form-check-label hr-disabled" style="font-size: 14px;"><strong>Internet speed</strong><br><em>Internet speed of 3 Mbps or higher with 2.5 Mbps running speed.</em><br></label>
 							</div>
 							<div class="form-check" style="margin-top: 25px;">
-							  <input class="form-check-input" type="checkbox" id="formCheck-3" name="check3" disabled/>
+							  <input class="form-check-input hr-disabled" type="checkbox" id="formCheck-3" name="check3" disabled/>
 							  <label class="form-check-label" style="font-size: 14px;"><strong>Headset</strong><br><em>Over-the-ear headset with a retractable noise-reduction microphone or In-ear headsets (like the ones that come with your phone) are not allowed.</em><br></label>
 							</div>
 							<div class="form-check" style="margin-top: 25px;">
-							  <input class="form-check-input" type="checkbox" id="formCheck-4" name="check4" disabled/>
+							  <input class="form-check-input hr-disabled" type="checkbox" id="formCheck-4" name="check4" disabled/>
 							  <label class="form-check-label" style="font-size: 14px;"><strong>Webcam </strong><br><em>HD / Clear Webcam (360p or higher pixel density) or built-in webcams with 360p or higher pixel density are allowed.</em><br><br></label>
 							</div>
 

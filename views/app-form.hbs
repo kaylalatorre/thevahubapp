@@ -18,19 +18,6 @@
 
     <p><label style="font-size: 14px;">Email </label><label class="required">*</label>
     <input style="width: 100%;" placeholder="Email" oninput="this.className = ''" name="email"></p>
-
-    <p><label style="font-size: 14px;">Address </label><label class="required">*</label>
-    <input style="width: 100%;" placeholder="Address" oninput="this.className = ''" name="address"></p>
-
-    <p><label style="font-size: 14px;">Birthday </label><label class="required">*</label>
-    <input style="width: 100%;" type="date" id="startDate"min="2018-01-01" max="2024-12-31" name="bday"></p>
-    
-    <p><label style="font-size: 14px;">Applying for </label><label class="required">*</label>
-    <select style="width: 100%;" style="width: 100%;" class="appdrop" name="applyFor">    
-      <option class="appoption dropdown-item" href="#">Marketing</option>
-      <option class="appoption dropdown-item" href="#">Real Estate</option>
-      </select>
-    </p>
   </div>
   
   <div id="skillContainer" class="tab">
@@ -79,6 +66,13 @@
     Resume or CV
     <br>
     <input type="file" class="filepond" for="resume" name="resumeFile">
+    </div>
+
+    <hr>
+
+    <div style="margin: 25px; font-weight: bold">
+     <input class="form-check-input" type="checkbox" id="data-policy" name="check4">
+        <label class="form-check-label" for="data-policy" style="font-size: 14px;">By submitting this form, I am agreeing to The VA Hub's <a href="#">Terms and Privacy Policy.</a></label> <label class="required">*</label>
     </div>
 
   </div> 

@@ -102,20 +102,38 @@ function getApplicInfo(applicID){
 	});
 }
 
+// for deployment valist page
+function switchTabContent(tabpane) {
+	var tab = tabpane.id;
+
+	if(tab === "waitlistTab") {
+		$('#waitList').show();
+		$('#hiredList').hide();
+	}
+	else if(tab === "hiredTab"){
+		$('#waitList').hide();
+		$('#hiredList').show();
+	}
+}
+
 $(document).ready(function() {	
 	
 	let calendar;	
 	let currDate = new Date();
 	var calendarEl = document.getElementById('calendar');
+
 	if(calendarEl !== null){
 		calendar = new FullCalendar.Calendar(calendarEl, {
 			initialView: 'dayGridMonth',
 			initialDate: currDate, //set to Current date
+			dayMaxEventRows: 3,
+			// dayMaxEvent: 3,
 			headerToolbar: {
 			  left: 'prev,next today',
 			  center: 'title',
 			  right: 'dayGridMonth,timeGridWeek,timeGridDay'
 			},
+
 			// events: data	
 			eventClick: function(info) {
 				$('#modal-applicName').html(info.event.title);
@@ -372,6 +390,7 @@ $(document).ready(function() {
 						start: parseDate,
 						allDay: false
 					});
+					alert("Schedule created!");
 				} else {
 					alert(res);
 				}

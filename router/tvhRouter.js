@@ -19,6 +19,7 @@ router.get('/get-intervapplic', controller.getIntervApplic);
 router.get('/get-interviews', controller.getInterviews);
 router.get('/get-filterIntervs', controller.getFilterIntervs);
 
+router.get('/application-reports', controller.getHRReports);
 
 // interviewer
 router.get('/int-applicants', controller.getApplicList);
@@ -39,10 +40,14 @@ router.get('/trainer-classes', controller.getTrainerClasses);
 router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
-router.get('/manage-trainees', controller.getTraineeList);
-router.get('/trainer-reports', controller.getSummaryReport);
-router.get('/detailed-report', controller.getDetailedReport);
+router.get('/manage-trainees/:classID', controller.getTraineeList);
+router.get('/update-scoresheet/:classID', controller.getScoresheet);
+router.get('/trainer-reports', controller.getTrainingReports);
 
+
+	// sales admin screen prototypes 
+router.get('/sales-valist', controller.getVAList);
+router.get('/sales-clientlist', controller.getClientList);
 
 /* POST */
 
@@ -68,6 +73,9 @@ router.post('/deactivate', controller.postDeactivate);
 
 	//trainers
 router.post('/create-class', controller.postCreateClass);
+router.post('/edit-class', controller.postEditClass);
+router.post('/delete-class', controller.postDeleteClass);
+
 
 
 module.exports = router;
