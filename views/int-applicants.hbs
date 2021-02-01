@@ -33,8 +33,14 @@
 								<div class="outlined-btn d-inline"  style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>
 							</td>
 							<td style="font-size: 14px;">
-								<div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-pass" id="applicant-pass" type="radio"><label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label></div>
-								<div class="form-check d-inline-block" style="padding-right: 10px;"><input class="form-check-input radiobtn-fail" id="applicant-fail" type="radio"><label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label></div>
+								<div class="form-check d-inline-block" style="padding-right: 10px;">
+                                    <input class="form-check-input radiobtn-pass" id="applicant-pass" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>
+                                </div>
+								<div class="form-check d-inline-block" style="padding-right: 10px;">
+                                    <input class="form-check-input radiobtn-fail" id="applicant-fail" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>
+                                </div>
 							</td>
 						</tr>
 					{{/each}}
