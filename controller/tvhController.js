@@ -169,12 +169,8 @@ const rendFunctions = {
 /* [/] Application
  */
 	getAppForm: function(req, res) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
 		res.render('app-form', {
 		});
-	// }
 	},
 	
 	getFormSubmitted: function(req, res) {
@@ -307,19 +303,44 @@ const rendFunctions = {
 		}		
 	},
 	
+	getResumeDL: async function(req, res){
+		try {
+			let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
+			console.log("in resumeDL(): "+ req.query.applicID);
+			let file = Buffer.from(applic.resume_cv.buffer);
+
+
+	//		let filename = req.params.filename;
+	//		let file = await selectFileFromDb(filename);
+//			file = file.rows[0][0]; //Column that contains the blob content
+//			res.setHeader('content-type', 'text/javascript');
+			res.setHeader('Content-Length', file.length);
+			res.write(file, 'binary');
+//			console.log(res);
+			res.end();					
+//			res.send(file);
+		} catch(e) {
+			console.log(e);
+			res.send(e);				
+		}
+
+	},
+	
+//// non-functional
 	getApplicPDF: async function(req, res){
-////
+
 		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
 		console.log(req.query.applicID);
 		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
 		 console.log(encodePDF);
 		res.status(200).send(encodePDF);
-////		
+	
 	},
 	
 	getPDF: function(req, res){
 		res.render('testpdf', {});
 	},
+////	
 
 	getHRReports: function(req, res, next) {
 		res.render('application-reports');

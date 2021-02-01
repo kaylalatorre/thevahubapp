@@ -2,6 +2,7 @@
 var skillCount = 1;
 var certCount = 1;
 
+/* FRONTEND Specific Functions */
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -65,9 +66,25 @@ function updateButtons(tabpane) {
   }
 }
 
-function getApplicInfo(applicID){
-	console.log("in AJAX: " + applicID);
-	
+// for deployment valist page
+function switchTabContent(tabpane) {
+	var tab = tabpane.id;
+
+	if(tab === "waitlistTab") {
+		$('#waitList').show();
+		$('#hiredList').hide();
+	}
+	else if(tab === "hiredTab"){
+		$('#waitList').hide();
+		$('#hiredList').show();
+	}
+}
+
+
+/* BACKEND Specific Functions */
+
+// onclick AJAX for HR-screening main tab render
+function getApplicInfo(applicID){	
 	$.ajax({
 		method: 'GET',
 		url: '/rend-applicant',
@@ -102,18 +119,37 @@ function getApplicInfo(applicID){
 	});
 }
 
-// for deployment valist page
-function switchTabContent(tabpane) {
-	var tab = tabpane.id;
+// onclick AJAX for INT-applicants download resume
+function downloadFile(applicID){
+	$.ajax({
+		method: 'GET',
+		url: '/download-resume',
+		cache: false,
+		data: {applicID},
+        success: function(res) {
+			alert(res);
 
-	if(tab === "waitlistTab") {
-		$('#waitList').show();
-		$('#hiredList').hide();
-	}
-	else if(tab === "hiredTab"){
-		$('#waitList').hide();
-		$('#hiredList').show();
-	}
+			//Convert the Byte Data to BLOB object.
+			var blob = new Blob([res], { type: "application/octetstream" });
+//			var blob = new Blob([res]);
+//			var blob = new Blob([new Uint8Array(buffer, byteOffset, length)]);
+			
+			alert(blob);
+			//Check the Browser type and download the File.
+
+				var url = window.URL || window.webkitURL;
+				link = url.createObjectURL(blob);
+				var a = $("<a />");
+				a.attr("download", "resume.pdf");
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("body").remove(a);
+
+			
+		},
+		error: res => console.log(res)
+	});
 }
 
 $(document).ready(function() {	
@@ -138,7 +174,6 @@ $(document).ready(function() {
 			eventClick: function(info) {
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
-//				$('#modal-resume').html(info.event.extendedProps.resume);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
 				$('#intervModal').modal();
 				$('.modal-backdrop').remove(); //removes overlaying modal-backdrop
@@ -155,6 +190,11 @@ $(document).ready(function() {
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
+		let applicArrINT = [];
+		let intervArrINT = [];
+		let applicArrFIN = [];
+		let intervArrFIN = [];
+		
 		$.ajax({
 			method: 'GET',
 			url: '/get-interviews',
@@ -165,12 +205,7 @@ $(document).ready(function() {
 				$('div#INTinterv-filter').empty();		
 				$('div#FINapplic-filter').empty();
 				$('div#FINinterv-filter').empty();
-					
-				let applicArrINT = [];
-				let intervArrINT = [];
-				let applicArrFIN = [];
-				let intervArrFIN = [];
-				
+
 				for (let i=0; i<res.length; i++){
 					// render for main Calendar 
 					var parseDate = new Date(res[i].timeStart);
@@ -249,11 +284,12 @@ $(document).ready(function() {
 //			});
 //		}
 //	});
+
 	
+/*
 	// TEST: for resume button view
 	$('#modal-resumeBtn').on("click", function(){
 		let applicID = $('#modal-resume').val();
-//		alert(applicID);
 		let fileName;
 		$.ajax({
 			method: 'GET',
@@ -297,6 +333,8 @@ $(document).ready(function() {
 		
 
 	});
+*/
+
 
 	// for HR-interviewer Calendar render
 	if(window.location.pathname === "/int-schedule"){
