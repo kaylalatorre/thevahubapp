@@ -407,7 +407,7 @@ const rendFunctions = {
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
 
-					var traineesDump = await db.find(ScoreDB, {classID: classes[i].classID});
+					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
 					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 						// console.log(traineesVar);
 
@@ -433,16 +433,14 @@ const rendFunctions = {
 	},
 
 
-	getTRClassDetails: function(req, res, next) {
+	getTRClassDetails: async function(req, res, next) {
 		var classID = req.params.classID;
 		
-		ClassDB.find({classID: classID}, function(err, data) {
+		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
 			// console.log(classVar);
 		
-			// count number of trainees in class
-
 			// fix format of dates
 			sDate = formatDate(classVar[0].startDate);
 			eDate = formatDate(classVar[0].endDate);
@@ -457,15 +455,21 @@ const rendFunctions = {
 			classVar[0].startTime = sTime;
 			classVar[0].endTime = eTime;
 
+			// count number of trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
+
+			// classes[0].numTrainees = traineesVar.length;
+			classVar[0].trainees = traineesVar;
+
 			res.render('tr-class-details', {
 				classID: classID,
 				courseName: classVar[0].courseName,
-				// numTrainees: ,
+				trainees: classVar[0].trainees,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
-
-				// scoresheet
 			});
 		});
 	},
@@ -473,41 +477,39 @@ const rendFunctions = {
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
 		
-		var classArray = [];
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			// var classDet = classVar;	
+			// console.log(classVar);
+		
+			// fix format of dates
+			sDate = formatDate(classVar[0].startDate);
+			eDate = formatDate(classVar[0].endDate);
 
-		// get all trainees
-		var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
-		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-			// console.log(traineesVar);
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
 
-		// find the class
-		var classD = await db.findOne(ClassDB, {classID: classID});
-		var classVar = JSON.parse(JSON.stringify(classD));
-			console.log(classVar);
+			// fix format of time
+			sTime = formatTime(classVar[0].startTime);
+			eTime = formatTime(classVar[0].endTime);
 
-		// // find trainees in class --> not working
-		// var classTR = [];
-		for(var i = 0; i < traineesVar.length; i++){
-			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
-			var classTrainees = JSON.parse(JSON.stringify(classTR));
-		}
-		console.log(classTrainees);
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
 
-		// var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
-		// var user01 = JSON.parse(JSON.stringify(user));
-		// 	console.log(user01);
+			// count number of trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
 
-		// // get trainee details
-		// var userXD = await db.findOne(UserDB, {userID: traineesVar[1].userID});
-		// var userX = JSON.parse(JSON.stringify(userXD));
-		// 	console.log(userX);
+			// classes[0].numTrainees = traineesVar.length;
+			classVar[0].trainees = traineesVar;
 
-		res.render('update-scoresheet', {
-			classID: classID,
-			courseName: classVar.courseName,
-			// classList: userX,
+			res.render('update-scoresheet', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
 		});
-		// });
 	},
 
 	getTraineeList: async function(req, res, next) {
