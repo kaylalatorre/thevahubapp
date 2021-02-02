@@ -23,11 +23,11 @@
     </div>
     <div name="scoresheet" style="padding: 5px;">
     	<label class="h4" style="color: #2c2c2c;"><strong>Scores</strong></label>
-    	<button type="button" class="outlined-btn" style="margin: 2px;" onclick="window.location.href = '/update-scores/{{{classID}}}'">Edit</button>
+    	<button type="button" class="outlined-btn" style="margin: 2px;" onclick="window.location.href = '/update-scoresheet/{{{classID}}}'" id="saveScores">Save</button>
     	<div style="float: right;  text-align: center; margin: 0 auto; display: inline-flex;  padding-right:35px;" id="daysBtnGrp">
-    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" onclick=""><i class="material-icons" style="position: relative; top: 2px;">navigate_before</i></button>
+    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" disabled><i class="material-icons" style="position: relative; top: 2px;">navigate_before</i></button>
     		<label style="font-weight: bold; font-size: 18px; vertical-align: center; padding: 4px 8px;">Day 1</label>
-    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" onclick=""><i class="material-icons" style="position: relative; top: 2px;">navigate_next</i></button>
+    		<button type="button" class="outlined-btn" style="margin: 2px 5px;" disabled><i class="material-icons" style="position: relative; top: 2px;">navigate_next</i></button>
     	</div>
     	<div class="table-responsive" style="width: 98%; margin-top: 20px;">
 	        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
@@ -45,16 +45,17 @@
 	            <tbody>
 					{{#each trainees}}
 	                <tr>
-	                    <td> {{lName}}, {{fName}} </td>
-	                    <td> {{Day1.[0]}} </td>
-	                    <td> {{Day1.[1]}} </td>
-	                    <td> {{Day1.[2]}} </td>
-	                    <td> {{Day1.[3]}} </td>
-	                    <td> {{Day1.[4]}} </td>
+	                    <td class="trName"> {{lName}}, {{fName}} </td>
+	                    <td><input type="text" class="Day1" style="width: 90%;" value="{{Day1.[0]}}"></td>
+	                    <td><input type="text" class="Day1" style="width: 90%;" value="{{Day1.[1]}}"></td>
+	                    <td><input type="text" class="Day1" style="width: 90%;" value="{{Day1.[2]}}"></td>
+	                    <td><input type="text" class="Day1" style="width: 90%;" value="{{Day1.[3]}}"></td>
+	                    <td><input type="text" class="Day1" style="width: 90%;" value="{{Day1.[4]}}"></td>
 	                </tr>
 					{{/each}}
 	            </tbody>
 	        </table>
 	    </div>
     </div>
+    <label id="classID" style="font-size: 2px;"><strong>{{classID}}</strong></label>
 </div>

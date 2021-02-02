@@ -14,7 +14,7 @@
             </div><br>
             <div style="display: inline-block; padding: 2px 5px;">
                 <label style="margin-right: 10px;"><strong>Status</strong></label>
-                <label>On-going</label>
+                <label>{{traineeStatus}}</label>
             </div>
             <!-- make display: block when graduated -->
             <button type="button" id="viewCert" style="display: none; border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
@@ -32,12 +32,14 @@
                 </tr>
             </thead>
             <tbody>
+                {{#each classList}}
                 <tr>
-                    <td> section </td>
-                    <td> course </td>
-                    <td> sched </td>
-                    <td> trainer </td>
+                    <td> {{classID}} </td>
+                    <td> {{courseName}} </td>
+                    <td> {{sDate}} - {{eDate}}, 2021 </td>
+                    <td> {{trainer}} </td>
                 </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>
