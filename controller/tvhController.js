@@ -462,16 +462,17 @@ const rendFunctions = {
 				// console.log(traineesVar);
 
 			// compute for daily average in scoresheet
-			for(var i = 0; i < traineesVar; i++){
+			var finalAve = 0;
+			for(var i = 0; i < traineesVar.length; i++){
 				// get average of score skills per day
-				var ave1 = (Day1[0] + Day1[1] + Day1[2] + Day1[3] + Day1[4] + Day1[5])/6;
-				var ave2 = (Day2[0] + Day2[1] + Day2[2] + Day2[3] + Day2[4] + Day2[5])/6;
-				var ave3 = (Day3[0] + Day3[1] + Day3[2] + Day3[3] + Day3[4] + Day3[5])/6;
-				var ave4 = (Day4[0] + Day4[1] + Day4[2] + Day4[3] + Day4[4] + Day4[5])/6;
-				var ave5 = (Day5[0] + Day5[1] + Day5[2] + Day5[3] + Day5[4] + Day5[5])/6;
-				var ave6 = (Day6[0] + Day6[1] + Day6[2] + Day6[3] + Day6[4] + Day6[5])/6;
-				var ave7 = (Day7[0] + Day7[1] + Day7[2] + Day7[3] + Day7[4] + Day7[5])/6;
-				var ave8 = (Day8[0] + Day8[1] + Day8[2] + Day8[3] + Day8[4] + Day8[5])/6;
+				var ave1 = (traineesVar[i].Day1[0] + traineesVar[i].Day1[1] + traineesVar[i].Day1[2] + traineesVar[i].Day1[3] + traineesVar[i].Day1[4] + traineesVar[i].Day1[5])/6;
+				var ave2 = (traineesVar[i].Day2[0] + traineesVar[i].Day2[1] + traineesVar[i].Day2[2] + traineesVar[i].Day2[3] + traineesVar[i].Day2[4] + traineesVar[i].Day2[5])/6;
+				var ave3 = (traineesVar[i].Day3[0] + traineesVar[i].Day3[1] + traineesVar[i].Day3[2] + traineesVar[i].Day3[3] + traineesVar[i].Day3[4] + traineesVar[i].Day3[5])/6;
+				var ave4 = (traineesVar[i].Day4[0] + traineesVar[i].Day4[1] + traineesVar[i].Day4[2] + traineesVar[i].Day4[3] + traineesVar[i].Day4[4] + traineesVar[i].Day4[5])/6;
+				var ave5 = (traineesVar[i].Day5[0] + traineesVar[i].Day5[1] + traineesVar[i].Day5[2] + traineesVar[i].Day5[3] + traineesVar[i].Day5[4] + traineesVar[i].Day5[5])/6;
+				var ave6 = (traineesVar[i].Day6[0] + traineesVar[i].Day6[1] + traineesVar[i].Day6[2] + traineesVar[i].Day6[3] + traineesVar[i].Day6[4] + traineesVar[i].Day6[5])/6;
+				var ave7 = (traineesVar[i].Day7[0] + traineesVar[i].Day7[1] + traineesVar[i].Day7[2] + traineesVar[i].Day7[3] + traineesVar[i].Day7[4] + traineesVar[i].Day7[5])/6;
+				var ave8 = (traineesVar[i].Day8[0] + traineesVar[i].Day8[1] + traineesVar[i].Day8[2] + traineesVar[i].Day8[3] + traineesVar[i].Day8[4] + traineesVar[i].Day8[5])/6;
 
 				traineesVar[i].Day1[6] = ave1;
 				traineesVar[i].Day2[6] = ave2;
@@ -482,10 +483,14 @@ const rendFunctions = {
 				traineesVar[i].Day7[6] = ave7;
 				traineesVar[i].Day8[6] = ave8;
 
+				traineesVar[i].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+
+				console.log(traineesVar[i]);
+
 			}
 
 			classVar[0].trainees = traineesVar;
-			// console.log(classVar[0].trainees)
+			console.log(classVar[0].trainees)
 
 			res.render('tr-class-details', {
 				classID: classID,
