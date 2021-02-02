@@ -121,6 +121,9 @@ function getApplicInfo(applicID){
 
 // onclick AJAX for INT-applicants download resume
 function downloadFile(applicID){
+	
+	let applicName = $('#applicName-row').text();
+	
 	$.ajax({
 		method: 'GET',
 		url: '/download-resume',
@@ -147,7 +150,7 @@ function downloadFile(applicID){
 			var url = window.URL || window.webkitURL;
 			link = url.createObjectURL(blob);
 			var a = $("<a />");
-			a.attr("download", "resume-" + applicID + ".pdf");
+			a.attr("download", "resume-" + applicID + "_" + applicName +".pdf");
 			a.attr("href", link);
 			$("body").append(a);
 			a[0].click();
@@ -223,12 +226,10 @@ $(document).ready(function() {
 					
 					// render for sidebar filter
 					var applicHTML = '<div class="sched-list">'
-//									    + '<input type="hidden" value='+ res[i].applicant.applicantID +'>'
 										+ '<input class="form-check-input applicantName check-filter" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
 									+ '</div>';
 					var intervHTML = '<div class="sched-list">'
-//									    + '<input type="hidden" value='+ res[i].interviewer.userID +'>'
 										+ '<input class="form-check-input interviewerName check-filter" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
@@ -291,55 +292,48 @@ $(document).ready(function() {
 //		}
 //	});
 
-	
-/*
-	// TEST: for resume button view
+
+	// for HR-interviewer download Resume button (in detailed modal Schedule)
 	$('#modal-resumeBtn').on("click", function(){
 		let applicID = $('#modal-resume').val();
-		let fileName;
+		let applicName = $('#modal-applicName').text();
+		
 		$.ajax({
 			method: 'GET',
-			url: '/get-applicPDF',
+			url: '/download-resume',
+			cache: false,
 			data: {applicID},
 			success: function(res) {
-				
-//				window.open('/view-resume');
-//				alert("in AJAX success..");
-//				fileName = res.encodePDF;
-				
-				$("#dialog").dialog({
-					modal: true, 
-		//			title: fileName,
-					width: 540,  
-					height: 450,
-					buttons: {
-						Close: function () {
-							$(this).dialog('close');
-						}
-					},
-					open: function () { 
-						
-//						var object = "<object data=\"{FileName}\" type=\"application/pdf\" width=\"500px\" height=\"300px\">";
-//						object += "If you are unable to view file, you can download from <a href=\"{FileName}\">here</a>";
-//						object += " or download <a target = \"_blank\" href = \"http://get.adobe.com/reader/\">Adobe PDF Reader</a> to view the file.";
-//						object += "</object>";
-//						object = object.replace(/{FileName}/g, "Files/" + fileName);
 
-//						var object = '<object id="modal-resumePDF" data="" type="application/pdf" style="width: 100%; height: 100vh;"></object>';
-						var object = '<object id="modal-resumePDF" data='+ res.encodePDF +' type="application/pdf" style="width: 100%; height: 100vh;"></object>';
-//						$("object#modal-resumePDF").prop("data", "data:application/pdf;base64," + res.encodePDF);
-						$("#dialog").html(object);
-//						$("#dialog").append(object);
-					}
-				});	
+				let byteCharacters = atob(res); 
+
+				const byteNumbers = new Array(byteCharacters.length);
+				for (let i = 0; i < byteCharacters.length; i++) {
+					byteNumbers[i] = byteCharacters.charCodeAt(i);
+				}
+
+				const byteArray = new Uint8Array(byteNumbers);
+
+				// Convert the Byte Data to BLOB object
+				var blob = new Blob([byteArray], { type: "application/pdf" });
+
+				console.log("blob: " + blob);
+				console.log("[byteArray]: " + [byteArray]);
+
+				// Download the pdf file
+				var url = window.URL || window.webkitURL;
+				link = url.createObjectURL(blob);
+				var a = $("<a />");
+				a.attr("download", "resume-" + applicID + "_" + applicName + ".pdf");
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("body").remove(a);
 			},
 			error: res => console.log(res)
-		}); 
-		
-		
-
+		});
 	});
-*/
+
 
 
 	// for HR-interviewer Calendar render
