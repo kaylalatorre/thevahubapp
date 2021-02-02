@@ -150,7 +150,7 @@ function downloadFile(applicID){
 			var url = window.URL || window.webkitURL;
 			link = url.createObjectURL(blob);
 			var a = $("<a />");
-			a.attr("download", "resume-" + applicID + "_" + applicName +".pdf");
+			a.attr("download", "resume-" + applicID + ".pdf");
 			a.attr("href", link);
 			$("body").append(a);
 			a[0].click();
@@ -340,7 +340,8 @@ $(document).ready(function() {
 				var url = window.URL || window.webkitURL;
 				link = url.createObjectURL(blob);
 				var a = $("<a />");
-				a.attr("download", "resume-" + applicID + "_" + applicName + ".pdf");
+				a.attr("download", "resume-" + applicID + ".pdf");
+//				a.attr("download", "resume-" + applicID + "_" + applicName + ".pdf");
 				a.attr("href", link);
 				$("body").append(a);
 				a[0].click();
@@ -400,7 +401,7 @@ $(document).ready(function() {
 			url: '/update-applicStat',
 			data: {applicIDs: arrIDs, stats: arrStats}, //send both Arrays for posting
 			success: function(res) {
-				alert("in save statBtn success!");
+				alert("Interview status saved.");
 				
 				// disable or change the radio btn preset acc to the Applic status in the db
 				
