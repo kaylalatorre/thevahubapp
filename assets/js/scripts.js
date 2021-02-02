@@ -26,28 +26,28 @@ function changeTab1Class(elClass) {
   var tab1Length = document.getElementsByClassName("tab1row").length;
 
   for (var i = 0; i < tab1Length; i++) { 
-    document.getElementsByClassName("tab1row")[i].className = "tab1row tabInactive"; 
+    document.getElementsByClassName("tab1row")[i].className = "row tab1row tabInactive"; 
   } 
-  elClass.className = "tab1row tabActive";   
+  elClass.className = "row tab1row tabActive";   
 }
 
 function changeTab2Class(elClass) {
   var tab2Length = document.getElementsByClassName("tab2row").length;
 
   for (var i = 0; i < tab2Length; i++) { 
-    document.getElementsByClassName("tab2row")[i].className = "tab2row tabInactive"; 
+    document.getElementsByClassName("tab2row")[i].className = "row tab2row tabInactive"; 
   } 
-  elClass.className = "tab2row tabActive";   
+  elClass.className = "row tab2row tabActive";   
 }
 
 function changeTab3Class(elClass) {
   var tab3Length = document.getElementsByClassName("tab3row").length;
 
   for (var i = 0; i < tab3Length; i++) { 
-    document.getElementsByClassName("tab3row")[i].className = "tab3row tabInactive"; 
+    document.getElementsByClassName("tab3row")[i].className = "row tab3row tabInactive"; 
   } 
 
-  elClass.className = "tab3row tabActive";   
+  elClass.className = "row tab3row tabActive";   
 }
 
 // hr-screening update buttons
