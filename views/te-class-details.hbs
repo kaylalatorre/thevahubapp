@@ -4,7 +4,7 @@
 
 <div style="padding: 70px 20px 20px 20px;">
     <div>
-    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/trainee-classes">Classes</a> > <strong>Class Section</strong></label>
+    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><a href="/trainee-classes">Classes</a> > <strong>Class {{classID}}</strong></label>
         <hr>
     </div>
     <div>
@@ -40,23 +40,24 @@
 		                </tr>
 		            </thead>
 		            <tbody>
-					<!--for each skill-->
+					{{#each skillScores}}
 		                <tr>
-		                    <td> Skill Name </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
-		                    <td>  </td>
+		                    <td> {{skillName}} </td>
+		                    <td> {{Day1}} </td>
+		                    <td> {{Day2}} </td>
+		                    <td> {{Day3}} </td>
+		                    <td> {{Day4}} </td>
+		                    <td> {{Day5}} </td>
+		                    <td> {{Day6}} </td>
+		                    <td> {{Day7}} </td>
+		                    <td> {{Day8}} </td>
+		                    <td> {{Ave}} </td>
 		                </tr>
+					{{/each}}
 		            <!--for the final ave-->
 		            	<tr style="font-weight: bold;">
 		            		<td colspan="9">Final Average</td>
-		            		<td></td>
+		            		<td>{{finalAve}}</td>
 		            	</tr>
 		            </tbody>
 		        </table>

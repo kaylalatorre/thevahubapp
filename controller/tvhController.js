@@ -343,29 +343,64 @@ const rendFunctions = {
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
 
-			// will determine trainee status (on-going, graduated)
+			//collect classes of the trainee
+			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
 
-			// will collect classes of trainee
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
 
-			res.render('trainee-profile', {
-				fName: req.session.user.fName,
-				lName: req.session.user.lName,
-				userID: req.session.user.userID,
-				
-			});
-			
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
+
+				res.render('trainee-profile', {
+					classList: classes,
+					fName: req.session.user.fName,
+					lName: req.session.user.lName,
+					userID: req.session.user.userID,
+				});
+			});			
 		} else {
 			res.redirect('/');
 		}
 	},
 
-	getTraineeClasses: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('trainee-classes', {
-		});
-	// }
+	getTraineeClasses: async function(req, res, next) {
+		if (req.session.user.userType === "Trainee") {
+			//collect classes of the trainee
+			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
+
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
+			
+				res.render('trainee-classes', {
+					classList: classes,
+				});
+			});	
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 	getCertificate: function(req, res, next) {
@@ -378,35 +413,100 @@ const rendFunctions = {
 	},
 
 	getTEClassDet: function(req, res, next) {
-		res.render('te-class-details', {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			// var classDet = classVar;	
+			// console.log(classVar);
+		
+			// fix format of dates
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
+
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
+
+			// fix format of time
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
+
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
+
+			// collect trainee scores
+			var traineeDump = await db.findOne(ScoreDB, {classID: classVar[0].classID, traineeID: req.session.user.userID});
+			var traineeVar = JSON.parse(JSON.stringify(traineeDump));
+				console.log(traineeVar);
+
+			// compute for daily average in scoresheet
+			var finalAve = 0;
+			// get average of score skills per day
+			var ave1 = (traineeVar[0].Day1[0] + traineeVar[0].Day1[1] + traineeVar[0].Day1[2] + traineeVar[0].Day1[3] + traineeVar[0].Day1[4])/5;
+			var ave2 = (traineeVar[0].Day2[0] + traineeVar[0].Day2[1] + traineeVar[0].Day2[2] + traineeVar[0].Day2[3] + traineeVar[0].Day2[4])/5;
+			var ave3 = (traineeVar[0].Day3[0] + traineeVar[0].Day3[1] + traineeVar[0].Day3[2] + traineeVar[0].Day3[3] + traineeVar[0].Day3[4])/5;
+			var ave4 = (traineeVar[0].Day4[0] + traineeVar[0].Day4[1] + traineeVar[0].Day4[2] + traineeVar[0].Day4[3] + traineeVar[0].Day4[4])/5;
+			var ave5 = (traineeVar[0].Day5[0] + traineeVar[0].Day5[1] + traineeVar[0].Day5[2] + traineeVar[0].Day5[3] + traineeVar[0].Day5[4])/5;
+			var ave6 = (traineeVar[0].Day6[0] + traineeVar[0].Day6[1] + traineeVar[0].Day6[2] + traineeVar[0].Day6[3] + traineeVar[0].Day6[4])/5;
+			var ave7 = (traineeVar[0].Day7[0] + traineeVar[0].Day7[1] + traineeVar[0].Day7[2] + traineeVar[0].Day7[3] + traineeVar[0].Day7[4])/5;
+			var ave8 = (traineeVar[0].Day8[0] + traineeVar[0].Day8[1] + traineeVar[0].Day8[2] + traineeVar[0].Day8[3] + traineeVar[0].Day8[4])/5;
+
+			// insert into array
+			traineeVar[0].Day1[5] = ave1;
+			traineeVar[0].Day2[5] = ave2;
+			traineeVar[0].Day3[5] = ave3;
+			traineeVar[0].Day4[5] = ave4;
+			traineeVar[0].Day5[5] = ave5;
+			traineeVar[0].Day6[5] = ave6;
+			traineeVar[0].Day7[5] = ave7;
+			traineeVar[0].Day8[5] = ave8;
+
+			// compute for final average 
+			traineeVar[0].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+			
+			var skillsVar = ['Verbal Communication', 'Written Communication', 'Compliance to Rules', 'Analytical Skills', 'Technical Skills'];
+			traineeVar[0].skillNames = skillsVar;
+
+			classVar[0].trainee = traineeVar;
+			console.log(classVar[0].trainees)
+
+			res.render('te-class-details', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
+				time: classVar[0].startTime + " - " + classVar[0].endTime,
+				meetLink: classVar[0].meetLink,
+			});
 		});
 	},
 
-	getTrainerClasses: function(req, res, next) {
+	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
 			//collect classes under current trainer
-			ClassDB.find({trainerID: req.session.user.userID}, function(err, data) {
+			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
-				var classes2 = JSON.parse(JSON.stringify(data));
-
-				// var classDet = classes;	
-				// console.log(classes);
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
-					sDate = formatShortDate(classes[i].startDate);
-					eDate = formatShortDate(classes[i].endDate);
+					var sDate = formatShortDate(classes[i].startDate);
+					var eDate = formatShortDate(classes[i].endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// collect all trainees under each class
+					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
+					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+						// console.log(traineesVar);
+
+					classes[i].numTrainees = traineesVar.length;
 				}
-				
+
 				// console.log(classes);
 
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
-					// var courseDet = courses;	
-					// console.log(courses);
 					
 					res.render('trainer-classes', {
 						classList: classes,
@@ -421,39 +521,72 @@ const rendFunctions = {
 	},
 
 
-	getTRClassDetails: function(req, res, next) {
+	getTRClassDetails: async function(req, res, next) {
 		var classID = req.params.classID;
 		
-		ClassDB.find({classID: classID}, function(err, data) {
+		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
 			// console.log(classVar);
 		
-			// count number of trainees in class
-
 			// fix format of dates
-			sDate = formatDate(classVar[0].startDate);
-			eDate = formatDate(classVar[0].endDate);
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
 
 			classVar[0].startDate = sDate;
 			classVar[0].endDate = eDate;
 
 			// fix format of time
-			sTime = formatTime(classVar[0].startTime);
-			eTime = formatTime(classVar[0].endTime);
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
 
 			classVar[0].startTime = sTime;
 			classVar[0].endTime = eTime;
 
+			// collect trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
+
+			// compute for daily average in scoresheet
+			var finalAve = 0;
+			for(var i = 0; i < traineesVar.length; i++){
+				// get average of score skills per day
+				var ave1 = (traineesVar[i].Day1[0] + traineesVar[i].Day1[1] + traineesVar[i].Day1[2] + traineesVar[i].Day1[3] + traineesVar[i].Day1[4])/5;
+				var ave2 = (traineesVar[i].Day2[0] + traineesVar[i].Day2[1] + traineesVar[i].Day2[2] + traineesVar[i].Day2[3] + traineesVar[i].Day2[4])/5;
+				var ave3 = (traineesVar[i].Day3[0] + traineesVar[i].Day3[1] + traineesVar[i].Day3[2] + traineesVar[i].Day3[3] + traineesVar[i].Day3[4])/5;
+				var ave4 = (traineesVar[i].Day4[0] + traineesVar[i].Day4[1] + traineesVar[i].Day4[2] + traineesVar[i].Day4[3] + traineesVar[i].Day4[4])/5;
+				var ave5 = (traineesVar[i].Day5[0] + traineesVar[i].Day5[1] + traineesVar[i].Day5[2] + traineesVar[i].Day5[3] + traineesVar[i].Day5[4])/5;
+				var ave6 = (traineesVar[i].Day6[0] + traineesVar[i].Day6[1] + traineesVar[i].Day6[2] + traineesVar[i].Day6[3] + traineesVar[i].Day6[4])/5;
+				var ave7 = (traineesVar[i].Day7[0] + traineesVar[i].Day7[1] + traineesVar[i].Day7[2] + traineesVar[i].Day7[3] + traineesVar[i].Day7[4])/5;
+				var ave8 = (traineesVar[i].Day8[0] + traineesVar[i].Day8[1] + traineesVar[i].Day8[2] + traineesVar[i].Day8[3] + traineesVar[i].Day8[4])/5;
+
+				// insert into array
+				traineesVar[i].Day1[5] = ave1;
+				traineesVar[i].Day2[5] = ave2;
+				traineesVar[i].Day3[5] = ave3;
+				traineesVar[i].Day4[5] = ave4;
+				traineesVar[i].Day5[5] = ave5;
+				traineesVar[i].Day6[5] = ave6;
+				traineesVar[i].Day7[5] = ave7;
+				traineesVar[i].Day8[5] = ave8;
+
+				// compute for final average 
+				traineesVar[i].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+
+				// console.lo(traineesVar[i]);
+			}
+
+			classVar[0].trainees = traineesVar;
+			console.log(classVar[0].trainees)
+
 			res.render('tr-class-details', {
 				classID: classID,
 				courseName: classVar[0].courseName,
-				// numTrainees: ,
+				trainees: classVar[0].trainees,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
-
-				// scoresheet
 			});
 		});
 	},
@@ -461,36 +594,77 @@ const rendFunctions = {
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
 		
-		// get all trainees
-		var traineesDump = await db.findMany(UserDB, {userType: "Trainee"});
-		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-			// console.log(traineesVar);
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			// var classDet = classVar;	
+			// console.log(classVar);
+		
+			// fix format of dates
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
 
-		// find the class
-		// ClassDB.find({classID: classID}, function(err, data) {
-		var classD = await db.findOne(ClassDB, {classID: classID});
-		var classVar = JSON.parse(JSON.stringify(classD));
-			console.log(classVar);
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
 
-		// // find trainees in class --> not working
-		// var classTR = [];
-		for(var i = 0; i < traineesVar.length; i++){
-			var classTR = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[i].userID}, '');
-			var classTrainees = JSON.parse(JSON.stringify(classTR));
-		}
-		// console.log(classTrainees);
+			// fix format of time
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
 
-		var user = await db.findOne(ScoreDB, {classID: classID, traineeID: traineesVar[1].userID},);
-		var user01 = JSON.parse(JSON.stringify(user));
-			console.log(user01);
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
 
+			// count number of trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
 
-		res.render('update-scoresheet', {
-			classID: classID,
-			courseName: classVar.courseName,
-			classList: user01,
+			// classes[0].numTrainees = traineesVar.length;
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
 		});
-		// });
+	},
+
+	getScores: async function(req, res, next) {
+		var classID = req.params.classID;
+		
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+			// var classDet = classVar;	
+			// console.log(classVar);
+		
+			// fix format of dates
+			var sDate = formatDate(classVar[0].startDate);
+			var eDate = formatDate(classVar[0].endDate);
+
+			classVar[0].startDate = sDate;
+			classVar[0].endDate = eDate;
+
+			// fix format of time
+			var sTime = formatTime(classVar[0].startTime);
+			var eTime = formatTime(classVar[0].endTime);
+
+			classVar[0].startTime = sTime;
+			classVar[0].endTime = eTime;
+
+			// count number of trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+				// console.log(traineesVar);
+
+			// classes[0].numTrainees = traineesVar.length;
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scores', {
+				classID: classID,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
 	},
 
 	getTraineeList: async function(req, res, next) {
@@ -713,7 +887,6 @@ const rendFunctions = {
 
 			// create the class
 			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
-
 			
 			// add into Class model
 			ClassDB.create(tempClass, function(error) {
@@ -721,18 +894,8 @@ const rendFunctions = {
 				res.send({status: 500, mssg: 'Error in adding class.'});
 				console.log("create-class error: " + error);
 			}
-			// add into TrainerInfo array
 			else {
-				res.send({status: 200});	
-				// UserDB.findOneAndUpdate({userID: req.session.user.userID},
-				// 	{$push: {TrainerInfo: tempClass}}, 
-				// 	{useFindAndModify: false}, function(err) {
-				// 		if (err) 
-				// 			res.send({status: 500, mssg: 'Cannot update Trainer Info'});
-				
-				// 		else res.send({status: 200});	
-				// 	});
-				}
+				res.send({status: 200}); }
 			});
 		} catch(e){
 			res.send({status: 500, mssg: 'Cannot connect to db.'});
@@ -779,6 +942,10 @@ const rendFunctions = {
 				res.send({status: 200});
 			}
 		});
+
+	},
+
+	postSaveScores: function(req, res) {
 
 	},
 
