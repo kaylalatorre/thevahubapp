@@ -402,7 +402,7 @@ $(document).ready(function() {
 			data: {applicIDs: arrIDs, stats: arrStats}, //send both Arrays for posting
 			success: function(res) {
 				alert("Interview status saved.");
-				
+				 
 				// disable or change the radio btn preset acc to the Applic status in the db
 				
 			},
