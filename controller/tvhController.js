@@ -414,43 +414,53 @@ const rendFunctions = {
 			// collect trainee scores
 			var traineeDump = await db.findOne(ScoreDB, {classID: classVar[0].classID, traineeID: req.session.user.userID});
 			var traineeVar = JSON.parse(JSON.stringify(traineeDump));
-				console.log(traineeVar);
+				// console.log(traineeVar);
 
 			// compute for daily average in scoresheet
 			var finalAve = 0;
 			// get average of score skills per day
-			var ave1 = (traineeVar[0].Day1[0] + traineeVar[0].Day1[1] + traineeVar[0].Day1[2] + traineeVar[0].Day1[3] + traineeVar[0].Day1[4])/5;
-			var ave2 = (traineeVar[0].Day2[0] + traineeVar[0].Day2[1] + traineeVar[0].Day2[2] + traineeVar[0].Day2[3] + traineeVar[0].Day2[4])/5;
-			var ave3 = (traineeVar[0].Day3[0] + traineeVar[0].Day3[1] + traineeVar[0].Day3[2] + traineeVar[0].Day3[3] + traineeVar[0].Day3[4])/5;
-			var ave4 = (traineeVar[0].Day4[0] + traineeVar[0].Day4[1] + traineeVar[0].Day4[2] + traineeVar[0].Day4[3] + traineeVar[0].Day4[4])/5;
-			var ave5 = (traineeVar[0].Day5[0] + traineeVar[0].Day5[1] + traineeVar[0].Day5[2] + traineeVar[0].Day5[3] + traineeVar[0].Day5[4])/5;
-			var ave6 = (traineeVar[0].Day6[0] + traineeVar[0].Day6[1] + traineeVar[0].Day6[2] + traineeVar[0].Day6[3] + traineeVar[0].Day6[4])/5;
-			var ave7 = (traineeVar[0].Day7[0] + traineeVar[0].Day7[1] + traineeVar[0].Day7[2] + traineeVar[0].Day7[3] + traineeVar[0].Day7[4])/5;
-			var ave8 = (traineeVar[0].Day8[0] + traineeVar[0].Day8[1] + traineeVar[0].Day8[2] + traineeVar[0].Day8[3] + traineeVar[0].Day8[4])/5;
+			var ave1 = (traineeVar.Day1[0] + traineeVar.Day1[1] + traineeVar.Day1[2] + traineeVar.Day1[3] + traineeVar.Day1[4])/5;
+			var ave2 = (traineeVar.Day2[0] + traineeVar.Day2[1] + traineeVar.Day2[2] + traineeVar.Day2[3] + traineeVar.Day2[4])/5;
+			var ave3 = (traineeVar.Day3[0] + traineeVar.Day3[1] + traineeVar.Day3[2] + traineeVar.Day3[3] + traineeVar.Day3[4])/5;
+			var ave4 = (traineeVar.Day4[0] + traineeVar.Day4[1] + traineeVar.Day4[2] + traineeVar.Day4[3] + traineeVar.Day4[4])/5;
+			var ave5 = (traineeVar.Day5[0] + traineeVar.Day5[1] + traineeVar.Day5[2] + traineeVar.Day5[3] + traineeVar.Day5[4])/5;
+			var ave6 = (traineeVar.Day6[0] + traineeVar.Day6[1] + traineeVar.Day6[2] + traineeVar.Day6[3] + traineeVar.Day6[4])/5;
+			var ave7 = (traineeVar.Day7[0] + traineeVar.Day7[1] + traineeVar.Day7[2] + traineeVar.Day7[3] + traineeVar.Day7[4])/5;
+			var ave8 = (traineeVar.Day8[0] + traineeVar.Day8[1] + traineeVar.Day8[2] + traineeVar.Day8[3] + traineeVar.Day8[4])/5;
 
 			// insert into array
-			traineeVar[0].Day1[5] = ave1;
-			traineeVar[0].Day2[5] = ave2;
-			traineeVar[0].Day3[5] = ave3;
-			traineeVar[0].Day4[5] = ave4;
-			traineeVar[0].Day5[5] = ave5;
-			traineeVar[0].Day6[5] = ave6;
-			traineeVar[0].Day7[5] = ave7;
-			traineeVar[0].Day8[5] = ave8;
+			traineeVar.Day1[5] = ave1;
+			traineeVar.Day2[5] = ave2;
+			traineeVar.Day3[5] = ave3;
+			traineeVar.Day4[5] = ave4;
+			traineeVar.Day5[5] = ave5;
+			traineeVar.Day6[5] = ave6;
+			traineeVar.Day7[5] = ave7;
+			traineeVar.Day8[5] = ave8;
 
 			// compute for final average 
-			traineeVar[0].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+			traineeVar.finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
 			
-			var skillsVar = ['Verbal Communication', 'Written Communication', 'Compliance to Rules', 'Analytical Skills', 'Technical Skills'];
-			traineeVar[0].skillNames = skillsVar;
+			var skill1 = ['Verbal Communication', traineeVar.Day1[0], traineeVar.Day2[0], traineeVar.Day3[0], traineeVar.Day4[0], traineeVar.Day5[0],traineeVar.Day6[0],traineeVar.Day7[0],traineeVar.Day8[0] ];
+			var skill2 = ['Written Communication', traineeVar.Day1[1], traineeVar.Day2[1], traineeVar.Day3[1], traineeVar.Day4[1], traineeVar.Day5[1],traineeVar.Day6[1],traineeVar.Day7[1],traineeVar.Day8[1] ];
+			var skill3 = ['Compliance to Rules', traineeVar.Day1[2], traineeVar.Day2[2], traineeVar.Day3[2], traineeVar.Day4[2], traineeVar.Day5[2],traineeVar.Day6[2],traineeVar.Day7[2],traineeVar.Day8[2] ];
+			var skill4 = ['Analytical Skills', traineeVar.Day1[3], traineeVar.Day2[3], traineeVar.Day3[3], traineeVar.Day4[3], traineeVar.Day5[3],traineeVar.Day6[3],traineeVar.Day7[3],traineeVar.Day8[3] ];
+			var skill5 = ['Technical Skills', traineeVar.Day1[4], traineeVar.Day2[4], traineeVar.Day3[4], traineeVar.Day4[4], traineeVar.Day5[4],traineeVar.Day6[4],traineeVar.Day7[4],traineeVar.Day8[4] ];
+			var ave = [traineeVar.Day1[5], traineeVar.Day2[5], traineeVar.Day3[5], traineeVar.Day4[5], traineeVar.Day5[5],traineeVar.Day6[5],traineeVar.Day7[5],traineeVar.Day8[5] ];
 
+			
 			classVar[0].trainee = traineeVar;
-			console.log(classVar[0].trainees)
+			console.log(classVar[0].trainee)
 
 			res.render('te-class-details', {
 				classID: classID,
 				courseName: classVar[0].courseName,
-				trainees: classVar[0].trainees,
+				skill1: skill1,
+				skill2: skill2,
+				skill3: skill3,
+				skill4: skill4,
+				skill5: skill5,
+				dailyAve: ave,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
@@ -551,11 +561,11 @@ const rendFunctions = {
 				// compute for final average 
 				traineesVar[i].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
 
-				// console.lo(traineesVar[i]);
+				// console.log(traineesVar[i]);
 			}
 
 			classVar[0].trainees = traineesVar;
-			console.log(classVar[0].trainees)
+			// console.log(classVar[0].trainees)
 
 			res.render('tr-class-details', {
 				classID: classID,
