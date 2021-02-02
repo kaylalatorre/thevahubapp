@@ -197,6 +197,30 @@ $(document).ready(function() {
 		});
 	}); 
 
+	// Hide scores and "Edit" button
+	$('#theScores').click(function() {
+		var theScore = document.getElementsByClassName('theScore');
+		var editScore = document.getElementsByClassName('editScore');
+		// var saveBTN = document.getElementById('saveScores');
+		// var today = new Date();
+		// var endDate = $('#endhide').text()
+		// var compareDate = new Date(endDate);
+
+		// if(compareDate < today) {
+		// 	alert("This class ended in " + getDate(compareDate) + ". You cannot edit the scores for this class anymore.");
+		// }
+		// else {
+			//hide text, show editor
+			for(var i = 0; i < theScore.length; i++) 
+				theScore[i].style.display = 'none';
+			
+			for(var i = 0; i < editScore.length; i++) 
+				editScore[i].style.display = 'inline';
+			
+			editScore.style.display = 'inline';
+		// }
+	});
+
 	$('#saveScores').click(function() {
 		var classID = $('#classID').text();
 		var trName = document.getElementsByClassName('trName');

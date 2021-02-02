@@ -43,7 +43,6 @@ router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
 router.get('/update-scoresheet/:classID', controller.getScoresheet);
-router.get('/update-scores/:classID', controller.getScores);
 router.get('/trainer-reports', controller.getTrainingReports);
 
 	// sales admin screen prototypes 
@@ -80,7 +79,7 @@ router.post('/deactivate', controller.postDeactivate);
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
-router.post('/save-scores', controller.postSaveScores);
+router.post('/edit-scores', controller.postEditScores);
 
 
 

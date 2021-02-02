@@ -596,7 +596,8 @@ const rendFunctions = {
 
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
-		
+		// which day?
+
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
@@ -626,44 +627,8 @@ const rendFunctions = {
 
 			res.render('update-scoresheet', {
 				classID: classID,
-				courseName: classVar[0].courseName,
-				trainees: classVar[0].trainees,
-			});
-		});
-	},
-
-	getScores: async function(req, res, next) {
-		var classID = req.params.classID;
-		
-		ClassDB.find({classID: classID}, async function(err, data) {
-			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
-		
-			// fix format of dates
-			var sDate = formatDate(classVar[0].startDate);
-			var eDate = formatDate(classVar[0].endDate);
-
-			classVar[0].startDate = sDate;
-			classVar[0].endDate = eDate;
-
-			// fix format of time
-			var sTime = formatTime(classVar[0].startTime);
-			var eTime = formatTime(classVar[0].endTime);
-
-			classVar[0].startTime = sTime;
-			classVar[0].endTime = eTime;
-
-			// count number of trainees in class
-			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
-			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-				// console.log(traineesVar);
-
-			// classes[0].numTrainees = traineesVar.length;
-			classVar[0].trainees = traineesVar;
-
-			res.render('update-scores', {
-				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
 			});
@@ -948,7 +913,7 @@ const rendFunctions = {
 
 	},
 
-	postSaveScores: function(req, res) {
+	postEditScores: function(req, res) {
 
 	},
 
