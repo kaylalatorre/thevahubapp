@@ -201,19 +201,19 @@ $(document).ready(function() {
 		var classID = $('#classID').text();
 		var trName = document.getElementsByClassName('trName');
 
-		$.post('/save-scores', { classID: classID }, function(res) {
-			switch (res.status){
-				case 200: {
-					alert("Scores updated successfully.");
-					window.location.href = '/update-scoresheet/classID';
-					break;
-				}
-				case 500: {
-					alert(res.mssg);
-					break;
-				}
-			}
-		});
+		// $.post('/save-scores', { classID: classID }, function(res) {
+		// 	switch (res.status){
+		// 		case 200: {
+		// 			alert("Scores updated successfully.");
+		// 			window.location.href = '/update-scoresheet/classID';
+		// 			break;
+		// 		}
+		// 		case 500: {
+		// 			alert(res.mssg);
+		// 			break;
+		// 		}
+		// 	}
+		// });
 	}); 	
 
 });
