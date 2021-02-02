@@ -1056,7 +1056,7 @@ const rendFunctions = {
 		}
 	},
 	
-	postApplicStatus: async function(req, res) {
+	postApplicStatuses: async function(req, res) {
 		try {    
 			if(req.session.user.userType === "HRinterv"){
 				let {applicIDs, stats} = req.body;
@@ -1082,10 +1082,33 @@ const rendFunctions = {
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
-					}
+				}
 				  
 				res.status(200).send();
 			}	
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
+	},
+
+	postOneStatus: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRinterv"){
+				let {appID, intervPhase} = req.body;
+				let applicant;
+				
+				console.log("in postOneStatus() appID: "+ appID);
+				console.log("in postOneStatus() intervPhase: "+ intervPhase);
+				
+				if(intervPhase === "Initial")
+					applicant = await db.updateOne(ApplicantDB, {applicantID: appID}, {initialStatus: "FOR REVIEW"}); 
+				
+				if(intervPhase === "Final")
+					applicant = await db.updateOne(ApplicantDB, {applicantID: appID}, {finalStatus: "FOR REVIEW"});
+				
+				res.status(200).send();
+			}
 		} catch(e){
 			console.log(e);
 			res.send(e);

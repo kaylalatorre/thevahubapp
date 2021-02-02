@@ -181,7 +181,10 @@ $(document).ready(function() {
 
 			// events: data	
 			eventClick: function(info) {
-				$('#modal-applicID').html(info.event.extendedProps.applicID);				
+				
+				$('#modal-applicID').val(info.event.extendedProps.applicID);
+				$('#modal-intervPhase').val(info.event.extendedProps.intervPhase);	
+				
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
@@ -265,18 +268,57 @@ $(document).ready(function() {
 		});
 	}
 	
-/* WIP function
-	// int-schedule Interviewed checkbox
-	$("tr.row-applic input").prop('disabled', true);
-	
-	if ($('#interviewed').attr('checked')){
-		let row_applicID = $('#modal-applicID').html();	
-		$("tr.row-applic input[name='applic-"+ row_applicID +"]").prop('disabled', false);
+	// int-applicants for disable/able input radio buttons in Status
+	if(window.location.pathname === "/int-applicants") { 
 		
-		let applicName = $('#modal-applicName').text();
-		alert("Please update Interview status of Applicant " + applicName);
-	} 
-*/	
+		// get Array of applicant IDs
+		let arrIDs = [];
+		$(".hidden-appID").each(function(index, elem) {
+			console.log(".hidden-appID: "+ $(elem).val());
+			arrIDs.push($(elem).val());
+		});
+		
+		let arrInits = []; 
+		$(".hidden-initStat").each(function(index, elem) {
+			console.log(".hidden-initStat: "+ $(elem).val());
+			arrInits.push($(elem).val());
+		});
+		
+		let arrFinals = []; 
+		$(".hidden-finalStat").each(function(index, elem) {
+			console.log(".hidden-finalStat: "+ $(elem).val());
+			arrFinals.push($(elem).val());
+		});
+		
+		$("tr.row-applic input").prop('disabled', true);		
+		
+		for(let i=0; i<arrIDs.length; i++){
+			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW")
+				$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").prop('disabled', false);
+				console.log($("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").val());
+		}
+	}
+	
+	// int-schedule Interviewed button
+	$("button#btn-Interviewed").on("click", function() {
+		let rowAppID = $('#modal-applicID').val();	
+		let intPhase = $('#modal-intervPhase').val();
+		
+		// to do FRONTEND: update Color of this event in Calendar
+		
+		$.ajax({
+			method: 'POST',
+			url: '/post-applicStat',
+			data: {appID: rowAppID, intervPhase: intPhase},
+			success: function(res) {
+				let applicName = $('#modal-applicName').text();
+				alert("Please update Interview status of Applicant " + applicName);
+			},
+			error: res => console.log(res)
+		});
+	});
+	
+	
 
 /* SEMI-FUNCTION 
 	// for HR-interviewer sidebar filter
@@ -370,7 +412,8 @@ $(document).ready(function() {
 						extendedProps: {
 						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
 						  meetLink: res[i].meetingLink,
-						  applicID: res[i].applicant.applicantID
+						  applicID: res[i].applicant.applicantID,
+						  intervPhase: res[i].phase
 						},
 						description: 'Interview Details'
 					});
@@ -398,7 +441,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			method: 'POST',
-			url: '/update-applicStat',
+			url: '/update-applicStats',
 			data: {applicIDs: arrIDs, stats: arrStats}, //send both Arrays for posting
 			success: function(res) {
 				alert("Interview status saved.");
