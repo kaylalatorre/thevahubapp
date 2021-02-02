@@ -429,7 +429,7 @@ const rendFunctions = {
 			var dailyAve = [ave1, ave2, ave3, ave4, ave5];
 
 			// compute for final average 
-			traineeVar.finalAve = (ave1 + ave2 + ave3 + ave4 + ave5)/5;
+			finalAve = (ave1 + ave2 + ave3 + ave4 + ave5)/5;
 			
 			var skill1 = ['Verbal Communication', traineeVar.Day1[0], traineeVar.Day2[0], traineeVar.Day3[0], traineeVar.Day4[0], traineeVar.Day5[0],traineeVar.Day6[0],traineeVar.Day7[0],traineeVar.Day8[0] ];
 			var skill2 = ['Written Communication', traineeVar.Day1[1], traineeVar.Day2[1], traineeVar.Day3[1], traineeVar.Day4[1], traineeVar.Day5[1],traineeVar.Day6[1],traineeVar.Day7[1],traineeVar.Day8[1] ];
@@ -523,10 +523,11 @@ const rendFunctions = {
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 				// console.log(traineesVar);
+			var numTrainees = traineesVar.length;
 
 			// compute for daily average in scoresheet
 			var finalAve = 0;
-			for(var i = 0; i < traineesVar.length; i++){
+			for(var i = 0; i < numTrainees; i++){
 				// get average of score skills per day
 				var ave1 = (traineesVar[i].Day1[0] + traineesVar[i].Day1[1] + traineesVar[i].Day1[2] + traineesVar[i].Day1[3] + traineesVar[i].Day1[4])/5;
 				var ave2 = (traineesVar[i].Day2[0] + traineesVar[i].Day2[1] + traineesVar[i].Day2[2] + traineesVar[i].Day2[3] + traineesVar[i].Day2[4])/5;
@@ -550,7 +551,7 @@ const rendFunctions = {
 				// compute for final average 
 				traineesVar[i].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
 
-				// console.log(traineesVar[i]);
+				console.log(traineesVar[i]);
 			}
 
 			classVar[0].trainees = traineesVar;
@@ -559,6 +560,7 @@ const rendFunctions = {
 			res.render('tr-class-details', {
 				classID: classID,
 				courseName: classVar[0].courseName,
+				numTrainees: numTrainees,
 				trainees: classVar[0].trainees,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
