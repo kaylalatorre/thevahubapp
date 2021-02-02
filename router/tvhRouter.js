@@ -25,6 +25,9 @@ router.get('/application-reports', controller.getHRReports);
 router.get('/int-applicants', controller.getApplicList);
 router.get('/int-schedule', controller.getIntSchedule);
 router.get('/get-HRinterviews', controller.getHRInterviews);
+router.get('/get-applicPDF', controller.getApplicPDF);
+router.get('/view-resume', controller.getPDF);
+router.get('/download-resume', controller.getResumeDL);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
@@ -65,6 +68,10 @@ router.post('/reject-applicant', controller.postRejectApplic);
 router.post('/remove-applicant', controller.postRemoveApplic);
 
 router.post('/create-intsched', controller.postIntervSched);	
+
+//interviewer
+router.post('/update-applicStat', controller.postApplicStatus);
+
 
 	//trainees
 router.post('/deactivate', controller.postDeactivate);

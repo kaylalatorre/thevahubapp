@@ -2,6 +2,7 @@
 var skillCount = 1;
 var certCount = 1;
 
+/* FRONTEND Specific Functions */
 // collapsible
 var coll = document.getElementsByClassName("collapsible");
 var i;
@@ -65,9 +66,25 @@ function updateButtons(tabpane) {
   }
 }
 
-function getApplicInfo(applicID){
-	console.log("in AJAX: " + applicID);
-	
+// for deployment valist page
+function switchTabContent(tabpane) {
+	var tab = tabpane.id;
+
+	if(tab === "waitlistTab") {
+		$('#waitList').show();
+		$('#hiredList').hide();
+	}
+	else if(tab === "hiredTab"){
+		$('#waitList').hide();
+		$('#hiredList').show();
+	}
+}
+
+
+/* BACKEND Specific Functions */
+
+// onclick AJAX for HR-screening main tab render
+function getApplicInfo(applicID){	
 	$.ajax({
 		method: 'GET',
 		url: '/rend-applicant',
@@ -102,18 +119,46 @@ function getApplicInfo(applicID){
 	});
 }
 
-// for deployment valist page
-function switchTabContent(tabpane) {
-	var tab = tabpane.id;
+// onclick AJAX for INT-applicants download resume
+function downloadFile(applicID){
+	
+	let applicName = $('#applicName-row').text();
+	
+	$.ajax({
+		method: 'GET',
+		url: '/download-resume',
+		cache: false,
+		data: {applicID},
+        success: function(res) {
+			
+			let byteCharacters = atob(res); 
+			
+			const byteNumbers = new Array(byteCharacters.length);
+			for (let i = 0; i < byteCharacters.length; i++) {
+				byteNumbers[i] = byteCharacters.charCodeAt(i);
+			}
+			
+			const byteArray = new Uint8Array(byteNumbers);
 
-	if(tab === "waitlistTab") {
-		$('#waitList').show();
-		$('#hiredList').hide();
-	}
-	else if(tab === "hiredTab"){
-		$('#waitList').hide();
-		$('#hiredList').show();
-	}
+			// Convert the Byte Data to BLOB object
+			var blob = new Blob([byteArray], { type: "application/pdf" });
+
+			console.log("blob: " + blob);
+			console.log("[byteArray]: " + [byteArray]);
+
+			// Download the pdf file
+			var url = window.URL || window.webkitURL;
+			link = url.createObjectURL(blob);
+			var a = $("<a />");
+			a.attr("download", "resume-" + applicID + ".pdf");
+			a.attr("href", link);
+			$("body").append(a);
+			a[0].click();
+			$("body").remove(a);
+
+		},
+		error: res => console.log(res)
+	});
 }
 
 $(document).ready(function() {	
@@ -136,23 +181,29 @@ $(document).ready(function() {
 
 			// events: data	
 			eventClick: function(info) {
-				alert('Event: ' + info.event.title);
-				alert(info.event.description);
-				
+				$('#modal-applicID').html(info.event.extendedProps.applicID);				
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
-				$('#modal-resume').html(info.event.extendedProps.resume);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
 				$('#intervModal').modal();
+				$('.modal-backdrop').remove(); //removes overlaying modal-backdrop
+				
+				//test for pdf viewer
+				$('#modal-resume').val(info.event.extendedProps.applicID);
+				console.log("in eventClick(): "+ info.event.extendedProps.applicID);
 			}
 		});  
 
 		calendar.render();	
-
 	}
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
+		let applicArrINT = [];
+		let intervArrINT = [];
+		let applicArrFIN = [];
+		let intervArrFIN = [];
+		
 		$.ajax({
 			method: 'GET',
 			url: '/get-interviews',
@@ -163,12 +214,7 @@ $(document).ready(function() {
 				$('div#INTinterv-filter').empty();		
 				$('div#FINapplic-filter').empty();
 				$('div#FINinterv-filter').empty();
-					
-				let applicArrINT = [];
-				let intervArrINT = [];
-				let applicArrFIN = [];
-				let intervArrFIN = [];
-				
+
 				for (let i=0; i<res.length; i++){
 					// render for main Calendar 
 					var parseDate = new Date(res[i].timeStart);
@@ -181,12 +227,12 @@ $(document).ready(function() {
 					// render for sidebar filter
 					var applicHTML = '<div class="sched-list">'
 //									    + '<input type="hidden" value='+ res[i].applicant.applicantID +'>'
-										+ '<input class="form-check-input applicantName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<input class="form-check-input applicantName check-filter HRcheckbox" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="applicantName" style="font-size: 14px;">' + res[i].applicant.fName + " " + res[i].applicant.lName + '</label>'
 									+ '</div>';
 					var intervHTML = '<div class="sched-list">'
 //									    + '<input type="hidden" value='+ res[i].interviewer.userID +'>'
-										+ '<input class="form-check-input interviewerName check-filter" type="checkbox" value='+ res[i].intervID +'>'
+										+ '<input class="form-check-input interviewerName check-filter HRcheckbox" type="checkbox" value='+ res[i].intervID +'>'
 										+ '<label class="form-check-label" for="interviewerName" style="font-size: 14px;">' + res[i].interviewer.fName + " " + res[i].interviewer.lName + '</label>'
 									+ '</div>';
 							
@@ -219,35 +265,93 @@ $(document).ready(function() {
 		});
 	}
 	
-//	// for HR-interviewer sidebar filter
-//	$('.check-filter').on("click", function() {
-//		alert("in check-filter function()");
-//		if($(this).prop('checked')){
-//			alert("in check-filter function()");
-//			let filterID = $(this).val(); //get value of the checkbox input --> intervID
-//			console.log(filterID);
-//			$.ajax({
-//				method: 'GET',
-//				url: '/get-filterIntervs',
-//				data: filterID,
-//				success: function(res) {
-//					//empty the Calendar
-//					
-//					// render Calendar grids
-//					for (let i=0; i<res.length; i++){
-//						var parseDate = new Date(res[i].timeStart);
-//						calendar.addEvent({
-//							title: res[i].applicant.fName + " " + res[i].applicant.lName,
-//							start: parseDate,
-//							allDay: false
-//						});
-//					}
-//				},
-//				error: res => console.log(res)
-//			});
-//		}
-//	});
+/* WIP function
+	// int-schedule Interviewed checkbox
+	$("tr.row-applic input").prop('disabled', true);
 	
+	if ($('#interviewed').attr('checked')){
+		let row_applicID = $('#modal-applicID').html();	
+		$("tr.row-applic input[name='applic-"+ row_applicID +"]").prop('disabled', false);
+		
+		let applicName = $('#modal-applicName').text();
+		alert("Please update Interview status of Applicant " + applicName);
+	} 
+*/	
+
+/* SEMI-FUNCTION 
+	// for HR-interviewer sidebar filter
+	$('.check-filter').on("click", function() {
+		alert("in check-filter function()");
+		if($(this).prop('checked')){
+			alert("in check-filter function()");
+			let filterID = $(this).val(); //get value of the checkbox input --> intervID
+			console.log(filterID);
+			$.ajax({
+				method: 'GET',
+				url: '/get-filterIntervs',
+				data: filterID,
+				success: function(res) {
+					//empty the Calendar
+					
+					// render Calendar grids
+					for (let i=0; i<res.length; i++){
+						var parseDate = new Date(res[i].timeStart);
+						calendar.addEvent({
+							title: res[i].applicant.fName + " " + res[i].applicant.lName,
+							start: parseDate,
+							allDay: false
+						});
+					}
+				},
+				error: res => console.log(res)
+			});
+		}
+	});
+*/
+
+	// for HR-interviewer download Resume button (in detailed modal Schedule)
+	$('#modal-resumeBtn').on("click", function(){
+		let applicID = $('#modal-resume').val();
+		let applicName = $('#modal-applicName').text();
+		
+		$.ajax({
+			method: 'GET',
+			url: '/download-resume',
+			cache: false,
+			data: {applicID},
+			success: function(res) {
+
+				let byteCharacters = atob(res); 
+
+				const byteNumbers = new Array(byteCharacters.length);
+				for (let i = 0; i < byteCharacters.length; i++) {
+					byteNumbers[i] = byteCharacters.charCodeAt(i);
+				}
+
+				const byteArray = new Uint8Array(byteNumbers);
+
+				// Convert the Byte Data to BLOB object
+				var blob = new Blob([byteArray], { type: "application/pdf" });
+
+				console.log("blob: " + blob);
+				console.log("[byteArray]: " + [byteArray]);
+
+				// Download the pdf file
+				var url = window.URL || window.webkitURL;
+				link = url.createObjectURL(blob);
+				var a = $("<a />");
+				a.attr("download", "resume-" + applicID + ".pdf");
+//				a.attr("download", "resume-" + applicID + "_" + applicName + ".pdf");
+				a.attr("href", link);
+				$("body").append(a);
+				a[0].click();
+				$("body").remove(a);
+			},
+			error: res => console.log(res)
+		});
+	});
+
+
 
 	// for HR-interviewer Calendar render
 	if(window.location.pathname === "/int-schedule"){
@@ -264,8 +368,9 @@ $(document).ready(function() {
 						start: parseDate,
 						allDay: false,
 						extendedProps: {
-						  resume: '', //pass encode from backend OR url to pdf viewer 
-						  meetLink: res[i].meetingLink
+						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
+						  meetLink: res[i].meetingLink,
+						  applicID: res[i].applicant.applicantID
 						},
 						description: 'Interview Details'
 					});
@@ -275,7 +380,36 @@ $(document).ready(function() {
 		});
 	}	
 	
-	
+	$("button#save-statBtn").on("click", function() {
+		
+		// get Array of applicant IDs
+		let arrIDs = [];
+		$(".hidden-appID").each(function(index, elem) {
+			console.log(".hidden-appID: " + $(elem).val());
+			arrIDs.push($(elem).val());
+		});
+
+		// get Array of corresponding statuses (PASS/FAIL)
+		let arrStats = [];	
+		$("input:radio.applic-stat:checked").each(function(index, elem) {
+			console.log("input:radio.applic-stat:checked: " + $(elem).val());
+			arrStats.push($(elem).val());
+		});
+		
+		$.ajax({
+			method: 'POST',
+			url: '/update-applicStat',
+			data: {applicIDs: arrIDs, stats: arrStats}, //send both Arrays for posting
+			success: function(res) {
+				alert("Interview status saved.");
+				 
+				// disable or change the radio btn preset acc to the Applic status in the db
+				
+			},
+			error: res => console.log(res)
+		});
+		
+	});
 	$("button#create-schedBtn").on("click", function() {
 		$.ajax({
 			method: 'GET',
@@ -332,7 +466,7 @@ $(document).ready(function() {
 					meetingLink: meetLink
 				},
 			success: function(res) {
-				
+					console.log("res.status: "+ res.status);
 				if(res.status !== 400){
 					var parseDate = new Date(res.timeStart);
 					calendar.addEvent({
@@ -342,7 +476,7 @@ $(document).ready(function() {
 					});
 					alert("Schedule created!");
 				} else {
-					alert(res);
+					alert(res.mssg);
 				}
 			},
 			error: res => console.log(res)

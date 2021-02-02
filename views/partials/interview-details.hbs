@@ -8,20 +8,27 @@
     	<span class="close">&times;</span>
     </div>
     <div style="display: inline-block; vertical-align: bottom; margin-bottom: 25px;">
+		
+		<input id="modal-applicID" type=hidden>
+
     	<hr>
         <table style="line-height: 1.5; width: 100%;">
                 <tbody>
                 	<tr>
-                		<td style="width:25%"><strong> Applicant</strong> </td>
-                		<td id="modal-applicName" style="width:75%">Applicant Name</td>
+                		<td style="width:25%"><strong> Applicant </strong></td>
+                		<td id="modal-applicName" style="width:75%"> </td>
                 	</tr>
                 	<tr>
-                		<td style="width:25%"><strong> Schedule</strong> </td>
-                		<td id="modal-schedule" style="width:75%">Applicant Name</td>
+                		<td style="width:25%"><strong> Schedule </strong></td>
+                		<td id="modal-schedule" style="width:75%"> </td>
                 	</tr>
                 	<tr>
-                		<td style="width:25%"><strong> Resume</strong> </td>
-                		<td id="modal-resume" style="width:75%"><div class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div></td>
+                		<td style="width:25%"><strong> Resume </strong></td>
+                		<td id="modal-resume" style="width:75%">
+							<div id="modal-resumeBtn" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;">
+							<i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
+						</td>
+	
                 	</tr>
                 	<tr>
                 		<td style="width:25%"><strong> Meeting Link</strong> </td>
@@ -35,4 +42,7 @@
 		</div>
     </div>
   </div>
+</div>
+
+<div id="dialog" style="display: none">
 </div>
