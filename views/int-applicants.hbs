@@ -26,7 +26,7 @@
                 <tbody style="font-size: 14px;">
 					{{#each applicants}}
 						<input type="hidden" class="hidden-appID" value="{{{this.applicantID}}}">
-						<tr style="font-size: 14px;">
+						<tr id="rowApplic-{{{this.applicantID}}}" class="row-applic" style="font-size: 14px;">
 							<td id="applicName-row" style="font-size: 14px;"> {{genApplicName this}} </td>
 							<td style="font-size: 14px;"> {{this.sys_reqs}} </td>
 							<td style="font-size: 14px;">

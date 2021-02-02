@@ -181,6 +181,7 @@ $(document).ready(function() {
 
 			// events: data	
 			eventClick: function(info) {
+				$('#modal-applicID').html(info.event.extendedProps.applicID);				
 				$('#modal-applicName').html(info.event.title);
 				$('#modal-schedule').html(info.event.start);
 				$('#modal-meetLink').html(info.event.extendedProps.meetLink);
@@ -194,7 +195,6 @@ $(document).ready(function() {
 		});  
 
 		calendar.render();	
-
 	}
 	
 	// for HR-schedule render
@@ -265,35 +265,49 @@ $(document).ready(function() {
 		});
 	}
 	
-//	// for HR-interviewer sidebar filter
-//	$('.check-filter').on("click", function() {
-//		alert("in check-filter function()");
-//		if($(this).prop('checked')){
-//			alert("in check-filter function()");
-//			let filterID = $(this).val(); //get value of the checkbox input --> intervID
-//			console.log(filterID);
-//			$.ajax({
-//				method: 'GET',
-//				url: '/get-filterIntervs',
-//				data: filterID,
-//				success: function(res) {
-//					//empty the Calendar
-//					
-//					// render Calendar grids
-//					for (let i=0; i<res.length; i++){
-//						var parseDate = new Date(res[i].timeStart);
-//						calendar.addEvent({
-//							title: res[i].applicant.fName + " " + res[i].applicant.lName,
-//							start: parseDate,
-//							allDay: false
-//						});
-//					}
-//				},
-//				error: res => console.log(res)
-//			});
-//		}
-//	});
+/* WIP function
+	// int-schedule Interviewed checkbox
+	$("tr.row-applic input").prop('disabled', true);
+	
+	if ($('#interviewed').attr('checked')){
+		let row_applicID = $('#modal-applicID').html();	
+		$("tr.row-applic input[name='applic-"+ row_applicID +"]").prop('disabled', false);
+		
+		let applicName = $('#modal-applicName').text();
+		alert("Please update Interview status of Applicant " + applicName);
+	} 
+*/	
 
+/* SEMI-FUNCTION 
+	// for HR-interviewer sidebar filter
+	$('.check-filter').on("click", function() {
+		alert("in check-filter function()");
+		if($(this).prop('checked')){
+			alert("in check-filter function()");
+			let filterID = $(this).val(); //get value of the checkbox input --> intervID
+			console.log(filterID);
+			$.ajax({
+				method: 'GET',
+				url: '/get-filterIntervs',
+				data: filterID,
+				success: function(res) {
+					//empty the Calendar
+					
+					// render Calendar grids
+					for (let i=0; i<res.length; i++){
+						var parseDate = new Date(res[i].timeStart);
+						calendar.addEvent({
+							title: res[i].applicant.fName + " " + res[i].applicant.lName,
+							start: parseDate,
+							allDay: false
+						});
+					}
+				},
+				error: res => console.log(res)
+			});
+		}
+	});
+*/
 
 	// for HR-interviewer download Resume button (in detailed modal Schedule)
 	$('#modal-resumeBtn').on("click", function(){
