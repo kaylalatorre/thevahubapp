@@ -404,12 +404,36 @@ const rendFunctions = {
 	},
 
 	getCertificate: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('certificate', {
-		});
-	// }
+		if (req.session.user){
+
+			//collect all
+			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
+
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+				}
+
+				res.render('certificate', {
+					classList: classes,
+					fName: req.session.user.fName,
+					lName: req.session.user.lName,
+					userID: req.session.user.userID,
+				});
+			});			
+		} else {
+			res.redirect('/');
+		}
 	},
 
 	getTEClassDet: function(req, res, next) {

@@ -34,7 +34,7 @@ router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
 router.get('/te-class-details/:classID', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
-router.get('/certificate', controller.getCertificate);
+router.get('/certificate/:userID', controller.getCertificate);
 
 	// trainer
 router.get('/trainer-classes', controller.getTrainerClasses);

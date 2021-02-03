@@ -16,8 +16,10 @@
                 <label style="margin-right: 10px;"><strong>Status</strong></label>
                 <label>{{traineeStatus}}</label>
             </div>
-            <!-- make display: block when graduated -->
-            <button type="button" id="viewCert" style="display: none; border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
+            {{!-- {{#if traineeGraduated}} --}}
+            <button onclick="window.location.href = '/certificate/{{{userID}}}'" type="button" id="viewCert" style="display: none; border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">
+                <i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
+            {{!-- {{/if}} --}}
         </div>
     </div>
     <div class="table-responsive" style="width: 95%; margin: 00px auto;">
