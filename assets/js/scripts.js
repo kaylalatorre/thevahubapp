@@ -271,28 +271,44 @@ $(document).ready(function() {
 	// int-applicants for disable/able input radio buttons in Status
 	if(window.location.pathname === "/int-applicants") { 
 		
+		let applicPhase = $('input#applicPhase').val();
+		console.log("applicPhase: "+ "/"+applicPhase+"/");
+		
 		// get Array of applicant IDs
 		let arrIDs = [];
 		$(".hidden-appID").each(function(index, elem) {
-			console.log(".hidden-appID: "+ $(elem).val());
 			arrIDs.push($(elem).val());
 		});
 		
 		let arrInits = []; 
 		$(".hidden-initStat").each(function(index, elem) {
-			console.log(".hidden-initStat: "+ $(elem).val());
 			arrInits.push($(elem).val());
 		});
 		
 		let arrFinals = []; 
 		$(".hidden-finalStat").each(function(index, elem) {
-			console.log(".hidden-finalStat: "+ $(elem).val());
 			arrFinals.push($(elem).val());
 		});
 		
-		$("tr.row-applic input").prop('disabled', true);		
+		$("tr.row-applic input").prop('disabled', true); // disabling radio buttons		
+		
+		console.log("TRACK: in window.loc-- arrIDs.length: " + arrIDs.length);
 		
 		for(let i=0; i<arrIDs.length; i++){
+			// pre-checking radio buttons
+			if (applicPhase === "Initial")
+				if (arrInits[i] === "PASS")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
+				else if (arrInits[i] === "FAIL")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:nth-child(2)").attr('checked', true);
+			
+			if (applicPhase === "Final")
+				if (arrFinals[i] === "PASS")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
+				else if (arrFinals[i] === "FAIL")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:nth-child(2)").attr('checked', true);	
+				
+			// enabling radio buttons
 			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW")
 				$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").prop('disabled', false);
 				console.log($("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").val());
@@ -439,6 +455,8 @@ $(document).ready(function() {
 			arrStats.push($(elem).val());
 		});
 		
+		console.log("TRACK: in save-statBtn.click: arrIDs.length: "+ arrIDs.length);
+		
 		$.ajax({
 			method: 'POST',
 			url: '/update-applicStats',
@@ -447,7 +465,30 @@ $(document).ready(function() {
 				alert("Interview status saved.");
 				 
 				// disable or change the radio btn preset acc to the Applic status in the db
+				$("tr.row-applic input").prop('disabled', true);	
 				
+				let applicPhase = $('input#applicPhase').val();
+				
+				for(let i=0; i<res.length; i++){
+					// pre-checking radio buttons again after updating
+					if (applicPhase === "Initial")
+						if (res[i].applicant.initialStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.initialStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:nth-child(2)").attr('checked', true);
+
+					if (applicPhase === "Final")
+						if (res[i].applicant.finalStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.finalStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:nth-child(2)").attr('checked', true);
+						
+					// enabling radio buttons
+					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
+						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);
+					
+					window.location.reload(true);
+				}
 			},
 			error: res => console.log(res)
 		});

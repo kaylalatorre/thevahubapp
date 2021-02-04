@@ -4,6 +4,8 @@
 
 <div style="padding: 70px 20px 20px 20px;">
     <div><label class="h2 applicant-phase" style="padding: 5px;color: #2c2c2c;"><strong>Applicants List:&nbsp;</strong>{{intervPhase}} Phase</label></div>
+	<input id="applicPhase" type="hidden" value="{{{intervPhase}}}">
+
     <hr>
     <div class="d-inline-block">
         <label class="d-inline-block" style="padding: 3px 10px;"><strong>&nbsp;Filter</strong></label>
@@ -38,11 +40,11 @@
 							</td>
 							<td style="font-size: 14px;">
 								<div class="form-check d-inline-block" style="padding-right: 10px;">
-                                    <input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-{{{this.applicantID}}}" type="radio" value="PASS">
                                     <label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>
                                 </div>
 								<div class="form-check d-inline-block" style="padding-right: 10px;">
-                                    <input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-{{{this.applicantID}}}" type="radio" value="FAIL">
                                     <label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>
                                 </div>
 							</td>

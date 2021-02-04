@@ -1066,11 +1066,12 @@ const rendFunctions = {
 				
 				// search for Interview phase of HR interviewer
 				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
-				let phase;
+				let filterIntervs = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
 				
-				for(i=0; i<intervs.length;i++){
-					if(intervs[i].interviewer.userID === req.session.user.userID){
-						phase = intervs[i].phase;
+				let phase;
+				for(i=0; i<filterIntervs.length;i++){
+					if(filterIntervs[i].interviewer.userID === req.session.user.userID){
+						phase = filterIntervs[i].phase;
 					}
 				}
 				
@@ -1081,10 +1082,12 @@ const rendFunctions = {
 				
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
-						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
 				}
-				  
-				res.status(200).send();
+				
+				console.log("TRACK: in postApplicStatuses() backend");
+				console.log("filterIntervs.length: "+ filterIntervs.length);
+				res.status(200).send(filterIntervs);
 			}	
 		} catch(e){
 			console.log(e);
