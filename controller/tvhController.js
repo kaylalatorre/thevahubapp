@@ -1084,9 +1084,7 @@ const rendFunctions = {
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
 				}
-				
-				console.log("TRACK: in postApplicStatuses() backend");
-				console.log("filterIntervs.length: "+ filterIntervs.length);
+
 				res.status(200).send(filterIntervs);
 			}	
 		} catch(e){

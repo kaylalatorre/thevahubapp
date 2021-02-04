@@ -291,9 +291,7 @@ $(document).ready(function() {
 		});
 		
 		$("tr.row-applic input").prop('disabled', true); // disabling radio buttons		
-		
-		console.log("TRACK: in window.loc-- arrIDs.length: " + arrIDs.length);
-		
+				
 		for(let i=0; i<arrIDs.length; i++){
 			// pre-checking radio buttons
 			if (applicPhase === "Initial")
@@ -468,9 +466,6 @@ $(document).ready(function() {
 				$("tr.row-applic input").prop('disabled', true);	
 				
 				let applicPhase = $('input#applicPhase').val();
-				
-								
-				
 				for(let i=0; i<res.length; i++){
 					// pre-checking radio buttons again after updating
 					if (applicPhase === "Initial")
