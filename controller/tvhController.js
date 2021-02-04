@@ -1084,6 +1084,8 @@ const rendFunctions = {
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
+						
+						// TO KIMI: because der is interview sched, pls email Applicant here
 						res.status(200).send(sched);
 					}
 				}
