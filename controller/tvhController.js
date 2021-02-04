@@ -336,8 +336,49 @@ const rendFunctions = {
 	},
 ////	
 
-	getHRReports: function(req, res, next) {
-		res.render('application-reports');
+	getHRReports: async function(req, res, next) {
+
+		var applicList = await db.findMany(ApplicantDB, {});
+		var screenPass = [];
+		var screenFail = [];
+		var initialPass = [];
+		var initialFail = [];
+		var finalPass = [];
+		var finalFail = [];
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].screenStatus === "ACCEPTED") 
+				screenPass.push(applicList[i]);
+			else if(applicList[i].screenStatus === "REJECTED") 
+				screenFail.push(applicList[i]);
+		}
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].initialStatus === "PASS") 
+				initialPass.push(applicList[i]);
+			else if(applicList[i].initialStatus === "FAIL") 
+				initialFail.push(applicList[i]);
+		}
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].finalStatus === "PASS") 
+				finalPass.push(applicList[i]);
+			else if(applicList[i].finalStatus === "FAIL") 
+				finalFail.push(applicList[i]);
+		}
+
+		res.render('application-reports', {
+			applicants: applicList,
+			spLength: screenPass.length,
+			sfLength: screenFail.length,
+			ipLength: initialPass.length,
+			ifLength: initialFail.length,
+			fpLength: finalPass.length,
+			ffLength: finalFail.length,
+			screenTotal: screenPass.length + screenFail.length,
+			initialTotal: initialPass.length + initialFail.length,
+			finalTotal: finalPass.length + finalFail.length,
+		});
 	},
 
 	getTraineeProf: function(req, res, next) {

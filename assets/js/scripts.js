@@ -596,10 +596,16 @@ $(document).ready(function() {
     }
   });
 
-  // View certificate
-  $('button#viewCert').click(function() {
-    // get data 
-    window.location.href='/certificate';
-  });
+  // Applications Report Filter
+  $('button#applicFilter').click(function() {
+	  let status = $('select#statusFilter').val();
+	  let startDate = $('input#startFilter').val();
+	  let endDate = $('input#endFilter').val();
 
+	  console.log(status); 
+	  console.log(startDate); 
+	  console.log(endDate); 
+
+	  
+	});
 });
