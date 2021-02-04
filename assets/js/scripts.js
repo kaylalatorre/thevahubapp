@@ -200,8 +200,7 @@ $(document).ready(function() {
 		calendar.render();	
 	}
 
-
-	// for HR-screening sort by sys_reqs
+/* SEMI-FUNCTION: for HR-screening sort by sys_reqs
 	$("#btn-sortReqs").on("click", function(){
 //		if ($('#sort-sysreq:checkbox:checked')){
 		alert("TRACK: in $('#btn-sortReqs').on()");
@@ -232,7 +231,7 @@ $(document).ready(function() {
 			});
 //		}		
 	});
-
+*/
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){

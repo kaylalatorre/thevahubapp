@@ -223,7 +223,7 @@ const rendFunctions = {
 			if(req.session.user.userType === "HRadmin"){				
 				let applicants = await db.aggregate(ApplicantDB, [
 					{'$match': {}},
-					{'$sort': {lName: 1, fName: 1}}
+					{'$sort': {lName: 1, fName: 1, sys_reqs: 1}}
 				]);
 				
 				let acceptApps = [];
@@ -250,7 +250,8 @@ const rendFunctions = {
 			res.redirect('/');
 		}
 	},
-	
+
+/*	
 	sortSysReqs: async function(req, res) {
 		if(req.session.user) {
 			if(req.session.user.userType === "HRadmin"){
@@ -284,6 +285,7 @@ const rendFunctions = {
 			}
 		}
 	},
+*/
 	
 	getApplicInfo: async function(req, res) {
 		try {
