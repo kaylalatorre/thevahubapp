@@ -120,7 +120,7 @@ function getApplicInfo(applicID){
 }
 
 // onclick AJAX for INT-applicants download resume
-function downloadFile(applicID){ 
+function downloadFile(applicID){  
 	
 	let applicName = $('#applicName-row').text();
 	
@@ -291,8 +291,18 @@ $(document).ready(function() {
 		});
 		
 		$("tr.row-applic input").prop('disabled', true); // disabling radio buttons		
-				
+
 		for(let i=0; i<arrIDs.length; i++){
+
+			// pre-checking sys_reqs
+			let sysreqStr = $("tr.row-applic input[name='contCheck-"+ arrIDs[i] +"']").val();
+			let arrReqs = sysreqStr.split(','); 
+
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#laptop").prop('checked', arrReqs[0] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#internet").prop('checked', arrReqs[1] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#headset").prop('checked', arrReqs[2] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#webcam").prop('checked', arrReqs[3] === "true");
+
 			// pre-checking radio buttons
 			if (applicPhase === "Initial")
 				if (arrInits[i] === "PASS")

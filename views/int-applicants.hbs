@@ -35,10 +35,11 @@
 							<td id="applicName-row" style="font-size: 14px;"> {{genApplicName this}} </td>
 							<td style="font-size: 14px;"> 
 								{{this.sys_reqs}} <br>
-								<input type="checkbox" id="laptop" checked><label for="laptop"> Personal Computer/Laptop</label><br>
-								<input type="checkbox" id="internet" checked><label for="internet"> Internet Speed</label><br>
-								<input type="checkbox" id="headset" checked><label for="headset"> Headset</label><br>
-								<input type="checkbox" id="webcam" checked><label for="webcam"> Webcam</label><br>
+									<input name="contCheck-{{{this.applicantID}}}" type="hidden" value="{{{this.sys_reqs}}}">
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="laptop"><label for="laptop"> Personal Computer/Laptop</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="internet"><label for="internet"> Internet Speed</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="headset"><label for="headset"> Headset</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="webcam"><label for="webcam"> Webcam</label><br>
 							</td>
 							<td style="font-size: 14px;">
 								<div id="res-viewBtn" onclick="downloadFile('{{{this.applicantID}}}')" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
