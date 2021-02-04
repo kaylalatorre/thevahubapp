@@ -377,7 +377,7 @@ const rendFunctions = {
 					var end = new Date(classVar.endDate);
 					// determine trainee status
 					if(end < now){ // class is over
-						if(classes[i].finalAve > 6) { // check to see if trainee passed 
+						if(classes[i].finalAve > 7) { // check to see if trainee passed 
 							classes[i].traineeStatus = "PASSED";
 							statusCount += 1;
 						}
@@ -761,18 +761,34 @@ const rendFunctions = {
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
 					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-						// console.log(traineesVar);
+						console.log(traineesVar);
 					
-					// for(var y = 0; y < traineesVar.length; y++){
-						
-					// }
+					for(var y = 0; y < traineesVar.length; y++){
+						if(classes[i].classStatus === "ONGOING" || classes[i].classStatus === "NOT YET STARTED"){
+							numPassed = "-";
+							numFailed = "-";
+							totalPassed = "-";
+							totalFailed = "-";
+						}
+						else{
+							if(traineesVar[y].traineeStatus === "PASSED"){ // trainees passed
+								classes[i].numPassed += 1;
+							}
+							else{
+								classes[i].numFailed += 1;
+							}
+						}
+					}
 
 					classes[i].numTrainees = traineesVar.length;
-
+					
+					// accumulate
+					totalPassed += classes[i].numPassed;
+					totalFailed += classes[i].numFailed;
 					totalTrainees += traineesVar.length;
 				}
 
-				// console.log(classes);
+				console.log(classes);
 
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
