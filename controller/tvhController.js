@@ -374,9 +374,10 @@ const rendFunctions = {
 					var tName = trainerVar.fName + " " + trainerVar.lName;
 					classes[i].trainerName = tName;
 
+					var end = new Date(classVar.endDate);
 					// determine trainee status
-					if(classVar.endDate < now){ // class is over
-						if(classes[i].finalAve >= 7.5) { // check to see if trainee passed 
+					if(end < now){ // class is over
+						if(classes[i].finalAve > 6) { // check to see if trainee passed 
 							classes[i].traineeStatus = "PASSED";
 							statusCount += 1;
 						}
@@ -387,6 +388,7 @@ const rendFunctions = {
 					}
 					else{
 						classes[i].traineeStatus = "IN-PROGRESS";
+						teStatus = "IN-PROGRESS"
 					}
 				}
 
@@ -398,6 +400,7 @@ const rendFunctions = {
 
 				res.render('trainee-profile', {
 					classList: classes,
+					trainingStatus: teStatus,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
 					userID: req.session.user.userID,
