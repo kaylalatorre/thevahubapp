@@ -343,6 +343,8 @@ const rendFunctions = {
 
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
+		var now = new Date();
+		var teStatus = "IN-PROGRESS";
 
 			//collect classes of the trainee
 			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
@@ -351,6 +353,8 @@ const rendFunctions = {
 
 				// fix format of dates
 				var trainerName = "";
+				var statusCount = 0;
+				var traineeGraduated = false;
 				for(let i = 0; i < classes.length; i++) {
 					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
 					var classVar = JSON.parse(JSON.stringify(classDummy));
@@ -369,8 +373,29 @@ const rendFunctions = {
 
 					var tName = trainerVar.fName + " " + trainerVar.lName;
 					classes[i].trainerName = tName;
+
+					// determine trainee status
+					if(classVar.endDate < now){ // class is over
+						if(classes[i].finalAve >= 7.5) { // check to see if trainee passed 
+							classes[i].traineeStatus = "PASSED";
+							statusCount += 1;
+						}
+						else{
+							classes[i].traineeStatus = "FAILED";
+							teStatus = "FAILED";
+						}
+					}
+					else{
+						classes[i].traineeStatus = "IN-PROGRESS";
+					}
 				}
-				
+
+				// if both classes were passed, trainee has graduated
+				if(statusCount === 2){
+					traineeGraduated = true;
+					teStatus = "GRADUATED";
+				}
+
 				res.render('trainee-profile', {
 					classList: classes,
 					fName: req.session.user.fName,
