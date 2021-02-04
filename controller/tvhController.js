@@ -28,10 +28,11 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
+function createClass(classID, trainerID, trainerName, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
 	var tempClass = {
 		classID: classID,
 		trainerID: trainerID,
+		trainerName: trainerName,
 		courseName: courseName,
 		startDate: startDate,
 		endDate: endDate,
@@ -349,18 +350,27 @@ const rendFunctions = {
 				console.log(classes);
 
 				// fix format of dates
+				var trainerName = "";
 				for(let i = 0; i < classes.length; i++) {
 					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
 					var classVar = JSON.parse(JSON.stringify(classDummy));
-					console.log(classVar);
+					// console.log(classVar);
 
 					var sDate = formatShortDate(classVar.startDate);
 					var eDate = formatShortDate(classVar.endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
-				}
 
+					// find trainer name					
+					var trainerDummy = await db.findOne(UserDB, {userID: classVar.trainerID});
+					var trainerVar = JSON.parse(JSON.stringify(trainerDummy));
+					console.log(trainerVar);
+
+					var tName = trainerVar.fName + " " + trainerVar.lName;
+					classes[i].trainerName = tName;
+				}
+				
 				res.render('trainee-profile', {
 					classList: classes,
 					fName: req.session.user.fName,
@@ -405,9 +415,10 @@ const rendFunctions = {
 
 	getCertificate: function(req, res, next) {
 		if (req.session.user){
+			var userID = req.params.userID;
 
 			//collect all
-			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
+			ScoreDB.find({traineeID: req.params.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
 				console.log(classes);
 
@@ -425,10 +436,10 @@ const rendFunctions = {
 				}
 
 				res.render('certificate', {
-					classList: classes,
+					// classList: classes,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
-					userID: req.session.user.userID,
+					userID: userID,
 				});
 			});			
 		} else {
@@ -877,8 +888,10 @@ const rendFunctions = {
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
 			// console.log(sTime, eTime);
 
+			var trainerName = req.session.user.fName + " " + req.session.user.lName;
+
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 			
 			// add into Class model
 			ClassDB.create(tempClass, function(error) {
