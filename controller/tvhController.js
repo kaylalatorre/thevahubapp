@@ -220,8 +220,11 @@ const rendFunctions = {
 	
 	getHRScreening: async function(req, res) {
 		if(req.session.user) {
-			if(req.session.user.userType === "HRadmin"){
-				let applicants = await db.findMany(ApplicantDB, {});
+			if(req.session.user.userType === "HRadmin"){				
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {lName: 1, fName: 1}}
+				]);
 				
 				let acceptApps = [];
 				let pendApps = [];
@@ -245,6 +248,40 @@ const rendFunctions = {
 		}
 		else {
 			res.redirect('/');
+		}
+	},
+	
+	sortSysReqs: async function(req, res) {
+		if(req.session.user) {
+			if(req.session.user.userType === "HRadmin"){
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {sys_reqs: 1}}
+				]);
+				
+				if (applicants.length > 0){
+					let acceptApps = [];
+					let pendApps = [];
+					let rejectApps = [];
+
+					for(let i=0; i< applicants.length; i++){
+						if(applicants[i].screenStatus === "ACCEPTED")
+							acceptApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "PENDING")
+							pendApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "REJECTED")
+							rejectApps.push(applicants[i]);				
+					}
+
+					res.send({status: 200,
+						accepted: acceptApps,
+						pending: pendApps,
+						rejected: rejectApps
+					});					
+				} else {
+					res.send({status: 400, mssg: "Cannot retrieve from database."});
+				}
+			}
 		}
 	},
 	

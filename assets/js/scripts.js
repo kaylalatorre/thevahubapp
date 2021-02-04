@@ -199,6 +199,40 @@ $(document).ready(function() {
 
 		calendar.render();	
 	}
+
+
+	// for HR-screening sort by sys_reqs
+	$("#btn-sortReqs").on("click", function(){
+//		if ($('#sort-sysreq:checkbox:checked')){
+		alert("TRACK: in $('#btn-sortReqs').on()");
+			$.ajax({
+				method: 'GET',
+				url: '/sort-sysreqs',
+				data: {},
+				success: function(res) {
+					if (res.status === 200){
+						alert("TRACK: in AJAX success");
+						// clear out all tab containers
+						$('div[name="pending-tab"]').empty();
+						$('div[name="accept-tab"]').empty();
+						$('div[name="reject-tab"]').empty();
+
+						for(let i=0; i<res.accepted.length; i++){
+							alert("res.accepted["+i+"]: "+ res.accepted[i]);
+							let applicHTML = '<div class="row applicant-row tab1row tabInactive" onclick="getApplicInfo('+res.accepted[i].applicantID+'); changeTab2Class();">'
+												+ '<label class="col-form-label d-block">' + res.accepted[i].lName + ", " + res.accepted[i].fName + '</label>'
+											+ '</div>';
+							$('div[name="accept-tab"]').append(applicHTML);
+						}
+					} else if (res.status === 400){
+						alert(res.status +": "+ res.mssg);
+					}
+				},
+				error: res => console.log(res)
+			});
+//		}		
+	});
+
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
