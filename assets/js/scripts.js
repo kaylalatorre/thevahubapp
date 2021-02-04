@@ -120,7 +120,7 @@ function getApplicInfo(applicID){
 }
 
 // onclick AJAX for INT-applicants download resume
-function downloadFile(applicID){
+function downloadFile(applicID){ 
 	
 	let applicName = $('#applicName-row').text();
 	
