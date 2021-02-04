@@ -300,13 +300,13 @@ $(document).ready(function() {
 				if (arrInits[i] === "PASS")
 					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
 				else if (arrInits[i] === "FAIL")
-					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:nth-child(2)").attr('checked', true);
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"'][value='FAIL']").attr('checked', true);
 			
 			if (applicPhase === "Final")
 				if (arrFinals[i] === "PASS")
 					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
 				else if (arrFinals[i] === "FAIL")
-					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:nth-child(2)").attr('checked', true);	
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"'][value='FAIL']").attr('checked', true);	
 				
 			// enabling radio buttons
 			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW")
@@ -469,19 +469,21 @@ $(document).ready(function() {
 				
 				let applicPhase = $('input#applicPhase').val();
 				
+								
+				
 				for(let i=0; i<res.length; i++){
 					// pre-checking radio buttons again after updating
 					if (applicPhase === "Initial")
 						if (res[i].applicant.initialStatus === "PASS")
 							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
 						else if (res[i].applicant.initialStatus === "FAIL")
-							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:nth-child(2)").attr('checked', true);
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
 
 					if (applicPhase === "Final")
 						if (res[i].applicant.finalStatus === "PASS")
 							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
 						else if (res[i].applicant.finalStatus === "FAIL")
-							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:nth-child(2)").attr('checked', true);
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
 						
 					// enabling radio buttons
 					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
