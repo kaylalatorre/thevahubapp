@@ -727,6 +727,14 @@ const rendFunctions = {
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
+				var numTrainees = 0;
+				var numPassed = 0;
+				var numFailed = 0;
+				var totalPassed = 0;
+				var totalFailed = 0;
+				var totalTrainees = 0;
+				var now = new Date();
+				var classStatus = "";
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
@@ -736,12 +744,32 @@ const rendFunctions = {
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
 
+					var end = new Date(classes[i].endDate);
+					var start = new Date(classes[i].startDate);
+					if(end.getTime() <= now.getTime()){ //class is over
+						classes[i].classStatus = "COMPLETED";
+					}
+					else {
+						if (start.getTime() <= now.getTime() && end.getTime() > now.getTime()){
+							classes[i].classStatus = "ONGOING";
+						}
+						else{ // (start.getTime() > now.getTime())
+							classes[i].classStatus = "NOT YET STARTED";
+						}
+					}
+
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
 					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 						// console.log(traineesVar);
+					
+					// for(var y = 0; y < traineesVar.length; y++){
+						
+					// }
 
 					classes[i].numTrainees = traineesVar.length;
+
+					totalTrainees += traineesVar.length;
 				}
 
 				// console.log(classes);
@@ -752,6 +780,9 @@ const rendFunctions = {
 					res.render('trainer-reports', {
 						classList: classes,
 						courseList: courses,
+						totalPassed: totalPassed,
+						totalFailed: totalFailed,
+						totalTrainees: totalTrainees,
 					});
 				});	
 			});

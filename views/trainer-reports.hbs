@@ -15,6 +15,13 @@
 		      <option class="appoption dropdown-item" href="#">Real Estate</option>
 		    </select> <br><br>
 
+			<label>Status</label>
+		    <select style="width:100%"class="appdrop" name="course" id="clStatusFilter">    
+		      <option class="appoption dropdown-item" href="#">Ongoing</option>
+		      <option class="appoption dropdown-item" href="#">Completed</option>
+		      <option class="appoption dropdown-item" href="#">Not Yet Started</option>
+		    </select> <br><br>
+	
 			<label>Start Date</label>
 			<input style="width:100%" id="sDateFilter" type="date"><br><br>
 
@@ -36,7 +43,7 @@
 		                    <th style="width: 10%;">Class ID</th>
 		                    <th style="width: 15%;">Course</th>
 		                    {{!-- <th style="width: 10%;">Section</th> --}}
-		                    <th style="width: 20%;">Duration</th>
+		                    <th style="width: 20%;">Status</th>
 		                    <th style="width: 20%;">Schedule</th>
 		                    <th style="width: 5%;">Students</th>
 		                    <th style="width: 5%;">Passed</th>
@@ -49,7 +56,7 @@
 		                    <td> {{classID}} </td>
 		                    <td> {{courseName}} </td>
 		                    {{!-- <td> bebot </td> --}}
-		                    <td> what </td>
+		                    <td> {{classStatus}} </td>
 		                    <td> {{sDate}} - {{eDate}}, 2021 </td>
 		                    <td> {{numTrainees}} </td>
 		                    <td> {{numPassed}} </td>
@@ -59,9 +66,9 @@
 		                <!--for totals-->
 		            	<tr style="font-weight: bold;">
 		            		<td colspan="4">Total</td>
-		            		<td>10</td>
-		            		<td>10</td>
-		            		<td>10</td>
+		            		<td>{{totalTrainees}}</td>
+		            		<td>{{totalPassed}}</td>
+		            		<td>{{totalFailed}}</td>
 		            	</tr>
 		            </tbody>
 		        </table>
