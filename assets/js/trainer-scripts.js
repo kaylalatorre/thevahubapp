@@ -240,4 +240,21 @@ $(document).ready(function() {
 		// });
 	}); 	
 
+	$('#applyFilter').click(function() {
+		var courseFilter = $('#courseFilter').val();
+        var dateToday = new Date();
+		var sDateFilter = new Date($('#sDateFilter').val());
+		var eDateFilter = new Date($('#eDateFilter').val());
+
+		$.ajax({
+			method: 'GET',
+			url: '/training-reports',
+			data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
+			success: function(res) {
+				console.log("Updated reports");				
+			},
+			error: res => console.log(res)
+		});
+	});
+
 });

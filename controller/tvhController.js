@@ -723,8 +723,42 @@ const rendFunctions = {
 	},
 
 	getTrainingReports: function(req, res, next) {
-		res.render('trainer-reports', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var sDate = formatShortDate(classes[i].startDate);
+					var eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+
+					// collect all trainees under each class
+					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
+					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+						// console.log(traineesVar);
+
+					classes[i].numTrainees = traineesVar.length;
+				}
+
+				// console.log(classes);
+
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					
+					res.render('trainer-reports', {
+						classList: classes,
+						courseList: courses,
+					});
+				});	
+			});
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 	getTRSchedule: function(req, res, next) {
