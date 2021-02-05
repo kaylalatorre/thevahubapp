@@ -401,6 +401,7 @@ const rendFunctions = {
 				res.render('trainee-profile', {
 					classList: classes,
 					trainingStatus: teStatus,
+					traineeGraduated: traineeGraduated,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
 					userID: req.session.user.userID,
@@ -444,7 +445,7 @@ const rendFunctions = {
 	getCertificate: function(req, res, next) {
 		if (req.session.user){
 			var userID = req.params.userID;
-
+			var sumAve = 0;
 			//collect all
 			ScoreDB.find({traineeID: req.params.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
@@ -461,13 +462,18 @@ const rendFunctions = {
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					sumAve += Number(classes[i].finalAve);
 				}
 
+				var gradAve = sumAve/classes.length;
+
 				res.render('certificate', {
-					// classList: classes,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
 					userID: userID,
+					gradAve: gradAve,
+					endDate: classes[0].eDate + ", 2021",
 				});
 			});			
 		} else {
@@ -728,16 +734,16 @@ const rendFunctions = {
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
 				var numTrainees = 0;
-				var numPassed = 0;
-				var numFailed = 0;
-				var totalPassed = 0;
-				var totalFailed = 0;
-				var totalTrainees = 0;
-				var now = new Date();
 				var classStatus = "";
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
+					var numPassed = 0;
+					var numFailed = 0;
+					var totalPassed = 0;
+					var totalFailed = 0;
+					var totalTrainees = 0;
+					var now = new Date();
 					var sDate = formatShortDate(classes[i].startDate);
 					var eDate = formatShortDate(classes[i].endDate);
 
@@ -761,8 +767,9 @@ const rendFunctions = {
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
 					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-						console.log(traineesVar);
-					
+						// console.log(traineesVar);
+					var pass = 0;
+					var fail = 0;
 					for(var y = 0; y < traineesVar.length; y++){
 						if(classes[i].classStatus === "ONGOING" || classes[i].classStatus === "NOT YET STARTED"){
 							numPassed = "-";
@@ -772,20 +779,29 @@ const rendFunctions = {
 						}
 						else{
 							if(traineesVar[y].traineeStatus === "PASSED"){ // trainees passed
-								classes[i].numPassed += 1;
+								pass += 1;
+								// console.log(traineesVar[y].traineeStatus);
 							}
 							else{
-								classes[i].numFailed += 1;
+								fail += 1;
 							}
 						}
 					}
-
+					// console.log("pass: " + pass + "; fail: " + fail);
 					classes[i].numTrainees = traineesVar.length;
 					
+					classes[i].numPassed = pass;
+					classes[i].numFailed = fail;
+					
 					// accumulate
-					totalPassed += classes[i].numPassed;
-					totalFailed += classes[i].numFailed;
+					totalPassed += pass;
+					totalFailed += fail;
 					totalTrainees += traineesVar.length;
+
+					console.log("tPass: " + totalPassed);
+					console.log("tFail: " + totalFailed);
+					console.log("tTrain: " + totalTrainees);
+
 				}
 
 				console.log(classes);
