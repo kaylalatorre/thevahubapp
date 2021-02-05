@@ -16,6 +16,63 @@ function calculateHours(startTime, endTime) {
 
 $(document).ready(function() {
 
+	var calendarEl = document.getElementById('tr-calendar');
+	var today = new Date();
+
+	if(calendarEl !== null){
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth',
+		initialDate: today, //set to Current date
+		headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+		},
+
+		});
+	
+		calendar.render();
+	}
+
+	// RENDER TRAINER SCHEDULE
+	if(window.location.pathname === "/trainer-schedule"){
+		var trClassesSched = [];
+
+		$.ajax({
+			method: 'GET',
+			url: '/get-schedule',
+			data: {},
+			success: function(res){
+
+				$('div#TRSched').empty();
+
+				// loop through classes to get dates and add to calendar
+				for (var i = 0; i < res.length; i++){
+					var start = new Date(res[i].startDate);
+					var end = new Date(res[i].endDate);
+
+					calendar.addEvent({
+						title: res[i].courseName + " " + res[i].classID,
+						start: start,
+						end: end,
+						allDay: true,
+					});
+
+					// add classes to sidetab
+					var classHTML = '<div class="sched-list">'
+									// + '<input class="form-check-input" type="checkbox">'
+									+ '<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">' + res[i].classID + '</label>'
+									+ '</div>';
+
+					$('div#TRSched').append(classHTML);
+						trClassesSched.push(res[i].classID);
+				}
+
+			},
+			error: res => console.log(res)
+		});
+	}
+
 	// ADD CLASSES TO TRAINER LIST
 	$('button#createClass').click(function() {
         var courseName = $('#courseName').val();
@@ -197,6 +254,30 @@ $(document).ready(function() {
 		});
 	}); 
 
+	// Hide scores and "Edit" button
+	$('#theScores').click(function() {
+		var theScore = document.getElementsByClassName('theScore');
+		var editScore = document.getElementsByClassName('editScore');
+		// var saveBTN = document.getElementById('saveScores');
+		// var today = new Date();
+		// var endDate = $('#endhide').text()
+		// var compareDate = new Date(endDate);
+
+		// if(compareDate < today) {
+		// 	alert("This class ended in " + getDate(compareDate) + ". You cannot edit the scores for this class anymore.");
+		// }
+		// else {
+			//hide text, show editor
+			for(var i = 0; i < theScore.length; i++) 
+				theScore[i].style.display = 'none';
+			
+			for(var i = 0; i < editScore.length; i++) 
+				editScore[i].style.display = 'inline';
+			
+			editScore.style.display = 'inline';
+		// }
+	});
+
 	$('#saveScores').click(function() {
 		var classID = $('#classID').text();
 		var trName = document.getElementsByClassName('trName');
@@ -215,5 +296,22 @@ $(document).ready(function() {
 		// 	}
 		// });
 	}); 	
+
+	$('#applyFilter').click(function() {
+		var courseFilter = $('#courseFilter').val();
+        var dateToday = new Date();
+		var sDateFilter = new Date($('#sDateFilter').val());
+		var eDateFilter = new Date($('#eDateFilter').val());
+
+		$.ajax({
+			method: 'GET',
+			url: '/training-reports',
+			data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
+			success: function(res) {
+				console.log("Updated reports");				
+			},
+			error: res => console.log(res)
+		});
+	});
 
 });

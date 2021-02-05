@@ -14,10 +14,12 @@
             </div><br>
             <div style="display: inline-block; padding: 2px 5px;">
                 <label style="margin-right: 10px;"><strong>Status</strong></label>
-                <label>{{traineeStatus}}</label>
+                <label>{{trainingStatus}}</label>
             </div>
-            <!-- make display: block when graduated -->
-            <button type="button" id="viewCert" style="display: none; border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"><i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
+            {{#if traineeGraduated}}
+            <button onclick="window.location.href = '/certificate/{{{userID}}}'" type="button" id="viewCert" style="border: none; margin-bottom: 10px; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">
+                <i class="fa fa-eye" style="margin-right: 10px;"></i> View Certificate</button>           
+            {{/if}}
         </div>
     </div>
     <div class="table-responsive" style="width: 95%; margin: 00px auto;">
@@ -27,8 +29,9 @@
                 <tr style="background: #efefef;color: rgb(0,148,68);">
                     <th style="width: 10%;">Section</th>
                     <th style="width: 15%;">Course</th>
-                    <th style="width: 35%;">Schedule</th>
-                    <th style="width: 25%;">Trainer</th>
+                    <th style="width: 30%;">Schedule</th>
+                    <th style="width: 22%;">Trainer</th>
+                    <th style="width: 13%;">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +40,8 @@
                     <td> {{classID}} </td>
                     <td> {{courseName}} </td>
                     <td> {{sDate}} - {{eDate}}, 2021 </td>
-                    <td> {{trainer}} </td>
+                    <td> {{trainerName}} </td>
+                    <td> {{traineeStatus}} </td>
                 </tr>
                 {{/each}}
             </tbody>

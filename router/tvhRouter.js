@@ -35,16 +35,16 @@ router.get('/trainee-profile', controller.getTraineeProf);
 router.get('/trainee-classes', controller.getTraineeClasses);
 router.get('/te-class-details/:classID', controller.getTEClassDet);
 router.get('/deactivate', controller.getDeactivate);
-router.get('/certificate', controller.getCertificate);
+router.get('/certificate/:userID', controller.getCertificate);
 
 	// trainer
 router.get('/trainer-classes', controller.getTrainerClasses);
 router.get('/tr-class-details/:classID', controller.getTRClassDetails);
+router.get('/get-schedule', controller.getSchedule);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
 router.get('/update-scoresheet/:classID', controller.getScoresheet);
-router.get('/update-scores/:classID', controller.getScores);
 router.get('/trainer-reports', controller.getTrainingReports);
 
 	// sales admin screen prototypes 
@@ -82,7 +82,7 @@ router.post('/deactivate', controller.postDeactivate);
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
-router.post('/save-scores', controller.postSaveScores);
+router.post('/edit-scores', controller.postEditScores);
 
 
 

@@ -28,10 +28,11 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
+function createClass(classID, trainerID, trainerName, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
 	var tempClass = {
 		classID: classID,
 		trainerID: trainerID,
+		trainerName: trainerName,
 		courseName: courseName,
 		startDate: startDate,
 		endDate: endDate,
@@ -103,18 +104,18 @@ function formatShortDate(date) {
 	return mm + " " + dd;
 }
 
-function formatNiceDate(date) {
-	var newDate = new Date(date);
-	// adjust 0 before single digit date
-	let day = ("0" + newDate.getDate()).slice(-2);
+function formDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-	// current month
-	let month = ("0" + (newDate.getMonth() + 1)).slice(-2);
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
 
-	// current year
-	let year = newDate.getFullYear();
-
-	return year + "-" + month + "-" + day;
+    return [year, month, day].join('-');
 }
 
 // two digits
@@ -375,12 +376,55 @@ const rendFunctions = {
 	},
 ////	
 
-	getHRReports: function(req, res, next) {
-		res.render('application-reports');
+	getHRReports: async function(req, res, next) {
+
+		var applicList = await db.findMany(ApplicantDB, {});
+		var screenPass = [];
+		var screenFail = [];
+		var initialPass = [];
+		var initialFail = [];
+		var finalPass = [];
+		var finalFail = [];
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].screenStatus === "ACCEPTED") 
+				screenPass.push(applicList[i]);
+			else if(applicList[i].screenStatus === "REJECTED") 
+				screenFail.push(applicList[i]);
+		}
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].initialStatus === "PASS") 
+				initialPass.push(applicList[i]);
+			else if(applicList[i].initialStatus === "FAIL") 
+				initialFail.push(applicList[i]);
+		}
+
+		for(var i=0; i < applicList.length; i++) {
+			if(applicList[i].finalStatus === "PASS") 
+				finalPass.push(applicList[i]);
+			else if(applicList[i].finalStatus === "FAIL") 
+				finalFail.push(applicList[i]);
+		}
+
+		res.render('application-reports', {
+			applicants: applicList,
+			spLength: screenPass.length,
+			sfLength: screenFail.length,
+			ipLength: initialPass.length,
+			ifLength: initialFail.length,
+			fpLength: finalPass.length,
+			ffLength: finalFail.length,
+			screenTotal: screenPass.length + screenFail.length,
+			initialTotal: initialPass.length + initialFail.length,
+			finalTotal: finalPass.length + finalFail.length,
+		});
 	},
 
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
+		var now = new Date();
+		var teStatus = "IN-PROGRESS";
 
 			//collect classes of the trainee
 			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
@@ -388,20 +432,56 @@ const rendFunctions = {
 				console.log(classes);
 
 				// fix format of dates
+				var trainerName = "";
+				var statusCount = 0;
+				var traineeGraduated = false;
 				for(let i = 0; i < classes.length; i++) {
 					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
 					var classVar = JSON.parse(JSON.stringify(classDummy));
-					console.log(classVar);
+					// console.log(classVar);
 
 					var sDate = formatShortDate(classVar.startDate);
 					var eDate = formatShortDate(classVar.endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// find trainer name					
+					var trainerDummy = await db.findOne(UserDB, {userID: classVar.trainerID});
+					var trainerVar = JSON.parse(JSON.stringify(trainerDummy));
+					console.log(trainerVar);
+
+					var tName = trainerVar.fName + " " + trainerVar.lName;
+					classes[i].trainerName = tName;
+
+					var end = new Date(classVar.endDate);
+					// determine trainee status
+					if(end < now){ // class is over
+						if(classes[i].finalAve > 7) { // check to see if trainee passed 
+							classes[i].traineeStatus = "PASSED";
+							statusCount += 1;
+						}
+						else{
+							classes[i].traineeStatus = "FAILED";
+							teStatus = "FAILED";
+						}
+					}
+					else{
+						classes[i].traineeStatus = "IN-PROGRESS";
+						teStatus = "IN-PROGRESS"
+					}
+				}
+
+				// if both classes were passed, trainee has graduated
+				if(statusCount === 2){
+					traineeGraduated = true;
+					teStatus = "GRADUATED";
 				}
 
 				res.render('trainee-profile', {
 					classList: classes,
+					trainingStatus: teStatus,
+					traineeGraduated: traineeGraduated,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
 					userID: req.session.user.userID,
@@ -443,12 +523,42 @@ const rendFunctions = {
 	},
 
 	getCertificate: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('certificate', {
-		});
-	// }
+		if (req.session.user){
+			var userID = req.params.userID;
+			var sumAve = 0;
+			//collect all
+			ScoreDB.find({traineeID: req.params.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
+
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+
+					sumAve += Number(classes[i].finalAve);
+				}
+
+				var gradAve = sumAve/classes.length;
+
+				res.render('certificate', {
+					fName: req.session.user.fName,
+					lName: req.session.user.lName,
+					userID: userID,
+					gradAve: gradAve,
+					endDate: classes[0].eDate + ", 2021",
+				});
+			});			
+		} else {
+			res.redirect('/');
+		}
 	},
 
 	getTEClassDet: function(req, res, next) {
@@ -479,37 +589,24 @@ const rendFunctions = {
 				// console.log(traineeVar);
 
 			// compute for daily average in scoresheet
-			var finalAve = 0;
-			// get average of score skills per day
-			var ave1 = (traineeVar.Day1[0] + traineeVar.Day1[1] + traineeVar.Day1[2] + traineeVar.Day1[3] + traineeVar.Day1[4])/5;
-			var ave2 = (traineeVar.Day2[0] + traineeVar.Day2[1] + traineeVar.Day2[2] + traineeVar.Day2[3] + traineeVar.Day2[4])/5;
-			var ave3 = (traineeVar.Day3[0] + traineeVar.Day3[1] + traineeVar.Day3[2] + traineeVar.Day3[3] + traineeVar.Day3[4])/5;
-			var ave4 = (traineeVar.Day4[0] + traineeVar.Day4[1] + traineeVar.Day4[2] + traineeVar.Day4[3] + traineeVar.Day4[4])/5;
-			var ave5 = (traineeVar.Day5[0] + traineeVar.Day5[1] + traineeVar.Day5[2] + traineeVar.Day5[3] + traineeVar.Day5[4])/5;
-			var ave6 = (traineeVar.Day6[0] + traineeVar.Day6[1] + traineeVar.Day6[2] + traineeVar.Day6[3] + traineeVar.Day6[4])/5;
-			var ave7 = (traineeVar.Day7[0] + traineeVar.Day7[1] + traineeVar.Day7[2] + traineeVar.Day7[3] + traineeVar.Day7[4])/5;
-			var ave8 = (traineeVar.Day8[0] + traineeVar.Day8[1] + traineeVar.Day8[2] + traineeVar.Day8[3] + traineeVar.Day8[4])/5;
+				// get average of score skills per day
+			var ave1 = (traineeVar.Day1[0] + traineeVar.Day2[0] + traineeVar.Day3[0] + traineeVar.Day4[0] + traineeVar.Day5[0] + traineeVar.Day6[0] + traineeVar.Day7[0] + traineeVar.Day8[0])/8;
+			var ave2 = (traineeVar.Day1[1] + traineeVar.Day2[1] + traineeVar.Day3[1] + traineeVar.Day4[1] + traineeVar.Day5[1] + traineeVar.Day6[1] + traineeVar.Day7[1] + traineeVar.Day8[1])/8;
+			var ave3 = (traineeVar.Day1[2] + traineeVar.Day2[2] + traineeVar.Day3[2] + traineeVar.Day4[2] + traineeVar.Day5[2] + traineeVar.Day6[2] + traineeVar.Day7[2] + traineeVar.Day8[2])/8;
+			var ave4 = (traineeVar.Day1[3] + traineeVar.Day2[3] + traineeVar.Day3[3] + traineeVar.Day4[3] + traineeVar.Day5[3] + traineeVar.Day6[3] + traineeVar.Day7[3] + traineeVar.Day8[3])/8;
+			var ave5 = (traineeVar.Day1[4] + traineeVar.Day2[4] + traineeVar.Day3[4] + traineeVar.Day4[4] + traineeVar.Day5[4] + traineeVar.Day6[4] + traineeVar.Day7[4] + traineeVar.Day8[4])/8;
 
-			// insert into array
-			traineeVar.Day1[5] = ave1;
-			traineeVar.Day2[5] = ave2;
-			traineeVar.Day3[5] = ave3;
-			traineeVar.Day4[5] = ave4;
-			traineeVar.Day5[5] = ave5;
-			traineeVar.Day6[5] = ave6;
-			traineeVar.Day7[5] = ave7;
-			traineeVar.Day8[5] = ave8;
+				// insert into array
+			var dailyAve = [ave1.toFixed(3), ave2.toFixed(3), ave3.toFixed(3), ave4.toFixed(3), ave5.toFixed(3)];
 
-			// compute for final average 
-			traineeVar.finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+				// compute for final average 
+			var finalAve = (ave1 + ave2 + ave3 + ave4 + ave5)/5;
 			
-			var skill1 = ['Verbal Communication', traineeVar.Day1[0], traineeVar.Day2[0], traineeVar.Day3[0], traineeVar.Day4[0], traineeVar.Day5[0],traineeVar.Day6[0],traineeVar.Day7[0],traineeVar.Day8[0] ];
-			var skill2 = ['Written Communication', traineeVar.Day1[1], traineeVar.Day2[1], traineeVar.Day3[1], traineeVar.Day4[1], traineeVar.Day5[1],traineeVar.Day6[1],traineeVar.Day7[1],traineeVar.Day8[1] ];
-			var skill3 = ['Compliance to Rules', traineeVar.Day1[2], traineeVar.Day2[2], traineeVar.Day3[2], traineeVar.Day4[2], traineeVar.Day5[2],traineeVar.Day6[2],traineeVar.Day7[2],traineeVar.Day8[2] ];
-			var skill4 = ['Analytical Skills', traineeVar.Day1[3], traineeVar.Day2[3], traineeVar.Day3[3], traineeVar.Day4[3], traineeVar.Day5[3],traineeVar.Day6[3],traineeVar.Day7[3],traineeVar.Day8[3] ];
-			var skill5 = ['Technical Skills', traineeVar.Day1[4], traineeVar.Day2[4], traineeVar.Day3[4], traineeVar.Day4[4], traineeVar.Day5[4],traineeVar.Day6[4],traineeVar.Day7[4],traineeVar.Day8[4] ];
-			var ave = [traineeVar.Day1[5], traineeVar.Day2[5], traineeVar.Day3[5], traineeVar.Day4[5], traineeVar.Day5[5],traineeVar.Day6[5],traineeVar.Day7[5],traineeVar.Day8[5] ];
-
+			var skill1 = ['Verbal Communication', traineeVar.Day1[0], traineeVar.Day2[0], traineeVar.Day3[0], traineeVar.Day4[0], traineeVar.Day5[0],traineeVar.Day6[0],traineeVar.Day7[0],traineeVar.Day8[0]];
+			var skill2 = ['Written Communication', traineeVar.Day1[1], traineeVar.Day2[1], traineeVar.Day3[1], traineeVar.Day4[1], traineeVar.Day5[1],traineeVar.Day6[1],traineeVar.Day7[1],traineeVar.Day8[1]];
+			var skill3 = ['Compliance to Rules', traineeVar.Day1[2], traineeVar.Day2[2], traineeVar.Day3[2], traineeVar.Day4[2], traineeVar.Day5[2],traineeVar.Day6[2],traineeVar.Day7[2],traineeVar.Day8[2]];
+			var skill4 = ['Analytical Skills', traineeVar.Day1[3], traineeVar.Day2[3], traineeVar.Day3[3], traineeVar.Day4[3], traineeVar.Day5[3],traineeVar.Day6[3],traineeVar.Day7[3],traineeVar.Day8[3]];
+			var skill5 = ['Technical Skills', traineeVar.Day1[4], traineeVar.Day2[4], traineeVar.Day3[4], traineeVar.Day4[4], traineeVar.Day5[4],traineeVar.Day6[4],traineeVar.Day7[4],traineeVar.Day8[4]];
 			
 			classVar[0].trainee = traineeVar;
 			console.log(classVar[0].trainee)
@@ -522,7 +619,8 @@ const rendFunctions = {
 				skill3: skill3,
 				skill4: skill4,
 				skill5: skill5,
-				dailyAve: ave,
+				dailyAve: dailyAve,
+				finalAve: finalAve.toFixed(3),
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
@@ -543,6 +641,12 @@ const rendFunctions = {
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// not working
+					var SD = formDate(classes[i].startDate);
+					var ED = formDate(classes[i].endDate);
+					classes[i].inputSD = SD;
+					classes[i].inputED = ED;
 
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
@@ -596,10 +700,12 @@ const rendFunctions = {
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
 				// console.log(traineesVar);
+			var numTrainees = traineesVar.length;
 
 			// compute for daily average in scoresheet
 			var finalAve = 0;
-			for(var i = 0; i < traineesVar.length; i++){
+			var fAve = 0;
+			for(var i = 0; i < numTrainees; i++){
 				// get average of score skills per day
 				var ave1 = (traineesVar[i].Day1[0] + traineesVar[i].Day1[1] + traineesVar[i].Day1[2] + traineesVar[i].Day1[3] + traineesVar[i].Day1[4])/5;
 				var ave2 = (traineesVar[i].Day2[0] + traineesVar[i].Day2[1] + traineesVar[i].Day2[2] + traineesVar[i].Day2[3] + traineesVar[i].Day2[4])/5;
@@ -611,19 +717,21 @@ const rendFunctions = {
 				var ave8 = (traineesVar[i].Day8[0] + traineesVar[i].Day8[1] + traineesVar[i].Day8[2] + traineesVar[i].Day8[3] + traineesVar[i].Day8[4])/5;
 
 				// insert into array
-				traineesVar[i].Day1[5] = ave1;
-				traineesVar[i].Day2[5] = ave2;
-				traineesVar[i].Day3[5] = ave3;
-				traineesVar[i].Day4[5] = ave4;
-				traineesVar[i].Day5[5] = ave5;
-				traineesVar[i].Day6[5] = ave6;
-				traineesVar[i].Day7[5] = ave7;
-				traineesVar[i].Day8[5] = ave8;
+				traineesVar[i].Day1[5] = ave1.toFixed(3);
+				traineesVar[i].Day2[5] = ave2.toFixed(3);
+				traineesVar[i].Day3[5] = ave3.toFixed(3);
+				traineesVar[i].Day4[5] = ave4.toFixed(3);
+				traineesVar[i].Day5[5] = ave5.toFixed(3);
+				traineesVar[i].Day6[5] = ave6.toFixed(3);
+				traineesVar[i].Day7[5] = ave7.toFixed(3);
+				traineesVar[i].Day8[5] = ave8.toFixed(3);
 
 				// compute for final average 
-				traineesVar[i].finalAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+				fAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
+				
+				traineesVar[i].finalAve = fAve.toFixed(3);
 
-				// console.log(traineesVar[i]);
+				console.log(traineesVar[i]);
 			}
 
 			classVar[0].trainees = traineesVar;
@@ -632,6 +740,7 @@ const rendFunctions = {
 			res.render('tr-class-details', {
 				classID: classID,
 				courseName: classVar[0].courseName,
+				numTrainees: numTrainees,
 				trainees: classVar[0].trainees,
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
@@ -642,7 +751,8 @@ const rendFunctions = {
 
 	getScoresheet: async function(req, res, next) {
 		var classID = req.params.classID;
-		
+		// which day?
+
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			// var classDet = classVar;	
@@ -672,44 +782,8 @@ const rendFunctions = {
 
 			res.render('update-scoresheet', {
 				classID: classID,
-				courseName: classVar[0].courseName,
-				trainees: classVar[0].trainees,
-			});
-		});
-	},
-
-	getScores: async function(req, res, next) {
-		var classID = req.params.classID;
-		
-		ClassDB.find({classID: classID}, async function(err, data) {
-			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
-		
-			// fix format of dates
-			var sDate = formatDate(classVar[0].startDate);
-			var eDate = formatDate(classVar[0].endDate);
-
-			classVar[0].startDate = sDate;
-			classVar[0].endDate = eDate;
-
-			// fix format of time
-			var sTime = formatTime(classVar[0].startTime);
-			var eTime = formatTime(classVar[0].endTime);
-
-			classVar[0].startTime = sTime;
-			classVar[0].endTime = eTime;
-
-			// count number of trainees in class
-			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
-			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-				// console.log(traineesVar);
-
-			// classes[0].numTrainees = traineesVar.length;
-			classVar[0].trainees = traineesVar;
-
-			res.render('update-scores', {
-				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
 			});
@@ -741,17 +815,113 @@ const rendFunctions = {
 	},
 
 	getTrainingReports: function(req, res, next) {
-		res.render('trainer-reports', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				var totalPassed = 0;
+				var totalFailed = 0;
+				var totalTrainees = 0;
+				var numTrainees = 0;
+				var classStatus = "";
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var numPassed = 0;
+					var numFailed = 0;
+					var now = new Date();
+					var sDate = formatShortDate(classes[i].startDate);
+					var eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+
+					var end = new Date(classes[i].endDate);
+					var start = new Date(classes[i].startDate);
+					if(end.getTime() <= now.getTime()){ //class is over
+						classes[i].classStatus = "COMPLETED";
+					}
+					else {
+						if (start.getTime() <= now.getTime() && end.getTime() > now.getTime()){
+							classes[i].classStatus = "ONGOING";
+						}
+						else{ // (start.getTime() > now.getTime())
+							classes[i].classStatus = "NOT YET STARTED";
+						}
+					}
+
+					// collect all trainees under each class
+					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
+					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+						// console.log(traineesVar);
+					var pass = 0;
+					var fail = 0;
+					for(var y = 0; y < traineesVar.length; y++){
+						if(classes[i].classStatus === "ONGOING" || classes[i].classStatus === "NOT YET STARTED"){
+							pass = 0;
+							fail = 0;
+						}
+						else{
+							if(traineesVar[y].traineeStatus === "PASSED"){ // trainees passed
+								pass += 1;
+							}
+							else{
+								fail += 1;
+							}
+						}
+					}
+					// console.log("pass: " + pass + "; fail: " + fail);
+					classes[i].numTrainees = traineesVar.length;
+					
+					classes[i].numPassed = pass;
+					classes[i].numFailed = fail;
+
+					// accumulate
+					totalPassed += pass;
+					totalFailed += fail;
+					totalTrainees += traineesVar.length;
+				}
+
+				console.log("tPass: " + totalPassed);
+				console.log("tFail: " + totalFailed);
+				console.log("tTrain: " + totalTrainees);
+
+				// console.log(classes);
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					
+					res.render('trainer-reports', {
+						classList: classes,
+						courseList: courses,
+						totalPassed: totalPassed,
+						totalFailed: totalFailed,
+						totalTrainees: totalTrainees,
+					});
+				});	
+			});
+		}
+		else {
+			res.redirect('/');
+		}
 	},
 
 	getTRSchedule: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('tr-schedule', {
-		});
-	// }
+		if (req.session.user.userType === "Trainer"){
+			res.render('tr-schedule', {
+			});
+		} else {
+			res.redirect('/');
+		}
+	},
+
+	getSchedule: async function(req, res) {
+		try {
+			var classes = await ClassDB.find({trainerID: req.session.user.userID}, '');
+			res.send(classes);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}
 	},
 
 	getIntSchedule: function(req, res, next) {
@@ -934,8 +1104,10 @@ const rendFunctions = {
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
 			// console.log(sTime, eTime);
 
+			var trainerName = req.session.user.fName + " " + req.session.user.lName;
+
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 			
 			// add into Class model
 			ClassDB.create(tempClass, function(error) {
@@ -994,7 +1166,7 @@ const rendFunctions = {
 
 	},
 
-	postSaveScores: function(req, res) {
+	postEditScores: function(req, res) {
 
 	},
 
