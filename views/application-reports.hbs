@@ -5,27 +5,26 @@
 <div style="padding: 70px 20px 20px 20px;">
     <div style="width: 98%;">
     	<div class="report-filter">
-    		<label style="font-size: 18px;font-weight: bold;">Filters</label><br><br>
-    		<input placeholder="Search" style="padding: 4px 10px;margin-bottom: 10px; width:100%;"></input><hr>
+    		<label style="font-size: 18px;font-weight: bold;">Filters</label><br><br><hr>
 
     		<label>Applicants</label>
-		    <select style="width:100%"class="appdrop">    
+		    <select style="width:100%" class="appdrop" id="statusFilter">    
 		      <option class="appoption dropdown-item" href="#">All</option>
 		      <option class="appoption dropdown-item" href="#">Endorsed</option>
 		      <option class="appoption dropdown-item" href="#">Failed</option>
 		    </select> <br><br>
 
 			<label>Start Date</label>
-			<input style="width:100%" type="date"><br><br>
+			<input style="width:100%" type="date" id="startFilter"><br><br>
 
 			<label>End Date</label>
-			<input style="width:100%"  type="date"><br><br>
-			<button style="width:100%">Apply filters</button>
+			<input style="width:100%"  type="date" id="endFilter"><br><br>
+			<button style="width:100%" id="applicFilter">Apply filters</button>
     	</div>
     	<div class="class-report">
     		<div style="text-align: center; margin-bottom: 10px;">
 		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Applications Summary Report</strong></label> <br>
-		    	<label>Date: MM/DD/YYYY - MM/DD/YYYY</label> <br>
+		    	<label>Date: {{start}} - {{end}}</label> <br>
 		    </div>
 		    <!--table -->
 		    <div class="table-responsive" style="width: 98%; margin: 00px auto;">
@@ -43,39 +42,34 @@
 		                </tr>
 		            </thead>
 		            <tbody>
+						{{#each applicants}}
 		            	<!--each applicant-->
 		                <tr class="report-det">
-		                    <td> Iron Man </td>
-		                    <td> iron@gmail.com </td>
-		                    <td> Passed </td>
-		                    <td> Passed </td>
-		                    <td> Passed </td>
+		                    <td> {{this.fName}} {{this.lName}} </td>
+		                    <td> {{this.email}} </td>
+		                    <td> {{this.screenStatus}} </td>
+		                    <td> {{this.initialStatus}} </td>
+		                    <td> {{this.finalStatus}} </td>
 		                </tr>
-		                <tr class="report-det">
-		                    <td> Black Widow </td>
-		                    <td> black@gmail.com </td>
-		                    <td> Passed </td>
-		                    <td> Passed </td>
-		                    <td> Passed </td>
-		                </tr>
+		                {{/each}}
 		                <!--for totals-->
 		            	<tr style="font-weight: bold;">
 		            		<td colspan="2">Total Passed</td>
-		            		<td>10</td>
-		            		<td>10</td>
-		            		<td>10</td>
+		            		<td>{{spLength}}</td>
+		            		<td>{{ipLength}}</td>
+		            		<td>{{fpLength}}</td>
 		            	</tr>
 		            	<tr style="font-weight: bold;">
 		            		<td colspan="2">Total Failed</td>
-		            		<td>10</td>
-		            		<td>10</td>
-		            		<td>10</td>
+		            		<td>{{sfLength}}</td>
+		            		<td>{{ifLength}}</td>
+		            		<td>{{ffLength}}</td>
 		            	</tr>
 		            	<tr style="font-weight: bold;">
 		            		<td colspan="2">No. of Applicants</td>
-		            		<td>20</td>
-		            		<td>20</td>
-		            		<td>20</td>
+		            		<td>{{screenTotal}}</td>
+		            		<td>{{initialTotal}}</td>
+		            		<td>{{finalTotal}}</td>
 		            	</tr>
 		            </tbody>
 		        </table>
