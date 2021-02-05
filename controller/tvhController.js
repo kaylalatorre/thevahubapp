@@ -733,16 +733,15 @@ const rendFunctions = {
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
+				var totalPassed = 0;
+				var totalFailed = 0;
+				var totalTrainees = 0;
 				var numTrainees = 0;
 				var classStatus = "";
-
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
 					var numPassed = 0;
 					var numFailed = 0;
-					var totalPassed = 0;
-					var totalFailed = 0;
-					var totalTrainees = 0;
 					var now = new Date();
 					var sDate = formatShortDate(classes[i].startDate);
 					var eDate = formatShortDate(classes[i].endDate);
@@ -772,15 +771,12 @@ const rendFunctions = {
 					var fail = 0;
 					for(var y = 0; y < traineesVar.length; y++){
 						if(classes[i].classStatus === "ONGOING" || classes[i].classStatus === "NOT YET STARTED"){
-							numPassed = "-";
-							numFailed = "-";
-							totalPassed = "-";
-							totalFailed = "-";
+							pass = 0;
+							fail = 0;
 						}
 						else{
 							if(traineesVar[y].traineeStatus === "PASSED"){ // trainees passed
 								pass += 1;
-								// console.log(traineesVar[y].traineeStatus);
 							}
 							else{
 								fail += 1;
@@ -792,20 +788,18 @@ const rendFunctions = {
 					
 					classes[i].numPassed = pass;
 					classes[i].numFailed = fail;
-					
+
 					// accumulate
 					totalPassed += pass;
 					totalFailed += fail;
 					totalTrainees += traineesVar.length;
-
-					console.log("tPass: " + totalPassed);
-					console.log("tFail: " + totalFailed);
-					console.log("tTrain: " + totalTrainees);
-
 				}
 
-				console.log(classes);
+				console.log("tPass: " + totalPassed);
+				console.log("tFail: " + totalFailed);
+				console.log("tTrain: " + totalTrainees);
 
+				// console.log(classes);
 				CourseDB.find({}, function(err, data) {
 					var courses = JSON.parse(JSON.stringify(data));
 					
