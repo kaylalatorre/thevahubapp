@@ -14,26 +14,30 @@
     		<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Course</label>
 				<select id="courseName" class="appdrop" style="width: 68%">  
-					{{#each courseList}}   
+					{{!-- {{#each courseList}}   
 					<option class="appoption dropdown-item" href="#">{{courseName}}</option>
-					{{/each}}
+					{{/each}} --}}
+
+					<option id="courseName" class="appoption dropdown-item" href="#">Real Estate</option>
+					<option id="courseName" class="appoption dropdown-item" href="#">Marketing</option>
+
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Start Date</label>
-				<input id="startDate" type="date">
+				<input id="startDate" value="{{SD}}" type="date">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">End Date</label>
-				<input id="endDate" type="date">
+				<input id="endDate" value="{{ED}}" type="date">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
-				<input id="startTime" type="time" min="17:00" max="5:00"> - <input id="endTime" type="time" min="17:00" max="5:00">
+				<input id="startTime" type="time" value="{{ST}}" min="17:00" max="5:00"> - <input id="endTime" type="time" value="{{ET}}" min="17:00" max="5:00">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-				<input id="meetLink" placeholder="Meeting Link" style="width: 68%">
+				<input id="meetLink" value="{{meetLink}}" placeholder="Meeting Link" style="width: 68%">
 			</div>
     	</form>
 

@@ -104,18 +104,18 @@ function formatShortDate(date) {
 	return mm + " " + dd;
 }
 
-function formatNiceDate(date) {
-	var newDate = new Date(date);
-	// adjust 0 before single digit date
-	let day = ("0" + newDate.getDate()).slice(-2);
+function formDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-	// current month
-	let month = ("0" + (newDate.getMonth() + 1)).slice(-2);
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
 
-	// current year
-	let year = newDate.getFullYear();
-
-	return year + "-" + month + "-" + day;
+    return [year, month, day].join('-');
 }
 
 // two digits
@@ -561,6 +561,12 @@ const rendFunctions = {
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// not working
+					var SD = formDate(classes[i].startDate);
+					var ED = formDate(classes[i].endDate);
+					classes[i].inputSD = SD;
+					classes[i].inputED = ED;
 
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
