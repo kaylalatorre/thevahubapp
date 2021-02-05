@@ -866,12 +866,23 @@ const rendFunctions = {
 	},
 
 	getTRSchedule: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('tr-schedule', {
-		});
-	// }
+		if (req.session.user.userType === "Trainer"){
+			res.render('tr-schedule', {
+			});
+		} else {
+			res.redirect('/');
+		}
+	},
+
+	getSchedule: async function(req, res) {
+		try {
+			var classes = await ClassDB.find({trainerID: req.session.user.userID}, '');
+			res.send(classes);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}
 	},
 
 	getIntSchedule: function(req, res, next) {

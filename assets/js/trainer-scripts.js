@@ -16,6 +16,78 @@ function calculateHours(startTime, endTime) {
 
 $(document).ready(function() {
 
+	var calendarEl = document.getElementById('tr-calendar');
+
+	if(calendarEl !== null){
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth',
+		initialDate: currDate, //set to Current date
+		headerToolbar: {
+			left: 'prev,next today',
+			center: 'title',
+			right: 'dayGridMonth,timeGridWeek,timeGridDay'
+		},
+			// customButtons: {
+			// 	addEventButton: {
+			// 	text: 'add event...',
+			// 	click: function() {
+			// 		var dateStr = prompt('Enter a date in YYYY-MM-DD format');
+			// 		var date = new Date(dateStr + 'T00:00:00'); // will be in local time
+		
+			// 		if (!isNaN(date.valueOf())) { // valid?
+			// 		calendar.addEvent({
+			// 			title: 'dynamic event',
+			// 			start: date,
+			// 			allDay: true
+			// 		});
+			// 		alert('Great. Now, update your database...');
+			// 		} else {
+			// 		alert('Invalid date.');
+			// 		}
+			// 	}
+			// 	}
+			// }
+		});
+	
+		calendar.render();
+	}
+
+	// RENDER TRAINER SCHEDULE
+	if(window.location.pathname === "/trainer-schedule"){
+		var trClassesSched = [];
+
+		$.ajax({
+			method: 'GET',
+			url: '/get-schedule',
+			data: {},
+			success: function(res){
+
+				$('div#TRSched').empty();
+
+				// loop through classes to get dates and add to calendar
+				for (var i = 0; i < res.length; i++){
+					var start = new Date(res[i].startDate);
+					var end = new Date(res[i].endDate);
+
+					calendar.addEvent({
+						title: res[i].courseName + " " + res[i].classID,
+						start: start,
+						end: end,
+						allDay: true,
+					});
+
+					// add classes to sidetab
+					var classHTML = '<div class="sched-list">'
+									// + '<input class="form-check-input" type="checkbox">'
+									+ '<label class="form-check-label" for="formCheck-1" style="font-size: 14px;">' + + '</label>'
+									+ '</div>';
+				}
+
+			},
+			error: res => console.log(res)
+		});
+	}
+
 	// ADD CLASSES TO TRAINER LIST
 	$('button#createClass').click(function() {
         var courseName = $('#courseName').val();

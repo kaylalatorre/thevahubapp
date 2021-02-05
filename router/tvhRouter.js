@@ -39,6 +39,7 @@ router.get('/certificate/:userID', controller.getCertificate);
 	// trainer
 router.get('/trainer-classes', controller.getTrainerClasses);
 router.get('/tr-class-details/:classID', controller.getTRClassDetails);
+router.get('/get-schedule', controller.getSchedule);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
