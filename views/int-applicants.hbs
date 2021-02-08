@@ -9,11 +9,12 @@
     <hr>
     <div class="d-inline-block">
         <label class="d-inline-block" style="padding: 3px 10px;"><strong>&nbsp;Filter</strong></label>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-ALL" class="form-check-input" type="checkbox" id="display-all"><label class="form-check-label" for="display-all">All</label></div>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-DONE" class="form-check-input" type="checkbox" id="display-done"><label class="form-check-label" for="display-done">Done</label></div>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-PENDING" class="form-check-input" type="checkbox" id="display-pending"><label class="form-check-label" for="display-pending">Pending</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-ALL" class="form-check-input checkList" type="checkbox" id="display-all"><label id="label-ALL" class="form-check-label" for="display-all">All</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-DONE" class="form-check-input checkList" type="checkbox" id="display-done"><label id="label-DONE" class="form-check-label" for="display-done">Done</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-PENDING" class="form-check-input checkList" type="checkbox" id="display-pending"><label id="label-PENDING" class="form-check-label" for="display-pending">Pending</label></div>
     </div>
-    <button type="button" id="save-statBtn" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Save changes</label></button>
+    <button type="button" id="save-statBtn" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Save changes </label></button>
+
     <div>
         <div class="table-responsive table-bordered">
             <table class="table table-bordered table-hover">

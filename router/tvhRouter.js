@@ -31,7 +31,7 @@ router.get('/get-HRinterviews', controller.getHRInterviews);
 //router.get('/get-applicPDF', controller.getApplicPDF);
 //router.get('/view-resume', controller.getPDF);
 router.get('/download-resume', controller.getResumeDL);
-router.get('/get-intervDone', controller.getIntervDone);
+router.get('/get-filterIntervList', controller.getIntervFiltered);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);

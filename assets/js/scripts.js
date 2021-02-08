@@ -161,6 +161,90 @@ function downloadFile(applicID){
 	});
 }
 
+// AJAX for applicant list rendering after Status filters
+function getFilteredIntervs(applicPhase, chckFilter){
+	$.ajax({
+		method: 'GET',
+		url: '/get-filterIntervList',
+		data: {phase: applicPhase, checkStatus: chckFilter},
+		success: function(res) {
+			
+			// re-entering applicant records
+			$('#table-applicInterv').empty();
+
+			if (res.length > 0){
+				alert("Applicant list retrieved.");
+				for(let i=0; i<res.length; i++){
+					let applicRecHTML = '<tr id="rowApplic-'+ res[i].applicant.applicantID +'" class="row-applic" style="font-size: 14px;">'
+										+ '<input type="hidden" class="hidden-appID" value="'+ res[i].applicant.applicantID +'">'
+										+ '<input type="hidden" class="hidden-initStat" value="'+ res[i].applicant.initialStatus +'">'
+										+ '<input type="hidden" class="hidden-finalStat" value="'+ res[i].applicant.finalStatus +'">'
+										+ '<td id="applicName-row" style="font-size: 14px;">'+ res[i].applicant.lName + ", " + res[i].applicant.fName +'</td>'
+										+ '<td style="font-size: 14px;">' 
+												+ '<input name="contCheck-'+ res[i].applicant.applicantID +'" type="hidden" value="'+ res[i].applicant.sys_reqs +'">'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="laptop"><label for="laptop"> Personal Computer/Laptop</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="internet"><label for="internet"> Internet Speed</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="headset"><label for="headset"> Headset</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="webcam"><label for="webcam"> Webcam</label><br>'
+										+ '</td>'
+										+ '<td style="font-size: 14px;">'
+											+ '<div id="res-viewBtn" onclick="downloadFile('+ "\'" + res[i].applicant.applicantID + "\'" +')" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>'
+											+ '<div id="res-viewBtn" onclick="downloadFile('+ "\'" + res[i].applicant.applicantID + "\'" +')" class="outlined-btn d-inline"  style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>'
+										+ '</td>'
+										+ '<td style="font-size: 14px;">'
+											+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
+												+ '<input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="PASS">'
+												+ '<label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>'
+											+ '</div>'
+											+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
+												+ '<input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="FAIL">'
+												+ '<label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>'
+											+ '</div>'
+										+ '</td>'
+									+ '</tr>';						
+						$('#table-applicInterv').append(applicRecHTML);
+				}
+
+				// disable or change the radio btn preset acc to the Applic status in the db
+				$("tr.row-applic input").prop('disabled', true);
+
+				for (let i=0; i<res.length; i++){
+					// pre-checking sys_reqs
+					let sysreqStr = $("tr.row-applic input[name='contCheck-"+ res[i].applicant.applicantID +"']").val();
+					let arrReqs = sysreqStr.split(','); 
+
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#laptop").prop('checked', arrReqs[0] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#internet").prop('checked', arrReqs[1] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#headset").prop('checked', arrReqs[2] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#webcam").prop('checked', arrReqs[3] === "true");
+
+					// pre-checking radio buttons again after updating
+					if (applicPhase === "Initial")
+						if (res[i].applicant.initialStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.initialStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+
+					if (applicPhase === "Final")
+						if (res[i].applicant.finalStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.finalStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+
+					// enabling radio buttons
+					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
+						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);					
+				}				
+			} else {
+				alert("No applicant records found for this filter.");
+				let applicRecHTML = '<tr class="row-applic" style="font-size: 14px;"> <td></td> <td></td> <td></td> <td></td> </tr>';						
+				$('#table-applicInterv').append(applicRecHTML);
+			}
+		},
+		error: res => console.log(res)
+	});	
+}
+
 $(document).ready(function() {	
 	
 	let calendar;	
@@ -547,81 +631,45 @@ $(document).ready(function() {
 		});			
 	});
 	
-	$("input[name='filter-DONE']").change(function() {
-		alert("checked: DONE");
+	$("input[name='filter-ALL']").change(function() {
 		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-ALL').text();
 		
-		if(this.checked)
-			$.ajax({
-				method: 'GET',
-				url: '/get-intervDone',
-				data: {phase: applicPhase},
-				success: function(res) {
-					alert("in AJAX success DONE checkbox");
-					
-					// re-entering applicant records
-					$('#table-applicInterv').empty();
-					
-					for(let i=0; i<res.length; i++){
-						let applicRecHTML = '<input type="hidden" class="hidden-appID" value="'+ res[i].applicant.applicantID +'">'
-											+ '<input type="hidden" class="hidden-initStat" value="'+ res[i].applicant.initialStatus +'">'
-											+ '<input type="hidden" class="hidden-finalStat" value="'+ res[i].applicant.finalStatus +'">'
-
-										+'<tr id="rowApplic-'+ res[i].applicant.applicantID +'" class="row-applic" style="font-size: 14px;">'
-											+ '<td id="applicName-row" style="font-size: 14px;">'+ res[i].applicant.lName + ", " + res[i].applicant.fName +'</td>'
-											+ '<td style="font-size: 14px;">' 
-													+ '<input name="contCheck-'+ res[i].applicant.applicantID +'" type="hidden" value="'+ res[i].applicant.this.sys_reqs +'">'
-													+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="laptop"><label for="laptop"> Personal Computer/Laptop</label><br>'
-													+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="internet"><label for="internet"> Internet Speed</label><br>'
-													+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="headset"><label for="headset"> Headset</label><br>'
-													+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="webcam"><label for="webcam"> Webcam</label><br>'
-											+ '</td>'
-											+ '<td style="font-size: 14px;">'
-												+ '<div id="res-viewBtn" onclick="downloadFile("'+ res[i].applicant.applicantID +'")" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>'
-												+ '<div id="res-downloadBtn" onclick="downloadFile("'+ res[i].applicant.applicantID +'")" class="outlined-btn d-inline"  style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>'
-											+ '</td>'
-											+ '<td style="font-size: 14px;">'
-												+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
-													+ '<input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="PASS">'
-													+ '<label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>'
-												+ '</div>'
-												+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
-													+ '<input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="FAIL">'
-													+ '<label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>'
-												+ '</div>'
-											+ '</td>'
-										+ '</tr>';						
-							$('#table-applicInterv').append(applicRecHTML);
-					}
-
-					// disable or change the radio btn preset acc to the Applic status in the db
-					$("tr.row-applic input").prop('disabled', true);
-					
-					for(let i=0; i<res.length; i++){
-							// pre-checking radio buttons again after updating
-							if (applicPhase === "Initial")
-								if (res[i].applicant.initialStatus === "PASS")
-									$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
-								else if (res[i].applicant.initialStatus === "FAIL")
-									$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
-
-							if (applicPhase === "Final")
-								if (res[i].applicant.finalStatus === "PASS")
-									$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
-								else if (res[i].applicant.finalStatus === "FAIL")
-									$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
-
-							// enabling radio buttons
-							if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
-								$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);					
-					}
-				},
-				error: res => console.log(res)
-			});
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
 	});
 	
-	$("button#save-statBtn").on("click", function() {
+	$("input[name='filter-DONE']").change(function() {
+		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-DONE').text();
 		
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
+	});
+	
+	$("input[name='filter-PENDING']").change(function() {
+		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-PENDING').text();
+		
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
+	});
+	
+//	$("button#save-statBtn").prop('disabled', false);
+//	$("button#save-statBtn").text('Save changes');
+	
+	$("button#save-statBtn").on("click", function() {
+//		$("button#save-statBtn").prop('disabled', true);
+//		$("button#save-statBtn").text('Update statuses');
 		// get Array of applicant IDs
 		let arrIDs = [];
 		$(".hidden-appID").each(function(index, elem) {
@@ -635,9 +683,7 @@ $(document).ready(function() {
 			console.log("input:radio.applic-stat:checked: " + $(elem).val());
 			arrStats.push($(elem).val());
 		});
-		
-		console.log("TRACK: in save-statBtn.click: arrIDs.length: "+ arrIDs.length);
-		
+				
 		$.ajax({
 			method: 'POST',
 			url: '/update-applicStats',

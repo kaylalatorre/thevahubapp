@@ -216,7 +216,7 @@ const rendFunctions = {
 		res.send(interviews);
 	},
 
-/* [..] HR Screening
+/* [/] HR Screening
  */
 	
 	getHRScreening: async function(req, res) {
@@ -360,26 +360,44 @@ const rendFunctions = {
 
 	},
 	
-	getIntervDone: async function(req, res) {
+	getIntervFiltered: async function(req, res) {
 		try {    
 			if(req.session.user.userType === "HRinterv"){
+				let {phase, checkStatus} = req.query;
 				
 				// search for Interview phase of HR interviewer
 				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
 				let filtered = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
-				
 				let filterIntervs = [];
-				if (req.query.phase === "Initial")
-					for (i=0; i<filtered.length; i++){
-						if (!(filtered[i].initialStatus === "FOR REVIEW"))
-							filterIntervs.push(filtered[i]);
-					}
-				else if (req.query.phase === "Final")
-					for (i=0; i<filtered.length; i++){
-						if (!(filtered[i].finalStatus === "FOR REVIEW"))
-							filterIntervs.push(filtered[i]);
-					}					
+
+				if (checkStatus === "Done") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.initialStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.finalStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}		
+					
+				} else if (checkStatus === "Pending") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.initialStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.finalStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}						
+				} else 
+					for (i=0; i<filtered.length; i++)
+						filterIntervs.push(filtered[i]);				
 				
+				console.log("filterIntervs: "+ filterIntervs);
 				res.status(200).send(filterIntervs);
 			}	
 		} catch(e){
