@@ -1427,6 +1427,8 @@ const rendFunctions = {
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
+					
+					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
 				}
 
 				res.status(200).send(filterIntervs);
