@@ -171,7 +171,8 @@ function getFilteredIntervs(applicPhase, chckFilter){
 			
 			// re-entering applicant records
 			$('#table-applicInterv').empty();
-
+			$("button#save-statBtn").prop('disabled', true);
+			
 			if (res.length > 0){
 				alert("Applicant list retrieved.");
 				for(let i=0; i<res.length; i++){
@@ -207,7 +208,8 @@ function getFilteredIntervs(applicPhase, chckFilter){
 
 				// disable or change the radio btn preset acc to the Applic status in the db
 				$("tr.row-applic input").prop('disabled', true);
-
+				
+				let enabledCount = 0;
 				for (let i=0; i<res.length; i++){
 					// pre-checking sys_reqs
 					let sysreqStr = $("tr.row-applic input[name='contCheck-"+ res[i].applicant.applicantID +"']").val();
@@ -232,8 +234,14 @@ function getFilteredIntervs(applicPhase, chckFilter){
 							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
 
 					// enabling radio buttons
-					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
-						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);					
+					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW"){
+						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);
+						enabledCount++;
+					}
+
+					// check if ALL radio btn inputs are disabled, else enable $('button#save-statBtn')
+					if (enabledCount > 0)
+						$("button#save-statBtn").prop('disabled', false);					
 				}				
 			} else {
 				alert("No applicant records found for this filter.");
@@ -407,8 +415,10 @@ $(document).ready(function() {
 			arrFinals.push($(elem).val());
 		});
 		
+		
 		$("tr.row-applic input").prop('disabled', true); // disabling radio buttons		
-
+		let enabledCount = 0;
+		
 		for(let i=0; i<arrIDs.length; i++){
 
 			// pre-checking sys_reqs
@@ -434,10 +444,18 @@ $(document).ready(function() {
 					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"'][value='FAIL']").attr('checked', true);	
 				
 			// enabling radio buttons
-			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW")
+			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW"){
 				$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").prop('disabled', false);
-				console.log($("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").val());
+				enabledCount++;
+			}
+				
 		}
+		
+		$("button#save-statBtn").prop('disabled', true);
+		
+		// check if ALL radio btn inputs are disabled, else enable $('button#save-statBtn')
+		if (enabledCount > 0)
+			$("button#save-statBtn").prop('disabled', false);
 	}
 	
 	// int-schedule Interviewed button
@@ -664,12 +682,7 @@ $(document).ready(function() {
 		}
 	});
 	
-//	$("button#save-statBtn").prop('disabled', false);
-//	$("button#save-statBtn").text('Save changes');
-	
 	$("button#save-statBtn").on("click", function() {
-//		$("button#save-statBtn").prop('disabled', true);
-//		$("button#save-statBtn").text('Update statuses');
 		// get Array of applicant IDs
 		let arrIDs = [];
 		$(".hidden-appID").each(function(index, elem) {
