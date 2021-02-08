@@ -28,9 +28,10 @@ router.get('/applic-filterReports', controller.getHRFilterReports);
 router.get('/int-applicants', controller.getApplicList);
 router.get('/int-schedule', controller.getIntSchedule);
 router.get('/get-HRinterviews', controller.getHRInterviews);
-router.get('/get-applicPDF', controller.getApplicPDF);
-router.get('/view-resume', controller.getPDF);
+//router.get('/get-applicPDF', controller.getApplicPDF);
+//router.get('/view-resume', controller.getPDF);
 router.get('/download-resume', controller.getResumeDL);
+router.get('/get-intervDone', controller.getIntervDone);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);

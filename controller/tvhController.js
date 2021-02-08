@@ -360,20 +360,48 @@ const rendFunctions = {
 
 	},
 	
+	getIntervDone: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRinterv"){
+				
+				// search for Interview phase of HR interviewer
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let filtered = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
+				
+				let filterIntervs = [];
+				if (req.query.phase === "Initial")
+					for (i=0; i<filtered.length; i++){
+						if (!(filtered[i].initialStatus === "FOR REVIEW"))
+							filterIntervs.push(filtered[i]);
+					}
+				else if (req.query.phase === "Final")
+					for (i=0; i<filtered.length; i++){
+						if (!(filtered[i].finalStatus === "FOR REVIEW"))
+							filterIntervs.push(filtered[i]);
+					}					
+				
+				res.status(200).send(filterIntervs);
+			}	
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
+	},
+	
 //// non-functional
-	getApplicPDF: async function(req, res){
-
-		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
-		console.log(req.query.applicID);
-		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
-		 console.log(encodePDF);
-		res.status(200).send(encodePDF);
-	
-	},
-	
-	getPDF: function(req, res){
-		res.render('testpdf', {});
-	},
+//	getApplicPDF: async function(req, res){
+//
+//		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
+//		console.log(req.query.applicID);
+//		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
+//		 console.log(encodePDF);
+//		res.status(200).send(encodePDF);
+//	
+//	},
+//	
+//	getPDF: function(req, res){
+//		res.render('testpdf', {});
+//	},
 ////	
 
 	getHRReports: async function(req, res) {
