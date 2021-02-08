@@ -484,7 +484,6 @@ $(document).ready(function() {
 	$("button#applicFilter").on("click", function() {
 		// get value of Status select filter (ALL, ENDORSED, FAILED)
 		let status = $('#statusFilter option:selected').text();
-		alert("$('#statusFilter option:selected').text(): "+ $('#statusFilter option:selected').text());
 		
 		let dateStart = $('input#startFilter').val();
 		let dateEnd = $('input#endFilter').val();
@@ -494,16 +493,32 @@ $(document).ready(function() {
 			url: '/applic-filterReports',
 			data: {appStatus: status, dStart: dateStart, dEnd: dateEnd}, //send both Arrays for posting
 			success: function(res) {
+				alert("in AJAX report success..");
+				
+				$('#label-date').text("Period Covered: " + dateStart + " to " + dateEnd);
 				$('#applic-Table').empty();
 				
+				let initStat;
+				let finalStat;
 				// each applicant 
 				for (let i=0; i<res.applics.length; i++){
+					if (typeof res.applics[i].initialStatus === 'undefined')
+						initStat = "";
+					else 
+						initStat = res.applics[i].initialStatus +"ED";
+					
+					if (typeof res.applics[i].finalStatus === 'undefined')
+						finalStat = "";
+					else 
+						finalStat = res.applics[i].finalStatus +"ED";
+					
+					
 					let appInfoHTML = '<tr class="report-det">'
 										+ '<td>' +  res.applics[i].lName +", "+ res.applics[i].fName + '</td>'
 										+ '<td>' + res.applics[i].email + '</td>'
 										+ '<td>' + res.applics[i].screenStatus + '</td>'
-										+ '<td>' + res.applics[i].initialStatus + '</td>'
-										+ '<td>' + res.applics[i].finalStatus + '</td>'
+										+ '<td>' + initStat + '</td>'
+										+ '<td>' + finalStat + '</td>'
 									+ '</tr>';
 					$('#applic-Table').append(appInfoHTML);					
 				}
@@ -532,7 +547,6 @@ $(document).ready(function() {
 			},
 			error: res => console.log(res)
 		});			
-		
 	});
 	
 	

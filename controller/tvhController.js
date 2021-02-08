@@ -389,7 +389,7 @@ const rendFunctions = {
 		
 		// exclude PENDING, FOR REVIEW statuses..
 		for (let j=0; j<initApplics.length; j++)
-			if (!(initApplics[j].screenStatus === "PENDING") || !(initApplics[j].initialStatus === "FOR REVIEW") || !(initApplics[j].finalStatus === "FOR REVIEW"))
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
 				applicList.push(initApplics[j]);
 		
 		for(var i=0; i < applicList.length; i++) {
@@ -451,16 +451,11 @@ const rendFunctions = {
 		
 		// exclude PENDING, FOR REVIEW statuses..
 		for (let j=0; j<initApplics.length; j++)
-			if (!(initApplics[j].screenStatus === "PENDING") || !(initApplics[j].initialStatus === "FOR REVIEW") || !(initApplics[j].finalStatus === "FOR REVIEW"))
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
 				applics.push(initApplics[j]);
 		
 		// count stats for total breakdowns
-		let spCount;
-		let sfCount;
-		let ipCount;
-		let ifCount;
-		let fpCount;
-		let ffCount;
+		let spCount = sfCount = ipCount = ifCount = fpCount = ffCount = 0;	
 		
 		for (let k=0; k<applics.length; k++){
 			// screening 
@@ -501,7 +496,7 @@ const rendFunctions = {
 		 * no. of all applicants	(screening, initialInterv, finalInterv)
 		 */
 		
-		res.send({applics: applicList,
+		res.status(200).send({applics: applicList,
 					spLength: spCount,
 					sfLength: sfCount,
 					ipLength: ipCount,
