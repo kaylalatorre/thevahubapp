@@ -1422,6 +1422,8 @@ const rendFunctions = {
 				if (phase === "Initial")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+					
+					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
 					}
 				
 				if (phase === "Final")
@@ -1429,7 +1431,7 @@ const rendFunctions = {
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
 					
 					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
-				}
+					}
 
 				res.status(200).send(filterIntervs);
 			}	
