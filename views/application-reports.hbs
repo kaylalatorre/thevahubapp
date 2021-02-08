@@ -41,11 +41,11 @@
 		                    <th style="width: 20%;">Final Interview</th>
 		                </tr>
 		            </thead>
-		            <tbody>
+		            <tbody id="applic-Table">
 						{{#each applicants}}
 		            	<!--each applicant-->
 		                <tr class="report-det">
-		                    <td> {{this.fName}} {{this.lName}} </td>
+		                    <td> {{genApplicName this}} </td>
 		                    <td> {{this.email}} </td>
 		                    <td> {{this.screenStatus}} </td>
 		                    <td> {{this.initialStatus}} </td>

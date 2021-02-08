@@ -21,6 +21,8 @@ router.get('/get-interviews', controller.getInterviews);
 router.get('/get-filterIntervs', controller.getFilterIntervs);
 
 router.get('/application-reports', controller.getHRReports);
+router.get('/applic-filterReports', controller.getHRFilterReports);
+
 
 // interviewer
 router.get('/int-applicants', controller.getApplicList);

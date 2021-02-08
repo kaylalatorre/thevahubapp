@@ -480,6 +480,62 @@ $(document).ready(function() {
 		});
 	}	
 	
+	//for Apply Filters btn in HR-admin application report
+	$("button#applicFilter").on("click", function() {
+		// get value of Status select filter (ALL, ENDORSED, FAILED)
+		let status = $('#statusFilter option:selected').text();
+		alert("$('#statusFilter option:selected').text(): "+ $('#statusFilter option:selected').text());
+		
+		let dateStart = $('input#startFilter').val();
+		let dateEnd = $('input#endFilter').val();
+		
+		$.ajax({
+			method: 'GET',
+			url: '/applic-filterReports',
+			data: {appStatus: status, dStart: dateStart, dEnd: dateEnd}, //send both Arrays for posting
+			success: function(res) {
+				$('#applic-Table').empty();
+				
+				// each applicant 
+				for (let i=0; i<res.applics.length; i++){
+					let appInfoHTML = '<tr class="report-det">'
+										+ '<td>' +  res.applics[i].lName +", "+ res.applics[i].fName + '</td>'
+										+ '<td>' + res.applics[i].email + '</td>'
+										+ '<td>' + res.applics[i].screenStatus + '</td>'
+										+ '<td>' + res.applics[i].initialStatus + '</td>'
+										+ '<td>' + res.applics[i].finalStatus + '</td>'
+									+ '</tr>';
+					$('#applic-Table').append(appInfoHTML);					
+				}
+				
+				// for totals
+				let totalsHTML = '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">Total Passed</td>'
+									+ '<td>' + res.spLength + '</td>'
+									+ '<td>' + res.ipLength + '</td>'
+									+ '<td>' + res.fpLength + '</td>'
+								+ '</tr>'
+								+ '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">Total Failed</td>'
+									+ '<td>' + res.sfLength + '</td>'
+									+ '<td>' + res.ifLength + '</td>'
+									+ '<td>' + res.ffLength + '</td>'
+								+ '</tr>'
+								+ '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">No. of Applicants</td>'
+									+ '<td>' + (Number.parseInt(res.spLength) + Number.parseInt(res.sfLength))  + '</td>'
+									+ '<td>' + (Number.parseInt(res.ipLength) + Number.parseInt(res.ifLength)) + '</td>'
+									+ '<td>' + (Number.parseInt(res.fpLength) + Number.parseInt(res.ffLength)) + '</td>'
+								+ '</tr>'; 
+				$('#applic-Table').append(totalsHTML);
+
+			},
+			error: res => console.log(res)
+		});			
+		
+	});
+	
+	
 	$("button#save-statBtn").on("click", function() {
 		
 		// get Array of applicant IDs

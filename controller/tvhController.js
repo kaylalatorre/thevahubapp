@@ -376,16 +376,22 @@ const rendFunctions = {
 	},
 ////	
 
-	getHRReports: async function(req, res, next) {
+	getHRReports: async function(req, res) {
 
-		var applicList = await db.findMany(ApplicantDB, {});
+		var initApplics = await db.findMany(ApplicantDB, {});
+		var applicList = [];
 		var screenPass = [];
 		var screenFail = [];
 		var initialPass = [];
 		var initialFail = [];
 		var finalPass = [];
 		var finalFail = [];
-
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") || !(initApplics[j].initialStatus === "FOR REVIEW") || !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applicList.push(initApplics[j]);
+		
 		for(var i=0; i < applicList.length; i++) {
 			if(applicList[i].screenStatus === "ACCEPTED") 
 				screenPass.push(applicList[i]);
@@ -417,8 +423,92 @@ const rendFunctions = {
 			ffLength: finalFail.length,
 			screenTotal: screenPass.length + screenFail.length,
 			initialTotal: initialPass.length + initialFail.length,
-			finalTotal: finalPass.length + finalFail.length,
+			finalTotal: finalPass.length + finalFail.length
 		});
+	},
+	
+	getHRFilterReports: async function(req, res) {
+		let {appStatus, dStart, dEnd} = req.query;
+		
+		// format Dates for db
+		let dateStart = new Date(dStart);
+		let dateEnd = new Date(dEnd);
+		
+		// placeholder array for rendering
+		let applics = [];
+		let applicList = [];
+		
+		// >= dateStart, <= dateEnd -- e.g. 2021/02/05 to 2021/02/10 
+		let initApplics = await db.aggregate(ApplicantDB, [
+			{'$match': {
+				applicDate: {
+					$gte: dateStart,
+					$lte: dateEnd
+				}
+			}},
+			{'$sort': {lName: 1, fName: 1}}
+		]);			
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") || !(initApplics[j].initialStatus === "FOR REVIEW") || !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applics.push(initApplics[j]);
+		
+		// count stats for total breakdowns
+		let spCount;
+		let sfCount;
+		let ipCount;
+		let ifCount;
+		let fpCount;
+		let ffCount;
+		
+		for (let k=0; k<applics.length; k++){
+			// screening 
+			if (applics[k].screenStatus === "ACCEPTED")
+				spCount++;
+			else if (applics[k].screenStatus === "REJECTED")
+				sfCount++;
+			
+			// initialInterv
+			if (applics[k].initialStatus === "PASS")
+				ipCount++;
+			else if (applics[k].initialStatus === "FAIL")
+				ifCount++;	
+			
+			// finalInterv
+			if (applics[k].finalStatus === "PASS")
+				fpCount++;
+			else if (applics[k].finalStatus === "FAIL")
+				ffCount++;				
+		}
+		
+		
+		if (appStatus === "Endorsed"){
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].finalStatus === "PASS")	
+					applicList.push(applics[i]);			
+		} else if (appStatus === "Failed") {
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].screenStatus === "REJECTED" || applics[i].initialStatus === "FAIL" || applics[i].finalStatus === "FAIL")	
+					applicList.push(applics[i]);		
+		} else
+			for (let i=0; i<applics.length; i++)
+				applicList.push(applics[i]);			
+		
+		//counts                          
+		/* total passed				(screening, initialInterv, finalInterv)
+		 * total failed				(screening, initialInterv, finalInterv)
+		 * no. of all applicants	(screening, initialInterv, finalInterv)
+		 */
+		
+		res.send({applics: applicList,
+					spLength: spCount,
+					sfLength: sfCount,
+					ipLength: ipCount,
+					ifLength: ifCount,
+					fpLength: fpCount,
+					ffLength: ffCount		
+				});
 	},
 
 	getTraineeProf: function(req, res, next) {
