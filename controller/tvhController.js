@@ -1359,7 +1359,8 @@ const rendFunctions = {
 					sys_reqs: sysReqs,
 					certifications: certs,
 					resume_cv: resFile,
-					screenStatus: "PENDING"
+					screenStatus: "PENDING",
+					applicDate: new Date()
 			});
 			
 			if (insertApplic)
