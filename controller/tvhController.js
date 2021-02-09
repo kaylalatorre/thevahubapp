@@ -1407,15 +1407,14 @@ const rendFunctions = {
 	postCreateClass: function(req, res) {
 		try{
 			let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
-			// console.log(courseName, startDate, endDate, startTime, endTime, meetLink)
+
+			// getTrainees
 
 			// generate classID
 			var classID = generateClassID();
-			// console.log("ClassID: " + classID);
 
 			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
-			// console.log(sTime, eTime);
 
 			var trainerName = req.session.user.fName + " " + req.session.user.lName;
 
@@ -1430,6 +1429,56 @@ const rendFunctions = {
 			}
 			else {
 				res.send({status: 200}); }
+
+				// // SEND EMAIL to trainees when added to class
+				// var smtpTransport = nodemailer.createTransport({
+				// 	service: 'Gmail',
+				// 	auth: {
+				// 		user: 'training.tvh@gmail.com',
+				// 		pass: 'tvhtraining'
+				// 	}
+				// });
+
+				// // content
+				// var mailOptions = {
+				// 	from: 'training.tvh@gmail.com',
+				// 	to: sched.applicant.email,
+				// 	subject: '[TRAINING] Class Details and Schedule',
+				// 	html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+				// 			+`<div style="background-color: #ebf5ee; padding: 80px;">`
+				// 				+`<div style="text-align: center;">`
+				// 					+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+				// 				+`</div>`
+				// 				+`<section style="text-align: justify; margin-bottom: 40px;">`
+				// 					+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
+				// 					+`<br><br>`
+				// 					+`<p> The following are your class details:</p>`
+				// 					+`<p> Section: ${classID}, 2021 </p>`
+				// 					+`<p> Trainer: ${trainerName}, 2021 </p>`
+				// 					+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+				// 				+`</section>`
+				// 			+`</div>`
+				// 			+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+				// 			+`</div>`,
+				// 	attachments: [{
+				// 			filename: 'tvh-logo-square.png',
+				// 			path: __dirname+'/tvh-logo-square.png',
+				// 			cid: 'signature'
+				// 	}]
+				// };
+
+				// smtpTransport.sendMail(mailOptions, function(error) {
+				// 	if (error){
+				// 		res.send({status: 500});
+				// 		console.log(error);
+				// 	}
+				// 	else{
+				// 		res.status(200).send(sched);
+				// 	} 
+
+				// 	smtpTransport.close();
+				// });
+
 			});
 		} catch(e){
 			res.send({status: 500, mssg: 'Cannot connect to db.'});
@@ -1592,6 +1641,10 @@ const rendFunctions = {
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
 
+						let date = formatDate(sched.date);
+						let timeStart = formatTime(sched.timeStart);
+						let timeEnd = formatTime(sched.timeEnd);
+
 						// SEND EMAIL to applicant (interview schedule)
 						var smtpTransport = nodemailer.createTransport({
 							service: 'Gmail',
@@ -1604,16 +1657,26 @@ const rendFunctions = {
 						// content
 						var mailOptions = {
 							from: 'training.tvh@gmail.com',
-							to: sched.applicant.email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+							to: sched.applicant.email,
 							subject: '[APPLICATION] Initial Interview Schedule',
-							// text: emailText,
-							html: `<p>Greetings! Here is your interview schedule: </p> <br>` 
-									+ `<p> Date: ${date} </p> <br>`
-									+ `<p> Time: ${timeStart} to ${timeEnd} </p>`
-									+ `<br> <br> <br> <img src="cid:signature"/>`,
+							html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+									+`<div style="background-color: #ebf5ee; padding: 80px;">`
+										+`<div style="text-align: center;">`
+											+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+										+`</div>`
+										+`<section style="text-align: justify; margin-bottom: 40px;">`
+											+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
+											+`<br><br>`
+											+`<p> Here is your interview schedule:</p>`
+											+`<p> Date: ${date}, 2021 </p>`
+											+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+										+`</section>`
+									+`</div>`
+									+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+								    +`</div>`,
 							attachments: [{
-									filename: 'TVH.png',
-									path: __dirname+'/TVH.png',
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
 									cid: 'signature'
 							}]
 						};
@@ -1679,14 +1742,23 @@ const rendFunctions = {
 								from: 'training.tvh@gmail.com',
 								to: findApplic.email, 
 								subject: '[APPLICATION] Initial Interview Result',
-								// text: emailText,
-								html: `<p>Greetings! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
-										+ `<p> We wish you luck! </p>`
-										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+								+`<div style="background-color: #ebf5ee; padding: 80px;">`
+									+`<div style="text-align: center;">`
+										+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+									+`</div>`
+									+`<section style="text-align: justify; margin-bottom: 40px;">`
+										+`<p> Greetings, ${findApplic.fName}! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p>`
+										+`<br><br>`
+										+`<p> We wish you the best of luck.</p>`
+									+`</section>`
+								+`</div>`
+								+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+								+`</div>`,
 								attachments: [{
-										filename: 'TVH.png',
-										path: __dirname+'/TVH.png',
-										cid: 'signature'
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
 								}]
 							};
 
@@ -1716,15 +1788,24 @@ const rendFunctions = {
 							var mailOptions = {
 								from: 'training.tvh@gmail.com',
 								to: findApplic.email, 
-								subject: '[APPLICATION] Final Interview Result',
-								// text: emailText,
-								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
-										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
-										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								subject: '[APPLICATION] Initial Interview Result',
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+								+`<div style="background-color: #ebf5ee; padding: 80px;">`
+									+`<div style="text-align: center;">`
+										+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+									+`</div>`
+									+`<section style="text-align: justify; margin-bottom: 40px;">`
+										+`<p> Greetings, ${findApplic.fName}! Based on your initial interview, we regret to inform you that we will not be moving forward with your application. </p>`
+										+`<br><br>`
+										+`<p> We thank you for your effort and we wish you the best of luck in your future endeavors.</p>`
+									+`</section>`
+								+`</div>`
+								+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+								+`</div>`,
 								attachments: [{
-										filename: 'TVH.png',
-										path: __dirname+'/TVH.png',
-										cid: 'signature'
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
 								}]
 							};
 
@@ -1763,14 +1844,23 @@ const rendFunctions = {
 								from: 'training.tvh@gmail.com',
 								to: findApplic.email, 
 								subject: '[APPLICATION] Final Interview Result',
-								// text: emailText,
-								html: `<p>Greetings! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p> <br>` 
-										+ `<p> Please wait for our next email for your class schedule. </p>`
-										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+								+`<div style="background-color: #ebf5ee; padding: 80px;">`
+									+`<div style="text-align: center;">`
+										+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+									+`</div>`
+									+`<section style="text-align: justify; margin-bottom: 40px;">`
+										+`<p> Greetings, ${findApplic.fName}! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p>`
+										+`<br><br>`
+										+`<p> Please wait for our next email for your class schedule. </p>`
+									+`</section>`
+								+`</div>`
+								+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+								+`</div>`,
 								attachments: [{
-										filename: 'TVH.png',
-										path: __dirname+'/TVH.png',
-										cid: 'signature'
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
 								}]
 							};
 
@@ -1801,14 +1891,23 @@ const rendFunctions = {
 								from: 'training.tvh@gmail.com',
 								to: findApplic.email, 
 								subject: '[APPLICATION] Final Interview Result',
-								// text: emailText,
-								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
-										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
-										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+								+`<div style="background-color: #ebf5ee; padding: 80px;">`
+									+`<div style="text-align: center;">`
+										+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+									+`</div>`
+									+`<section style="text-align: justify; margin-bottom: 40px;">`
+										+`<p> Greetings, ${findApplic.fName}! Based on your initial interview, we regret to inform you that we will not be moving forward with your application. </p>`
+										+`<br><br>`
+										+`<p> We thank you for your effort and we wish you the best of luck in your future endeavors.</p>`
+									+`</section>`
+								+`</div>`
+								+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+								+`</div>`,
 								attachments: [{
-										filename: 'TVH.png',
-										path: __dirname+'/TVH.png',
-										cid: 'signature'
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
 								}]
 							};
 
