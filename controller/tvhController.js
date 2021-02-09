@@ -1545,9 +1545,45 @@ const rendFunctions = {
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
-						
-						// TO KIMI: because der is interview sched, pls email Applicant here
-						res.status(200).send(sched);
+
+						// SEND EMAIL to applicant (interview schedule)
+						var smtpTransport = nodemailer.createTransport({
+							service: 'Gmail',
+							auth: {
+								user: 'training.tvh@gmail.com',
+								pass: 'tvhtraining'
+							}
+						});
+
+						// content
+						var mailOptions = {
+							from: 'training.tvh@gmail.com',
+							to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+							subject: '[APPLICATION] Initial Interview Schedule',
+							// text: emailText,
+							html: `<p>Greetings! Here is your interview schedule: </p> <br>` 
+									+ `<p> Date: ${date} </p> <br>`
+									+ `<p> Time: ${timeStart} to ${timeEnd} </p>`
+									+ `<br> <br> <br> <img src="cid:signature"/>`,
+							attachments: [{
+									filename: 'TVH.png',
+									path: __dirname+'/TVH.png',
+									cid: 'signature'
+							}]
+						};
+
+						smtpTransport.sendMail(mailOptions, function(error) {
+							if (error){
+								res.send({status: 500});
+								console.log(error);
+							}
+							else{
+								res.status(200).send(sched);
+							} 
+
+							smtpTransport.close();
+						});
+						// res.status(200).send(sched);
 					}
 				}
 			}
@@ -1581,17 +1617,87 @@ const rendFunctions = {
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
 					
-					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
+						// SEND EMAIL to applicant [initial phase] interview results
+						var smtpTransport = nodemailer.createTransport({
+							service: 'Gmail',
+							auth: {
+								user: 'training.tvh@gmail.com',
+								pass: 'tvhtraining'
+							}
+						});
+
+						// content
+						var mailOptions = {
+							from: 'training.tvh@gmail.com',
+							to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+							subject: '[APPLICATION] Initial Interview Result',
+							// text: emailText,
+							html: `<p>Greetings! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
+									+ `<p> We wish you luck! </p>`
+									+ `<br> <br> <br> <img src="cid:signature"/>`,
+							attachments: [{
+									filename: 'TVH.png',
+									path: __dirname+'/TVH.png',
+									cid: 'signature'
+							}]
+						};
+
+						smtpTransport.sendMail(mailOptions, function(error) {
+							if (error){
+								res.send({status: 500});
+								console.log(error);
+							}
+							else{
+								res.status(200).send(filterIntervs);
+							} 
+
+							smtpTransport.close();
+						});
 					}
 				
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
 					
-					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
+					// SEND EMAIL to applicant [final phase] interview results
+					var smtpTransport = nodemailer.createTransport({
+						service: 'Gmail',
+						auth: {
+							user: 'training.tvh@gmail.com',
+							pass: 'tvhtraining'
+						}
+					});
+
+					// content
+					var mailOptions = {
+						from: 'training.tvh@gmail.com',
+						to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+						subject: '[APPLICATION] Final Interview Result',
+						// text: emailText,
+						html: `<p>Greetings! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
+								+ `<p> We wish you luck! </p>`
+								+ `<br> <br> <br> <img src="cid:signature"/>`,
+						attachments: [{
+								filename: 'TVH.png',
+								path: __dirname+'/TVH.png',
+								cid: 'signature'
+						}]
+					};
+
+					smtpTransport.sendMail(mailOptions, function(error) {
+						if (error){
+							res.send({status: 500});
+							console.log(error);
+						}
+						else{
+							res.status(200).send(filterIntervs);
+						} 
+
+						smtpTransport.close();
+					});
 					}
 
-				res.status(200).send(filterIntervs);
+				// res.status(200).send(filterIntervs);
 			}	
 		} catch(e){
 			console.log(e);
