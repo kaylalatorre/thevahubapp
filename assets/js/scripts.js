@@ -328,6 +328,9 @@ $(document).ready(function() {
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
+		
+		$("button#createSched").prop('disabled', false);
+		
 		let applicArrINT = [];
 		let intervArrINT = [];
 		let applicArrFIN = [];
@@ -472,7 +475,9 @@ $(document).ready(function() {
 			data: {appID: rowAppID, intervPhase: intPhase},
 			success: function(res) {
 				let applicName = $('#modal-applicName').text();
-				alert("Please update Interview status of Applicant " + applicName);
+				alert("Please update interview status of Applicant '" + applicName + "' in the Applicants page.");
+				$("button#btn-Interviewed").prop('disabled', true);
+				window.location.reload(true);
 			},
 			error: res => console.log(res)
 		});
@@ -557,6 +562,8 @@ $(document).ready(function() {
 
 	// for HR-interviewer Calendar render
 	if(window.location.pathname === "/int-schedule"){
+		$("button#btn-Interviewed").prop('disabled', false);
+		
 		$.ajax({
 			method: 'GET',
 			url: '/get-HRinterviews',
@@ -570,7 +577,7 @@ $(document).ready(function() {
 						start: parseDate,
 						allDay: false,
 						extendedProps: {
-						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
+//						  resume: 'yes', //pass encode from backend OR url to pdf viewer 
 						  meetLink: res[i].meetingLink,
 						  applicID: res[i].applicant.applicantID,
 						  intervPhase: res[i].phase
@@ -799,6 +806,9 @@ $(document).ready(function() {
 						allDay: false
 					});
 					alert("Schedule created!");
+					
+					$("button#createSched").prop('disabled', true);
+					window.location.reload(true);
 				} else {
 					alert(res.mssg);
 				}

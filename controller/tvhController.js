@@ -319,7 +319,7 @@ const rendFunctions = {
 					}
 						
 				}
-				
+				console.log(intervs);
 				res.render('int-applicants', {
 					applicants: applics,
 					intervPhase: phase
