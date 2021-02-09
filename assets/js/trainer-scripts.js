@@ -319,18 +319,24 @@ $(document).ready(function() {
 		});
 	}); 	
 
-	$('#applyFilter').click(function() {
-		var courseFilter = $('#courseFilter').val();
+	// APPLY FILTERS for Trainer Report
+	$('button#applyTRFilter').click(function() {
+		var courseFilter = $('#statusFilter option:selected').text();
+		var statusFilter = $('#clStatus option:selected').text();
+
         var dateToday = new Date();
-		var sDateFilter = new Date($('#sDateFilter').val());
-		var eDateFilter = new Date($('#eDateFilter').val());
+		var sDateFilter = $('input#sDateFilter').val();
+		var eDateFilter = $('input#eDateFilter').val();
 
 		$.ajax({
 			method: 'GET',
-			url: '/training-reports',
+			url: '/filteredtr-greports',
 			data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
 			success: function(res) {
-				console.log("Updated reports");				
+				$('#label-date').text("Period Covered: " + dateStart + " to " + dateEnd);
+				$('#classTable').empty();
+				console.log(res);
+				// console.log("Updated reports");				
 			},
 			error: res => console.log(res)
 		});

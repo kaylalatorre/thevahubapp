@@ -47,6 +47,7 @@ router.get('/get-schedule', controller.getSchedule);
 router.get('/trainer-schedule', controller.getTRSchedule);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
 router.get('/trainer-reports', controller.getTrainingReports);
+router.get('/filteredtr-reports', controller.getFTRReports);
 
 router.get('/update-scoresheet/1/:classID', controller.getScoresheet1);
 router.get('/update-scoresheet/2/:classID', controller.getScoresheet2);

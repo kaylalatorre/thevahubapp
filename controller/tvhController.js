@@ -1171,6 +1171,11 @@ const rendFunctions = {
 		}
 	},
 
+	// filtered trainee reports
+	getFTRReports: async function(req, res) {
+		let {courseFilter, sDateFilter, eDateFilter} = req.query;
+	},
+
 	getTRSchedule: function(req, res, next) {
 		if (req.session.user.userType === "Trainer"){
 			res.render('tr-schedule', {

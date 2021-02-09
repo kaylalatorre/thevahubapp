@@ -27,13 +27,13 @@
 
 			<label>End Date</label>
 			<input style="width:100%" id="eDateFilter" type="date"><br><br>
-			<button id="applyFilter" style="width:100%">Apply filters</button>
+			<button id="applyTRFilter" style="width:100%">Apply filters</button>
     	</div>
     	<div class="class-report">
     		<div style="text-align: center; margin-bottom: 10px;">
 		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Classes Summary Report</strong></label> <br>
-		    	<label>Date: {{sDateFilter}} - {{eDateFilter}}</label> <br>
-		    	<label>Course/s: {{courseFilter}} </label> <br>
+		    	<label id="label-date">Period Covered: {{sDateFilter}} - {{eDateFilter}}</label> <br>
+		    	<label>Course: {{courseFilter}} </label> <br>
 		    </div>
 		    <!--table -->
 		    <div class="table-responsive" style="width: 98%; margin: 00px auto;">
@@ -50,7 +50,7 @@
 		                    <th style="width: 5%;">Failed</th>
 		                </tr>
 		            </thead>
-		            <tbody>
+		            <tbody id="classTable">
 						{{#each classList}}
 		                <tr class="report-det">
 		                    <td> {{classID}} </td>
