@@ -87,10 +87,10 @@ router.post('/update-applicStats', controller.postApplicStatuses);
 router.post('/post-applicStat', controller.postOneStatus);
 
 
-	//trainees
+	//trainee
 router.post('/deactivate', controller.postDeactivate);
 
-	//trainers
+	//trainer
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);

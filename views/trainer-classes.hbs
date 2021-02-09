@@ -5,13 +5,18 @@
 <div style="padding: 70px 20px 20px 20px;">
     <div><label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Classes</strong></label>
         {{#if addClass}}
-            <button type="button" id="create-class" class="myBtn" style="border: none; display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createClassModal">
-            <i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
-            {{> create-class-modal}}
+            <div style="display: inline-block; float: right;">
+                <p style="display: inline-block;float: left; margin-right:10px;color:red"><i class="material-icons" style="padding-right: 5px; color: red; font-size: 18px;">circle_notifications</i>New trainees</p>
+                <button type="button" id="create-class" class="myBtn" style="border: none; display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)" href="#createClassModal">
+                <i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
+                {{> create-class-modal}}
+            </div>
         {{else}}
-            <p style="display: inline-block;float: left; margin-right:10px;color:red">New trainees</p>
-            <button type="button" disabled class="myBtn" style="border: none; display:inline-block; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">
-            <i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
+            <div style="display: inline-block; float: right;">
+                <p style="display: inline-block;float: left; margin-right:10px;color:red"><i class="material-icons" style="padding-right: 5px; color: red; font-size: 18px;">circle_notifications</i>New trainees</p>
+                <button type="button" disabled class="myBtn" style="border: none; display:inline-block; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">
+                <i class="material-icons" style="color:#ffffff; font-size: 18px;">add</i><label style="margin-left: 3px;">Create Class</label></button>
+            </div>
         {{/if}}
         <hr>
     </div>
