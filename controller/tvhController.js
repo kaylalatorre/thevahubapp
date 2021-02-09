@@ -792,10 +792,13 @@ const rendFunctions = {
 			var allTR = await db.findMany(UserDB, {userType: "Trainee"});
 			var VAtrainees = JSON.parse(JSON.stringify(allTR));
 			var freeTrainees = 0; // number of trainees who doesn't belong to a class
-			
+			// console.log(VAtrainees);
 			for(var x = 0; x < VAtrainees.length; x++){
 				ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
-					if (!match) {
+					if (match) {
+						console.log(VAtrainees[x].traineeID);
+					}
+					else{
 						freeTrainees += 1; // increment number of trainees without a class
 					}
 				});
@@ -1426,7 +1429,7 @@ const rendFunctions = {
 		else res.redirect('/login');
 	},
 
-	postCreateClass: function(req, res) {
+	postCreateClass: async function(req, res) {
 		let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
 
 			// generate classID
@@ -1441,7 +1444,7 @@ const rendFunctions = {
 			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 			
 			// add into Class model
-			ClassDB.create(tempClass, function(error) {
+			ClassDB.create(tempClass, async function(error) {
 			if (error) {
 				res.send({status: 500, mssg: 'Error in adding class.'});
 				console.log("create-class error: " + error);
