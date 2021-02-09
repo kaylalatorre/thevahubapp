@@ -777,7 +777,6 @@ const rendFunctions = {
 		});
 	},
 
-
 	getScoresheet4: async function(req, res, next) {
 		var classID = req.params.classID;
 
@@ -865,7 +864,6 @@ const rendFunctions = {
 			});
 		});
 	},
-
 
 	getScoresheet8: async function(req, res, next) {
 		var classID = req.params.classID;
@@ -1265,8 +1263,30 @@ const rendFunctions = {
 
 	},
 
-	postEditScores: function(req, res) {
-
+	postSaveScores1: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		console.log("hi");
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					scores1: scores1[i], scores2: scores2[i], scores3: scores3[i],
+						scores4: scores4[i], scores5: scores5[i],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						console.log(err);
+						res.send({status: 500})
+					}
+					else{
+						res.send({status: 200});
+					}
+				})
+		}
 	},
 
 	//there might be a way to optimize

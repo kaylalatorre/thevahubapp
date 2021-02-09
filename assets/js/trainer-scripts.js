@@ -278,23 +278,45 @@ $(document).ready(function() {
 		// }
 	});
 
-	$('#saveScores').click(function() {
+	$('#saveScores1').click(function() {
 		var classID = $('#classID').text();
-		var trName = document.getElementsByClassName('trName');
+		// var traineeID = document.getElementsByClassName('traineeID');
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
 
-		// $.post('/save-scores', { classID: classID }, function(res) {
-		// 	switch (res.status){
-		// 		case 200: {
-		// 			alert("Scores updated successfully.");
-		// 			window.location.href = '/update-scoresheet/classID';
-		// 			break;
-		// 		}
-		// 		case 500: {
-		// 			alert(res.mssg);
-		// 			break;
-		// 		}
-		// 	}
-		// });
+		console.log(classID);
+
+		var scores1, scores2, scores3, scores4, scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			// trainees.push(traineeID[i].value)
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		console.log(scores1);
+
+		$.post('/save-scores1', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+										console.log("hi");
+			switch (res.status){
+				case 200: {
+					alert("Scores updated successfully.");
+					window.location.reload();
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
 	}); 	
 
 	$('#applyFilter').click(function() {
