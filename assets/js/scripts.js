@@ -120,7 +120,7 @@ function getApplicInfo(applicID){
 }
 
 // onclick AJAX for INT-applicants download resume
-function downloadFile(applicID){
+function downloadFile(applicID){  
 	
 	let applicName = $('#applicName-row').text();
 	
@@ -161,6 +161,98 @@ function downloadFile(applicID){
 	});
 }
 
+// AJAX for applicant list rendering after Status filters
+function getFilteredIntervs(applicPhase, chckFilter){
+	$.ajax({
+		method: 'GET',
+		url: '/get-filterIntervList',
+		data: {phase: applicPhase, checkStatus: chckFilter},
+		success: function(res) {
+			
+			// re-entering applicant records
+			$('#table-applicInterv').empty();
+			$("button#save-statBtn").prop('disabled', true);
+			
+			if (res.length > 0){
+				alert("Applicant list retrieved.");
+				for(let i=0; i<res.length; i++){
+					let applicRecHTML = '<tr id="rowApplic-'+ res[i].applicant.applicantID +'" class="row-applic" style="font-size: 14px;">'
+										+ '<input type="hidden" class="hidden-appID" value="'+ res[i].applicant.applicantID +'">'
+										+ '<input type="hidden" class="hidden-initStat" value="'+ res[i].applicant.initialStatus +'">'
+										+ '<input type="hidden" class="hidden-finalStat" value="'+ res[i].applicant.finalStatus +'">'
+										+ '<td id="applicName-row" style="font-size: 14px;">'+ res[i].applicant.lName + ", " + res[i].applicant.fName +'</td>'
+										+ '<td style="font-size: 14px;">' 
+												+ '<input name="contCheck-'+ res[i].applicant.applicantID +'" type="hidden" value="'+ res[i].applicant.sys_reqs +'">'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="laptop"><label for="laptop"> Personal Computer/Laptop</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="internet"><label for="internet"> Internet Speed</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="headset"><label for="headset"> Headset</label><br>'
+												+ '<input type="checkbox" name="check-'+ res[i].applicant.applicantID +'" id="webcam"><label for="webcam"> Webcam</label><br>'
+										+ '</td>'
+										+ '<td style="font-size: 14px;">'
+											+ '<div id="res-viewBtn" onclick="downloadFile('+ "\'" + res[i].applicant.applicantID + "\'" +')" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>'
+											+ '<div id="res-viewBtn" onclick="downloadFile('+ "\'" + res[i].applicant.applicantID + "\'" +')" class="outlined-btn d-inline"  style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>'
+										+ '</td>'
+										+ '<td style="font-size: 14px;">'
+											+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
+												+ '<input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="PASS">'
+												+ '<label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>'
+											+ '</div>'
+											+ '<div class="form-check d-inline-block" style="padding-right: 10px;">'
+												+ '<input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-'+ res[i].applicant.applicantID +'" type="radio" value="FAIL">'
+												+ '<label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>'
+											+ '</div>'
+										+ '</td>'
+									+ '</tr>';						
+						$('#table-applicInterv').append(applicRecHTML);
+				}
+
+				// disable or change the radio btn preset acc to the Applic status in the db
+				$("tr.row-applic input").prop('disabled', true);
+				
+				let enabledCount = 0;
+				for (let i=0; i<res.length; i++){
+					// pre-checking sys_reqs
+					let sysreqStr = $("tr.row-applic input[name='contCheck-"+ res[i].applicant.applicantID +"']").val();
+					let arrReqs = sysreqStr.split(','); 
+
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#laptop").prop('checked', arrReqs[0] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#internet").prop('checked', arrReqs[1] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#headset").prop('checked', arrReqs[2] === "true");
+					$("tr.row-applic input[name='check-"+ res[i].applicant.applicantID +"']#webcam").prop('checked', arrReqs[3] === "true");
+
+					// pre-checking radio buttons again after updating
+					if (applicPhase === "Initial")
+						if (res[i].applicant.initialStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.initialStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+
+					if (applicPhase === "Final")
+						if (res[i].applicant.finalStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.finalStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+
+					// enabling radio buttons
+					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW"){
+						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);
+						enabledCount++;
+					}
+
+					// check if ALL radio btn inputs are disabled, else enable $('button#save-statBtn')
+					if (enabledCount > 0)
+						$("button#save-statBtn").prop('disabled', false);					
+				}				
+			} else {
+				alert("No applicant records found for this filter.");
+				let applicRecHTML = '<tr class="row-applic" style="font-size: 14px;"> <td></td> <td></td> <td></td> <td></td> </tr>';						
+				$('#table-applicInterv').append(applicRecHTML);
+			}
+		},
+		error: res => console.log(res)
+	});	
+}
+
 $(document).ready(function() {	
 	
 	let calendar;	
@@ -196,6 +288,39 @@ $(document).ready(function() {
 
 		calendar.render();	
 	}
+
+/* SEMI-FUNCTION: for HR-screening sort by sys_reqs
+	$("#btn-sortReqs").on("click", function(){
+//		if ($('#sort-sysreq:checkbox:checked')){
+		alert("TRACK: in $('#btn-sortReqs').on()");
+			$.ajax({
+				method: 'GET',
+				url: '/sort-sysreqs',
+				data: {},
+				success: function(res) {
+					if (res.status === 200){
+						alert("TRACK: in AJAX success");
+						// clear out all tab containers
+						$('div[name="pending-tab"]').empty();
+						$('div[name="accept-tab"]').empty();
+						$('div[name="reject-tab"]').empty();
+
+						for(let i=0; i<res.accepted.length; i++){
+							alert("res.accepted["+i+"]: "+ res.accepted[i]);
+							let applicHTML = '<div class="row applicant-row tab1row tabInactive" onclick="getApplicInfo('+res.accepted[i].applicantID+'); changeTab2Class();">'
+												+ '<label class="col-form-label d-block">' + res.accepted[i].lName + ", " + res.accepted[i].fName + '</label>'
+											+ '</div>';
+							$('div[name="accept-tab"]').append(applicHTML);
+						}
+					} else if (res.status === 400){
+						alert(res.status +": "+ res.mssg);
+					}
+				},
+				error: res => console.log(res)
+			});
+//		}		
+	});
+*/
 	
 	// for HR-schedule render
 	if(window.location.pathname === "/hr-schedule"){
@@ -265,9 +390,70 @@ $(document).ready(function() {
 		});
 	}
 	
-/* WIP function
-	// int-schedule Interviewed checkbox
-	$("tr.row-applic input").prop('disabled', true);
+	// int-applicants for disable/able input radio buttons in Status
+	if(window.location.pathname === "/int-applicants") { 
+		
+		let applicPhase = $('input#applicPhase').val();
+		console.log("applicPhase: "+ "/"+applicPhase+"/");
+		
+		// get Array of applicant IDs
+		let arrIDs = [];
+		$(".hidden-appID").each(function(index, elem) {
+			arrIDs.push($(elem).val());
+		});
+		
+		let arrInits = []; 
+		$(".hidden-initStat").each(function(index, elem) {
+			arrInits.push($(elem).val());
+		});
+		
+		let arrFinals = []; 
+		$(".hidden-finalStat").each(function(index, elem) {
+			arrFinals.push($(elem).val());
+		});
+		
+		
+		$("tr.row-applic input").prop('disabled', true); // disabling radio buttons		
+		let enabledCount = 0;
+		
+		for(let i=0; i<arrIDs.length; i++){
+
+			// pre-checking sys_reqs
+			let sysreqStr = $("tr.row-applic input[name='contCheck-"+ arrIDs[i] +"']").val();
+			let arrReqs = sysreqStr.split(','); 
+
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#laptop").prop('checked', arrReqs[0] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#internet").prop('checked', arrReqs[1] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#headset").prop('checked', arrReqs[2] === "true");
+			$("tr.row-applic input[name='check-"+ arrIDs[i] +"']#webcam").prop('checked', arrReqs[3] === "true");
+
+			// pre-checking radio buttons
+			if (applicPhase === "Initial")
+				if (arrInits[i] === "PASS")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
+				else if (arrInits[i] === "FAIL")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"'][value='FAIL']").attr('checked', true);
+			
+			if (applicPhase === "Final")
+				if (arrFinals[i] === "PASS")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']:first").attr('checked', true);
+				else if (arrFinals[i] === "FAIL")
+					$("tr.row-applic input[name='applic-"+ arrIDs[i] +"'][value='FAIL']").attr('checked', true);	
+				
+			// enabling radio buttons
+			if (arrInits[i] === "FOR REVIEW" || arrFinals[i] === "FOR REVIEW"){
+				$("tr.row-applic input[name='applic-"+ arrIDs[i] +"']").prop('disabled', false);
+				enabledCount++;
+			}
+				
+		}
+		
+		$("button#save-statBtn").prop('disabled', true);
+		
+		// check if ALL radio btn inputs are disabled, else enable $('button#save-statBtn')
+		if (enabledCount > 0)
+			$("button#save-statBtn").prop('disabled', false);
+	}
 	
 	if ($('#interviewed').attr('checked')){
 		let row_applicID = $('#modal-applicID').html();	
@@ -380,8 +566,107 @@ $(document).ready(function() {
 		});
 	}	
 	
-	$("button#save-statBtn").on("click", function() {
+	//for Apply Filters btn in HR-admin application report
+	$("button#applicFilter").on("click", function() {
+		// get value of Status select filter (ALL, ENDORSED, FAILED)
+		let status = $('#statusFilter option:selected').text();
 		
+		let dateStart = $('input#startFilter').val();
+		let dateEnd = $('input#endFilter').val();
+		
+		$.ajax({
+			method: 'GET',
+			url: '/applic-filterReports',
+			data: {appStatus: status, dStart: dateStart, dEnd: dateEnd}, //send both Arrays for posting
+			success: function(res) {
+				
+				$('#label-date').text("Period Covered: " + dateStart + " to " + dateEnd);
+				$('#applic-Table').empty();
+				
+				let initStat;
+				let finalStat;
+				// each applicant 
+				for (let i=0; i<res.applics.length; i++){
+					if (typeof res.applics[i].initialStatus === 'undefined')
+						initStat = "";
+					else 
+						initStat = res.applics[i].initialStatus +"ED";
+					
+					if (typeof res.applics[i].finalStatus === 'undefined')
+						finalStat = "";
+					else 
+						finalStat = res.applics[i].finalStatus +"ED";
+					
+					
+					let appInfoHTML = '<tr class="report-det">'
+										+ '<td>' +  res.applics[i].lName +", "+ res.applics[i].fName + '</td>'
+										+ '<td>' + res.applics[i].email + '</td>'
+										+ '<td>' + res.applics[i].screenStatus + '</td>'
+										+ '<td>' + initStat + '</td>'
+										+ '<td>' + finalStat + '</td>'
+									+ '</tr>';
+					$('#applic-Table').append(appInfoHTML);					
+				}
+				
+				// for totals
+				let totalsHTML = '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">Total Passed</td>'
+									+ '<td>' + res.spLength + '</td>'
+									+ '<td>' + res.ipLength + '</td>'
+									+ '<td>' + res.fpLength + '</td>'
+								+ '</tr>'
+								+ '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">Total Failed</td>'
+									+ '<td>' + res.sfLength + '</td>'
+									+ '<td>' + res.ifLength + '</td>'
+									+ '<td>' + res.ffLength + '</td>'
+								+ '</tr>'
+								+ '<tr style="font-weight: bold;">'
+									+ '<td colspan="2">No. of Applicants</td>'
+									+ '<td>' + (Number.parseInt(res.spLength) + Number.parseInt(res.sfLength))  + '</td>'
+									+ '<td>' + (Number.parseInt(res.ipLength) + Number.parseInt(res.ifLength)) + '</td>'
+									+ '<td>' + (Number.parseInt(res.fpLength) + Number.parseInt(res.ffLength)) + '</td>'
+								+ '</tr>'; 
+				$('#applic-Table').append(totalsHTML);
+			},
+			error: res => console.log(res)
+		});			
+	});
+	
+	$("input[name='filter-ALL']").change(function() {
+		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-ALL').text();
+		
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
+	});
+	
+	$("input[name='filter-DONE']").change(function() {
+		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-DONE').text();
+		
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
+	});
+	
+	$("input[name='filter-PENDING']").change(function() {
+		let applicPhase = $('input#applicPhase').val();
+		let checkStat = $('label#label-PENDING').text();
+		
+		if(this.checked){
+			alert("Retrieving applicant records..");
+			$('input.checkList:checkbox').not(this).prop('checked', false);
+			getFilteredIntervs(applicPhase, checkStat);
+		}
+	});
+	
+	$("button#save-statBtn").on("click", function() {
 		// get Array of applicant IDs
 		let arrIDs = [];
 		$(".hidden-appID").each(function(index, elem) {
@@ -395,7 +680,7 @@ $(document).ready(function() {
 			console.log("input:radio.applic-stat:checked: " + $(elem).val());
 			arrStats.push($(elem).val());
 		});
-		
+				
 		$.ajax({
 			method: 'POST',
 			url: '/update-applicStat',
@@ -404,7 +689,29 @@ $(document).ready(function() {
 				alert("Interview status saved.");
 				 
 				// disable or change the radio btn preset acc to the Applic status in the db
+				$("tr.row-applic input").prop('disabled', true);	
 				
+				let applicPhase = $('input#applicPhase').val();
+				for(let i=0; i<res.length; i++){
+					// pre-checking radio buttons again after updating
+					if (applicPhase === "Initial")
+						if (res[i].applicant.initialStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.initialStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+
+					if (applicPhase === "Final")
+						if (res[i].applicant.finalStatus === "PASS")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']:first").attr('checked', true);
+						else if (res[i].applicant.finalStatus === "FAIL")
+							$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"'][value='FAIL']").attr('checked', true);
+						
+					// enabling radio buttons
+					if (res[i].applicant.initialStatus === "FOR REVIEW" || res[i].applicant.finalStatus === "FOR REVIEW")
+						$("tr.row-applic input[name='applic-"+ res[i].applicant.applicantID +"']").prop('disabled', false);
+					
+					window.location.reload(true);
+				}
 			},
 			error: res => console.log(res)
 		});
@@ -596,16 +903,4 @@ $(document).ready(function() {
     }
   });
 
-  // Applications Report Filter
-  $('button#applicFilter').click(function() {
-	  let status = $('select#statusFilter').val();
-	  let startDate = $('input#startFilter').val();
-	  let endDate = $('input#endFilter').val();
-
-	  console.log(status); 
-	  console.log(startDate); 
-	  console.log(endDate); 
-
-	  
-	});
 });

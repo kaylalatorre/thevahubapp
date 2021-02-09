@@ -14,7 +14,7 @@ var scoreSchema = new mongoose.Schema({
 	Day6: [Number],
 	Day7: [Number],
 	Day8: [Number],
-	FinalAve: String,
+	finalAve: String,
 	traineeStatus: String,
 }, {collection: "Score"});
 

@@ -4,7 +4,8 @@
   "description": "The VA Hub is a system application designed to aid the company of virutal assistants in tracking thier application and training data.",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index"
+    "test": "nodemon index",
+	"start": "node index"
   },
   "dependencies": {
     "@fullcalendar/core": "^5.5.0",

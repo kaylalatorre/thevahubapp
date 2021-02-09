@@ -28,10 +28,11 @@ function generateClassID() {
 }
 
 // constructor for class
-function createClass(classID, trainerID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
+function createClass(classID, trainerID, trainerName, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto) {
 	var tempClass = {
 		classID: classID,
 		trainerID: trainerID,
+		trainerName: trainerName,
 		courseName: courseName,
 		startDate: startDate,
 		endDate: endDate,
@@ -103,18 +104,18 @@ function formatShortDate(date) {
 	return mm + " " + dd;
 }
 
-function formatNiceDate(date) {
-	var newDate = new Date(date);
-	// adjust 0 before single digit date
-	let day = ("0" + newDate.getDate()).slice(-2);
+function formDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-	// current month
-	let month = ("0" + (newDate.getMonth() + 1)).slice(-2);
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
 
-	// current year
-	let year = newDate.getFullYear();
-
-	return year + "-" + month + "-" + day;
+    return [year, month, day].join('-');
 }
 
 // two digits
@@ -215,13 +216,16 @@ const rendFunctions = {
 		res.send(interviews);
 	},
 
-/* [..] HR Screening
+/* [/] HR Screening
  */
 	
 	getHRScreening: async function(req, res) {
 		if(req.session.user) {
-			if(req.session.user.userType === "HRadmin"){
-				let applicants = await db.findMany(ApplicantDB, {});
+			if(req.session.user.userType === "HRadmin"){				
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {lName: 1, fName: 1, sys_reqs: 1}}
+				]);
 				
 				let acceptApps = [];
 				let pendApps = [];
@@ -247,6 +251,42 @@ const rendFunctions = {
 			res.redirect('/');
 		}
 	},
+
+/*	
+	sortSysReqs: async function(req, res) {
+		if(req.session.user) {
+			if(req.session.user.userType === "HRadmin"){
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {sys_reqs: 1}}
+				]);
+				
+				if (applicants.length > 0){
+					let acceptApps = [];
+					let pendApps = [];
+					let rejectApps = [];
+
+					for(let i=0; i< applicants.length; i++){
+						if(applicants[i].screenStatus === "ACCEPTED")
+							acceptApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "PENDING")
+							pendApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "REJECTED")
+							rejectApps.push(applicants[i]);				
+					}
+
+					res.send({status: 200,
+						accepted: acceptApps,
+						pending: pendApps,
+						rejected: rejectApps
+					});					
+				} else {
+					res.send({status: 400, mssg: "Cannot retrieve from database."});
+				}
+			}
+		}
+	},
+*/
 	
 	getApplicInfo: async function(req, res) {
 		try {
@@ -320,32 +360,84 @@ const rendFunctions = {
 
 	},
 	
-//// non-functional
-	getApplicPDF: async function(req, res){
+	getIntervFiltered: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRinterv"){
+				let {phase, checkStatus} = req.query;
+				
+				// search for Interview phase of HR interviewer
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let filtered = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
+				let filterIntervs = [];
 
-		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
-		console.log(req.query.applicID);
-		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
-		 console.log(encodePDF);
-		res.status(200).send(encodePDF);
-	
+				if (checkStatus === "Done") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.initialStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.finalStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}		
+					
+				} else if (checkStatus === "Pending") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.initialStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.finalStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}						
+				} else 
+					for (i=0; i<filtered.length; i++)
+						filterIntervs.push(filtered[i]);				
+				
+				console.log("filterIntervs: "+ filterIntervs);
+				res.status(200).send(filterIntervs);
+			}	
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
 	},
 	
-	getPDF: function(req, res){
-		res.render('testpdf', {});
-	},
+//// non-functional
+//	getApplicPDF: async function(req, res){
+//
+//		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
+//		console.log(req.query.applicID);
+//		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
+//		 console.log(encodePDF);
+//		res.status(200).send(encodePDF);
+//	
+//	},
+//	
+//	getPDF: function(req, res){
+//		res.render('testpdf', {});
+//	},
 ////	
 
-	getHRReports: async function(req, res, next) {
+	getHRReports: async function(req, res) {
 
-		var applicList = await db.findMany(ApplicantDB, {});
+		var initApplics = await db.findMany(ApplicantDB, {});
+		var applicList = [];
 		var screenPass = [];
 		var screenFail = [];
 		var initialPass = [];
 		var initialFail = [];
 		var finalPass = [];
 		var finalFail = [];
-
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applicList.push(initApplics[j]);
+		
 		for(var i=0; i < applicList.length; i++) {
 			if(applicList[i].screenStatus === "ACCEPTED") 
 				screenPass.push(applicList[i]);
@@ -377,12 +469,93 @@ const rendFunctions = {
 			ffLength: finalFail.length,
 			screenTotal: screenPass.length + screenFail.length,
 			initialTotal: initialPass.length + initialFail.length,
-			finalTotal: finalPass.length + finalFail.length,
+			finalTotal: finalPass.length + finalFail.length
 		});
+	},
+	
+	getHRFilterReports: async function(req, res) {
+		let {appStatus, dStart, dEnd} = req.query;
+		
+		// format Dates for db
+		let dateStart = new Date(dStart);
+		let dateEnd = new Date(dEnd);
+		
+		// placeholder array for rendering
+		let applics = [];
+		let applicList = [];
+		
+		// >= dateStart, <= dateEnd -- e.g. 2021/02/05 to 2021/02/10 
+		let initApplics = await db.aggregate(ApplicantDB, [
+			{'$match': {
+				applicDate: {
+					$gte: dateStart,
+					$lte: dateEnd
+				}
+			}},
+			{'$sort': {lName: 1, fName: 1}}
+		]);			
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applics.push(initApplics[j]);
+		
+		// count stats for total breakdowns
+		let spCount = sfCount = ipCount = ifCount = fpCount = ffCount = 0;	
+		
+		for (let k=0; k<applics.length; k++){
+			// screening 
+			if (applics[k].screenStatus === "ACCEPTED")
+				spCount++;
+			else if (applics[k].screenStatus === "REJECTED")
+				sfCount++;
+			
+			// initialInterv
+			if (applics[k].initialStatus === "PASS")
+				ipCount++;
+			else if (applics[k].initialStatus === "FAIL")
+				ifCount++;	
+			
+			// finalInterv
+			if (applics[k].finalStatus === "PASS")
+				fpCount++;
+			else if (applics[k].finalStatus === "FAIL")
+				ffCount++;				
+		}
+		
+		
+		if (appStatus === "Endorsed"){
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].finalStatus === "PASS")	
+					applicList.push(applics[i]);			
+		} else if (appStatus === "Failed") {
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].screenStatus === "REJECTED" || applics[i].initialStatus === "FAIL" || applics[i].finalStatus === "FAIL")	
+					applicList.push(applics[i]);		
+		} else
+			for (let i=0; i<applics.length; i++)
+				applicList.push(applics[i]);			
+		
+		//counts                          
+		/* total passed				(screening, initialInterv, finalInterv)
+		 * total failed				(screening, initialInterv, finalInterv)
+		 * no. of all applicants	(screening, initialInterv, finalInterv)
+		 */
+		
+		res.status(200).send({applics: applicList,
+					spLength: spCount,
+					sfLength: sfCount,
+					ipLength: ipCount,
+					ifLength: ifCount,
+					fpLength: fpCount,
+					ffLength: ffCount		
+				});
 	},
 
 	getTraineeProf: function(req, res, next) {
 		if (req.session.user){
+		var now = new Date();
+		var teStatus = "IN-PROGRESS";
 
 			//collect classes of the trainee
 			ScoreDB.find({traineeID: req.session.user.userID}, async function(err, data) {
@@ -390,20 +563,56 @@ const rendFunctions = {
 				console.log(classes);
 
 				// fix format of dates
+				var trainerName = "";
+				var statusCount = 0;
+				var traineeGraduated = false;
 				for(let i = 0; i < classes.length; i++) {
 					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
 					var classVar = JSON.parse(JSON.stringify(classDummy));
-					console.log(classVar);
+					// console.log(classVar);
 
 					var sDate = formatShortDate(classVar.startDate);
 					var eDate = formatShortDate(classVar.endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// find trainer name					
+					var trainerDummy = await db.findOne(UserDB, {userID: classVar.trainerID});
+					var trainerVar = JSON.parse(JSON.stringify(trainerDummy));
+					console.log(trainerVar);
+
+					var tName = trainerVar.fName + " " + trainerVar.lName;
+					classes[i].trainerName = tName;
+
+					var end = new Date(classVar.endDate);
+					// determine trainee status
+					if(end < now){ // class is over
+						if(classes[i].finalAve > 7) { // check to see if trainee passed 
+							classes[i].traineeStatus = "PASSED";
+							statusCount += 1;
+						}
+						else{
+							classes[i].traineeStatus = "FAILED";
+							teStatus = "FAILED";
+						}
+					}
+					else{
+						classes[i].traineeStatus = "IN-PROGRESS";
+						teStatus = "IN-PROGRESS"
+					}
+				}
+
+				// if both classes were passed, trainee has graduated
+				if(statusCount === 2){
+					traineeGraduated = true;
+					teStatus = "GRADUATED";
 				}
 
 				res.render('trainee-profile', {
 					classList: classes,
+					trainingStatus: teStatus,
+					traineeGraduated: traineeGraduated,
 					fName: req.session.user.fName,
 					lName: req.session.user.lName,
 					userID: req.session.user.userID,
@@ -432,6 +641,9 @@ const rendFunctions = {
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+
+					console.log(classes[i]);
 				}
 			
 				res.render('trainee-classes', {
@@ -445,12 +657,42 @@ const rendFunctions = {
 	},
 
 	getCertificate: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('certificate', {
-		});
-	// }
+		if (req.session.user){
+			var userID = req.params.userID;
+			var sumAve = 0;
+			//collect all
+			ScoreDB.find({traineeID: req.params.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				console.log(classes);
+
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var classDummy = await db.findOne(ClassDB, {classID: classes[i].classID});
+					var classVar = JSON.parse(JSON.stringify(classDummy));
+					console.log(classVar);
+
+					var sDate = formatShortDate(classVar.startDate);
+					var eDate = formatShortDate(classVar.endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+
+					sumAve += Number(classes[i].finalAve);
+				}
+
+				var gradAve = sumAve/classes.length;
+
+				res.render('certificate', {
+					fName: req.session.user.fName,
+					lName: req.session.user.lName,
+					userID: userID,
+					gradAve: gradAve,
+					endDate: classes[0].eDate + ", 2021",
+				});
+			});			
+		} else {
+			res.redirect('/');
+		}
 	},
 
 	getTEClassDet: function(req, res, next) {
@@ -522,17 +764,52 @@ const rendFunctions = {
 
 	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
+
+			// check if there are trainees who do not belong to a class yet
+				// collect all trainees 
+			var allTR = await db.findMany(UserDB, {userType: "Trainee"});
+			var VAtrainees = JSON.parse(JSON.stringify(allTR));
+			var freeTrainees = 0; // number of trainees who doesn't belong to a class
+			
+			for(var x = 0; x < VAtrainees.length; x++){
+				ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
+					if (!match) {
+						freeTrainees += 1; // increment number of trainees without a class
+					}
+				});
+			}
+			console.log(freeTrainees);
+			var addClass = false;
+			if(freeTrainees >= 10){
+				addClass = true;
+			}
+
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
+					var start = new Date(classes[i].startDate);
+					var now = new Date();
+					var classEditable = false;
+
+					if(start.getTime() > now.getTime()){
+						//class is editable if it hasn't started yet
+						classes[i].classEditable = true; 
+					}
+
 					var sDate = formatShortDate(classes[i].startDate);
 					var eDate = formatShortDate(classes[i].endDate);
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+					// not working
+					var SD = formDate(classes[i].startDate);
+					var ED = formDate(classes[i].endDate);
+					classes[i].inputSD = SD;
+					classes[i].inputED = ED;
 
 					// collect all trainees under each class
 					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
@@ -550,6 +827,7 @@ const rendFunctions = {
 					res.render('trainer-classes', {
 						classList: classes,
 						courseList: courses,
+						addClass: addClass,
 					});
 				});	
 			});
@@ -565,8 +843,15 @@ const rendFunctions = {
 		
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
+			
+			var start = new Date(classVar[0].startDate);
+			var now = new Date();
+			var classDone = false;
+
+			if(start.getTime() > now.getTime()){
+				//class is editable if it hasn't started yet
+				classVar[0].classDone = true; 
+			}
 		
 			// fix format of dates
 			var sDate = formatDate(classVar[0].startDate);
@@ -631,42 +916,179 @@ const rendFunctions = {
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
+				classDone: classVar[0].classDone,
 			});
 		});
 	},
 
-	getScoresheet: async function(req, res, next) {
+	// SCORESHEETS
+	getScoresheet1: async function(req, res, next) {
 		var classID = req.params.classID;
-		// which day?
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
-		
-			// fix format of dates
-			var sDate = formatDate(classVar[0].startDate);
-			var eDate = formatDate(classVar[0].endDate);
 
-			classVar[0].startDate = sDate;
-			classVar[0].endDate = eDate;
-
-			// fix format of time
-			var sTime = formatTime(classVar[0].startTime);
-			var eTime = formatTime(classVar[0].endTime);
-
-			classVar[0].startTime = sTime;
-			classVar[0].endTime = eTime;
-
-			// count number of trainees in class
+			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-				// console.log(traineesVar);
 
-			// classes[0].numTrainees = traineesVar.length;
 			classVar[0].trainees = traineesVar;
 
-			res.render('update-scoresheet', {
+			res.render('update-scoresheet1', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet2: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet2', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet3: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet3', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet4: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet4', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet5: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet5', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet6: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet6', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet7: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet7', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet8: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet8', {
 				classID: classID,
 				startDate: classVar[0].startDate,
 				endDate: classVar[0].endDate,
@@ -701,17 +1123,118 @@ const rendFunctions = {
 	},
 
 	getTrainingReports: function(req, res, next) {
-		res.render('trainer-reports', {
-		});
+		if (req.session.user.userType === "Trainer") {
+			//collect classes under current trainer
+			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
+				var classes = JSON.parse(JSON.stringify(data));
+				var totalPassed = 0;
+				var totalFailed = 0;
+				var totalTrainees = 0;
+				var numTrainees = 0;
+				var classStatus = "";
+				// fix format of dates
+				for(let i = 0; i < classes.length; i++) {
+					var numPassed = 0;
+					var numFailed = 0;
+					var now = new Date();
+					var sDate = formatShortDate(classes[i].startDate);
+					var eDate = formatShortDate(classes[i].endDate);
+
+					classes[i].sDate = sDate;
+					classes[i].eDate = eDate;
+
+					var end = new Date(classes[i].endDate);
+					var start = new Date(classes[i].startDate);
+					if(end.getTime() <= now.getTime()){ //class is over
+						classes[i].classStatus = "COMPLETED";
+					}
+					else {
+						if (start.getTime() <= now.getTime() && end.getTime() > now.getTime()){
+							classes[i].classStatus = "ONGOING";
+						}
+						else{ // (start.getTime() > now.getTime())
+							classes[i].classStatus = "NOT YET STARTED";
+						}
+					}
+
+					// collect all trainees under each class
+					var traineesDump = await db.findMany(ScoreDB, {classID: classes[i].classID});
+					var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+						// console.log(traineesVar);
+					var pass = 0;
+					var fail = 0;
+					for(var y = 0; y < traineesVar.length; y++){
+						if(classes[i].classStatus === "ONGOING" || classes[i].classStatus === "NOT YET STARTED"){
+							pass = 0;
+							fail = 0;
+						}
+						else{
+							if(traineesVar[y].traineeStatus === "PASSED"){ // trainees passed
+								pass += 1;
+							}
+							else{
+								fail += 1;
+							}
+						}
+					}
+					// console.log("pass: " + pass + "; fail: " + fail);
+					classes[i].numTrainees = traineesVar.length;
+					
+					classes[i].numPassed = pass;
+					classes[i].numFailed = fail;
+
+					// accumulate
+					totalPassed += pass;
+					totalFailed += fail;
+					totalTrainees += traineesVar.length;
+				}
+
+				console.log("tPass: " + totalPassed);
+				console.log("tFail: " + totalFailed);
+				console.log("tTrain: " + totalTrainees);
+
+				// console.log(classes);
+				CourseDB.find({}, function(err, data) {
+					var courses = JSON.parse(JSON.stringify(data));
+					
+					res.render('trainer-reports', {
+						classList: classes,
+						courseList: courses,
+						totalPassed: totalPassed,
+						totalFailed: totalFailed,
+						totalTrainees: totalTrainees,
+					});
+				});	
+			});
+		}
+		else {
+			res.redirect('/');
+		}
+	},
+
+	// filtered trainee reports
+	getFTRReports: async function(req, res) {
+		let {courseFilter, sDateFilter, eDateFilter} = req.query;
 	},
 
 	getTRSchedule: function(req, res, next) {
-	// if (req.session.user){
-	// 	res.redirect('/');
-	// } else {
-		res.render('tr-schedule', {
-		});
-	// }
+		if (req.session.user.userType === "Trainer"){
+			res.render('tr-schedule', {
+			});
+		} else {
+			res.redirect('/');
+		}
+	},
+
+	getSchedule: async function(req, res) {
+		try {
+			var classes = await ClassDB.find({trainerID: req.session.user.userID}, '');
+			res.send(classes);
+			
+		} catch(e) {
+			console.log(e);
+			res.send(e);			
+		}
 	},
 
 	getIntSchedule: function(req, res, next) {
@@ -894,8 +1417,10 @@ const rendFunctions = {
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
 			// console.log(sTime, eTime);
 
+			var trainerName = req.session.user.fName + " " + req.session.user.lName;
+
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
 			
 			// add into Class model
 			ClassDB.create(tempClass, function(error) {
@@ -954,8 +1479,30 @@ const rendFunctions = {
 
 	},
 
-	postEditScores: function(req, res) {
-
+	postSaveScores1: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		console.log("hi");
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					scores1: scores1[i], scores2: scores2[i], scores3: scores3[i],
+						scores4: scores4[i], scores5: scores5[i],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						console.log(err);
+						res.send({status: 500})
+					}
+					else{
+						res.send({status: 200});
+					}
+				})
+		}
 	},
 
 	//there might be a way to optimize
@@ -1044,7 +1591,45 @@ const rendFunctions = {
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
-						res.status(200).send(sched);
+
+						// SEND EMAIL to applicant (interview schedule)
+						var smtpTransport = nodemailer.createTransport({
+							service: 'Gmail',
+							auth: {
+								user: 'training.tvh@gmail.com',
+								pass: 'tvhtraining'
+							}
+						});
+
+						// content
+						var mailOptions = {
+							from: 'training.tvh@gmail.com',
+							to: sched.applicant.email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+							subject: '[APPLICATION] Initial Interview Schedule',
+							// text: emailText,
+							html: `<p>Greetings! Here is your interview schedule: </p> <br>` 
+									+ `<p> Date: ${date} </p> <br>`
+									+ `<p> Time: ${timeStart} to ${timeEnd} </p>`
+									+ `<br> <br> <br> <img src="cid:signature"/>`,
+							attachments: [{
+									filename: 'TVH.png',
+									path: __dirname+'/TVH.png',
+									cid: 'signature'
+							}]
+						};
+
+						smtpTransport.sendMail(mailOptions, function(error) {
+							if (error){
+								res.send({status: 500});
+								console.log(error);
+							}
+							else{
+								res.status(200).send(sched);
+							} 
+
+							smtpTransport.close();
+						});
+						// res.status(200).send(sched);
 					}
 				}
 			}
@@ -1065,25 +1650,183 @@ const rendFunctions = {
 				
 				// search for Interview phase of HR interviewer
 				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
-				let phase;
+				let filterIntervs = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
 				
-				for(i=0; i<intervs.length;i++){
-					if(intervs[i].interviewer.userID === req.session.user.userID){
-						phase = intervs[i].phase;
+				let phase;
+				for(i=0; i<filterIntervs.length;i++){
+					if(filterIntervs[i].interviewer.userID === req.session.user.userID){
+						phase = filterIntervs[i].phase;
 					}
 				}
 				
 				if (phase === "Initial")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+						let findApplic = await db.findOne(ApplicantDB, {applicantID: applicIDs[i]}, "");  
+					
+						// SEND EMAIL to applicant [initial phase] interview results
+						if (stats[i] === "PASS"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Initial Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
+										+ `<p> We wish you luck! </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
+						}
+							
+						else if (stats[i] === "FAIL"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
+										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
+						}
+	
+						
 					}
 				
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
-						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
+						
+						// SEND EMAIL to applicant [final phase] interview results
+						if (stats[i] === "PASS"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p> <br>` 
+										+ `<p> Please wait for our next email for your class schedule. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
+						}
+							
+						else if (stats[i] === "FAIL"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
+										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
+						}
 					}
-				  
-				res.status(200).send();
+
+				// res.status(200).send(filterIntervs);
 			}	
 		} catch(e){
 			console.log(e);
