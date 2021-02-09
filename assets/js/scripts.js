@@ -94,6 +94,7 @@ function getApplicInfo(applicID){
             
 			$("input#hide-applicID").val(applicID);
 			$("label#applic-name").text(res.applic.fName + " " + res.applic.lName);
+			$("label#applic-email").text(res.applic.email);
 			
             for (let i=0; i<res.applic.sys_reqs.length; i++)
                 $("input#formCheck-" + (i+1)).prop("checked", res.applic.sys_reqs[i]);
