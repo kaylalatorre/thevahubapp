@@ -46,6 +46,28 @@ function createClass(classID, trainerID, trainerName, courseName, startDate, end
 	return tempClass;
 }
 
+function createClassTrainee(traineeID, fName, lName, classID, courseName) {
+	var tempVar = {
+		traineeID: traineeID,
+		fName: fName,
+		lName: lName,
+		classID: classID,
+		courseName: courseName,
+		Day1: ['0','0','0','0','0'],
+		Day2: ['0','0','0','0','0'],
+		Day3: ['0','0','0','0','0'],
+		Day4: ['0','0','0','0','0'],
+		Day5: ['0','0','0','0','0'],
+		Day6: ['0','0','0','0','0'],
+		Day7: ['0','0','0','0','0'],
+		Day8: ['0','0','0','0','0'],
+		finalAve: '0',
+		traineeStatus: 'IN-PROGRESS'
+	};
+
+	return tempVar;
+}
+
 function toDate(date, time) {
     let d = new Date(date);
     d.setHours(time.substr(0, time.indexOf(":")));
@@ -1405,10 +1427,7 @@ const rendFunctions = {
 	},
 
 	postCreateClass: function(req, res) {
-		try{
-			let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
-
-			// getTrainees
+		let { courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
 
 			// generate classID
 			var classID = generateClassID();
@@ -1428,61 +1447,85 @@ const rendFunctions = {
 				console.log("create-class error: " + error);
 			}
 			else {
-				res.send({status: 200}); }
+				res.send({status: 200}); 
 
-				// // SEND EMAIL to trainees when added to class
-				// var smtpTransport = nodemailer.createTransport({
-				// 	service: 'Gmail',
-				// 	auth: {
-				// 		user: 'training.tvh@gmail.com',
-				// 		pass: 'tvhtraining'
-				// 	}
-				// });
+				// getting trainees with no classes
+					// collect all trainees 
+				var allTR = await db.findMany(UserDB, {userType: "Trainee"});
+				var VAtrainees = JSON.parse(JSON.stringify(allTR));
+				
+				for(var x = 0; x < VAtrainees.length; x++){
+					ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
+						if (!match) {
+							var trainee = createClassTrainee(VAtrainees[x].traineeID, VAtrainees[x].fName, VAtrainees[x].lName, classID, courseName);
+							var startDate = formatDate(startDate);
+							var endDate = formatDate(endDate);
+							var sTime = formatTime(sTime);
+							var eTime = formatTime(eTime);
 
-				// // content
-				// var mailOptions = {
-				// 	from: 'training.tvh@gmail.com',
-				// 	to: sched.applicant.email,
-				// 	subject: '[TRAINING] Class Details and Schedule',
-				// 	html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
-				// 			+`<div style="background-color: #ebf5ee; padding: 80px;">`
-				// 				+`<div style="text-align: center;">`
-				// 					+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
-				// 				+`</div>`
-				// 				+`<section style="text-align: justify; margin-bottom: 40px;">`
-				// 					+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
-				// 					+`<br><br>`
-				// 					+`<p> The following are your class details:</p>`
-				// 					+`<p> Section: ${classID}, 2021 </p>`
-				// 					+`<p> Trainer: ${trainerName}, 2021 </p>`
-				// 					+`<p> Time: ${timeStart} to ${timeEnd} </p>`
-				// 				+`</section>`
-				// 			+`</div>`
-				// 			+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
-				// 			+`</div>`,
-				// 	attachments: [{
-				// 			filename: 'tvh-logo-square.png',
-				// 			path: __dirname+'/tvh-logo-square.png',
-				// 			cid: 'signature'
-				// 	}]
-				// };
+							// add into Score model
+							ScoreDB.create(trainee, function(error) {
+								if (error) {
+									console.log("adding-trainees error: " + error);
+								}
+								else {
+									// SEND EMAIL to trainees when added to class
+									var smtpTransport = nodemailer.createTransport({
+										service: 'Gmail',
+										auth: {
+											user: 'training.tvh@gmail.com',
+											pass: 'tvhtraining'
+										}
+									});
 
-				// smtpTransport.sendMail(mailOptions, function(error) {
-				// 	if (error){
-				// 		res.send({status: 500});
-				// 		console.log(error);
-				// 	}
-				// 	else{
-				// 		res.status(200).send(sched);
-				// 	} 
+									// content
+									var mailOptions = {
+										from: 'training.tvh@gmail.com',
+										to: sched.applicant.email,
+										subject: '[TRAINING] Class Details and Schedule',
+										html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+												+`<div style="background-color: #ebf5ee; padding: 80px;">`
+													+`<div style="text-align: center;">`
+														+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+													+`</div>`
+													+`<section style="text-align: justify; margin-bottom: 40px;">`
+														+`<p> Greetings, ${VAtrainees[x].fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
+														+`<br><br>`
+														+`<p> The following are your class details:</p>`
+														+`<p> Section: ${classID} </p>`
+														+`<p> Trainer: ${trainerName} </p>`
+														+`<p> Date: ${startDate} to ${endDate}, 2021 </p>`
+														+`<p> Time: ${sTime} to ${eTime} </p>`
+													+`</section>`
+												+`</div>`
+												+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+												+`</div>`,
+										attachments: [{
+												filename: 'tvh-logo-square.png',
+												path: __dirname+'/tvh-logo-square.png',
+												cid: 'signature'
+										}]
+									};
 
-				// 	smtpTransport.close();
-				// });
+									smtpTransport.sendMail(mailOptions, function(error) {
+										if (error){
+											res.send({status: 500});
+											console.log(error);
+										}
+										else{
+											res.status(200).send(sched);
+										} 
 
-			});
-		} catch(e){
-			res.send({status: 500, mssg: 'Cannot connect to db.'});
-		}
+										smtpTransport.close();
+									});
+								}
+						
+							});
+						}
+					});
+				}
+			}
+		});
 	},
 	
 	postEditClass: function(req, res) {
