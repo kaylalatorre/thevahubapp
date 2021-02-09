@@ -710,38 +710,176 @@ const rendFunctions = {
 		});
 	},
 
-	getScoresheet: async function(req, res, next) {
+	// SCORESHEETS
+	getScoresheet1: async function(req, res, next) {
 		var classID = req.params.classID;
-		// which day?
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
-		
-			// fix format of dates
-			var sDate = formatDate(classVar[0].startDate);
-			var eDate = formatDate(classVar[0].endDate);
 
-			classVar[0].startDate = sDate;
-			classVar[0].endDate = eDate;
-
-			// fix format of time
-			var sTime = formatTime(classVar[0].startTime);
-			var eTime = formatTime(classVar[0].endTime);
-
-			classVar[0].startTime = sTime;
-			classVar[0].endTime = eTime;
-
-			// count number of trainees in class
+			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
 			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-				// console.log(traineesVar);
 
-			// classes[0].numTrainees = traineesVar.length;
 			classVar[0].trainees = traineesVar;
 
-			res.render('update-scoresheet', {
+			res.render('update-scoresheet1', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet2: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet2', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet3: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet3', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+
+	getScoresheet4: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet4', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet5: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet5', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet6: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet6', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+	getScoresheet7: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet7', {
+				classID: classID,
+				startDate: classVar[0].startDate,
+				endDate: classVar[0].endDate,
+				courseName: classVar[0].courseName,
+				trainees: classVar[0].trainees,
+			});
+		});
+	},
+
+
+	getScoresheet8: async function(req, res, next) {
+		var classID = req.params.classID;
+
+		ClassDB.find({classID: classID}, async function(err, data) {
+			var classVar = JSON.parse(JSON.stringify(data));
+
+			// find trainees in class
+			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
+			var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+			classVar[0].trainees = traineesVar;
+
+			res.render('update-scoresheet8', {
 				classID: classID,
 				startDate: classVar[0].startDate,
 				endDate: classVar[0].endDate,

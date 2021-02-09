@@ -24,21 +24,21 @@
     <div name="scoresheet" style="padding: 5px;">
     	<label class="h4" style="color: #2c2c2c;"><strong>Scores</strong></label>
     	<button type="button" class="outlined-btn theScore" style="margin: 2px;" id="theScores">Edit</button>
-    	<button type="button" class="outlined-btn editScore" style="margin: 2px;" id="saveScores">Save</button>
+    	<button type="button" id="saveScores1" class="outlined-btn editScore" style="margin: 2px;" id="saveScores">Save</button>
 		
 		<div style="float: right;  text-align: center; margin: 0 auto; display: inline-flex;  padding-right:35px;" id="daysBtnGrp">
-    		<button type="button" class="outlined-btn theScore" style="margin: 2px 5px;" onclick="">
+    		<button type="button" disabled class="outlined-btn theScore" style="margin: 2px 5px;" >
 				<i class="material-icons" style="position: relative; top: 2px;">navigate_before</i></button>
 			
-			<button type="button" class="outlined-btn editScore" disabled style="margin: 2px 5px;" onclick="">
+			<button type="button" disabled class="outlined-btn editScore" disabled style="margin: 2px 5px;" >
 				<i class="material-icons" style="position: relative; top: 2px;">navigate_before</i></button>
 
     		<label style="font-weight: bold; font-size: 18px; vertical-align: center; padding: 4px 8px;">Day 1</label>
     	
-			<button type="button" class="outlined-btn theScore" style="margin: 2px 5px;" onclick="">
+			<button type="button" onclick="window.location.href = '/update-scoresheet/2/{{{classID}}}'" class="outlined-btn theScore" style="margin: 2px 5px;" >
 				<i class="material-icons" style="position: relative; top: 2px;">navigate_next</i></button>
 
-    		<button type="button" class="outlined-btn editScore" disabled style="margin: 2px 5px;" onclick="">
+    		<button type="button" class="outlined-btn editScore" disabled style="margin: 2px 5px;" >
 			<i class="material-icons" style="position: relative; top: 2px;">navigate_next</i></button>
     	
 		</div>
