@@ -45,10 +45,19 @@ router.get('/trainer-classes', controller.getTrainerClasses);
 router.get('/tr-class-details/:classID', controller.getTRClassDetails);
 router.get('/get-schedule', controller.getSchedule);
 router.get('/trainer-schedule', controller.getTRSchedule);
-router.get('/update-scoresheet', controller.getScoresheet);
 router.get('/manage-trainees/:classID', controller.getTraineeList);
-router.get('/update-scoresheet/:classID', controller.getScoresheet);
 router.get('/trainer-reports', controller.getTrainingReports);
+router.get('/filteredtr-reports', controller.getFTRReports);
+
+router.get('/update-scoresheet/1/:classID', controller.getScoresheet1);
+router.get('/update-scoresheet/2/:classID', controller.getScoresheet2);
+router.get('/update-scoresheet/3/:classID', controller.getScoresheet3);
+router.get('/update-scoresheet/4/:classID', controller.getScoresheet4);
+router.get('/update-scoresheet/5/:classID', controller.getScoresheet5);
+router.get('/update-scoresheet/6/:classID', controller.getScoresheet6);
+router.get('/update-scoresheet/7/:classID', controller.getScoresheet7);
+router.get('/update-scoresheet/8/:classID', controller.getScoresheet8);
+
 
 	// sales admin screen prototypes 
 router.get('/sales-valist', controller.getVAList);
@@ -78,14 +87,23 @@ router.post('/update-applicStats', controller.postApplicStatuses);
 router.post('/post-applicStat', controller.postOneStatus);
 
 
-	//trainees
+	//trainee
 router.post('/deactivate', controller.postDeactivate);
 
-	//trainers
+	//trainer
 router.post('/create-class', controller.postCreateClass);
 router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
-router.post('/edit-scores', controller.postEditScores);
+
+router.post('/save-scores1', controller.postSaveScores1);
+// router.post('/save-scores2', controller.postSaveScores2);
+// router.post('/save-scores3', controller.postSaveScores3);
+// router.post('/save-scores4', controller.postSaveScores4);
+// router.post('/save-scores5', controller.postSaveScores5);
+// router.post('/save-scores6', controller.postSaveScores6);
+// router.post('/save-scores7', controller.postSaveScores7);
+// router.post('/save-scores8', controller.postSaveScores8);
+
 
 
 
