@@ -1563,7 +1563,7 @@ const rendFunctions = {
 						// content
 						var mailOptions = {
 							from: 'training.tvh@gmail.com',
-							to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
+							to: sched.applicant.email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
 							subject: '[APPLICATION] Initial Interview Schedule',
 							// text: emailText,
 							html: `<p>Greetings! Here is your interview schedule: </p> <br>` 
@@ -1621,85 +1621,168 @@ const rendFunctions = {
 				if (phase === "Initial")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+						let findApplic = await db.findOne(ApplicantDB, {applicantID: applicIDs[i]}, "");  
 					
 						// SEND EMAIL to applicant [initial phase] interview results
-						var smtpTransport = nodemailer.createTransport({
-							service: 'Gmail',
-							auth: {
-								user: 'training.tvh@gmail.com',
-								pass: 'tvhtraining'
-							}
-						});
+						if (stats[i] === "PASS"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
 
-						// content
-						var mailOptions = {
-							from: 'training.tvh@gmail.com',
-							to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
-							subject: '[APPLICATION] Initial Interview Result',
-							// text: emailText,
-							html: `<p>Greetings! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
-									+ `<p> We wish you luck! </p>`
-									+ `<br> <br> <br> <img src="cid:signature"/>`,
-							attachments: [{
-									filename: 'TVH.png',
-									path: __dirname+'/TVH.png',
-									cid: 'signature'
-							}]
-						};
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Initial Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your initial interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
+										+ `<p> We wish you luck! </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
 
-						smtpTransport.sendMail(mailOptions, function(error) {
-							if (error){
-								res.send({status: 500});
-								console.log(error);
-							}
-							else{
-								res.status(200).send(filterIntervs);
-							} 
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
 
-							smtpTransport.close();
-						});
+								smtpTransport.close();
+							});
+						}
+							
+						else if (stats[i] === "FAIL"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
+										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
+						}
+	
+						
 					}
 				
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
-					
-					// SEND EMAIL to applicant [final phase] interview results
-					var smtpTransport = nodemailer.createTransport({
-						service: 'Gmail',
-						auth: {
-							user: 'training.tvh@gmail.com',
-							pass: 'tvhtraining'
+						
+						// SEND EMAIL to applicant [final phase] interview results
+						if (stats[i] === "PASS"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p> <br>` 
+										+ `<p> Please wait for our next email for your class schedule. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
 						}
-					});
+							
+						else if (stats[i] === "FAIL"){
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'tvhtraining'
+								}
+							});
 
-					// content
-					var mailOptions = {
-						from: 'training.tvh@gmail.com',
-						to: email, // NINNA HELP PANO ACCESS ANG EMAIL AND APPLICANT DETAILS
-						subject: '[APPLICATION] Final Interview Result',
-						// text: emailText,
-						html: `<p>Greetings! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the next phase. </p> <br>` 
-								+ `<p> We wish you luck! </p>`
-								+ `<br> <br> <br> <img src="cid:signature"/>`,
-						attachments: [{
-								filename: 'TVH.png',
-								path: __dirname+'/TVH.png',
-								cid: 'signature'
-						}]
-					};
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: findApplic.email, 
+								subject: '[APPLICATION] Final Interview Result',
+								// text: emailText,
+								html: `<p>Greetings! Based on your last interview, we regret to inform you that ???. </p> <br>` 
+										+ `<p> Thank you for your effor and we wish you the best of luck in your future endeavors!. </p>`
+										+ `<br> <br> <br> <img src="cid:signature"/>`,
+								attachments: [{
+										filename: 'TVH.png',
+										path: __dirname+'/TVH.png',
+										cid: 'signature'
+								}]
+							};
 
-					smtpTransport.sendMail(mailOptions, function(error) {
-						if (error){
-							res.send({status: 500});
-							console.log(error);
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(filterIntervs);
+								} 
+
+								smtpTransport.close();
+							});
 						}
-						else{
-							res.status(200).send(filterIntervs);
-						} 
-
-						smtpTransport.close();
-					});
 					}
 
 				// res.status(200).send(filterIntervs);
