@@ -216,13 +216,16 @@ const rendFunctions = {
 		res.send(interviews);
 	},
 
-/* [..] HR Screening
+/* [/] HR Screening
  */
 	
 	getHRScreening: async function(req, res) {
 		if(req.session.user) {
-			if(req.session.user.userType === "HRadmin"){
-				let applicants = await db.findMany(ApplicantDB, {});
+			if(req.session.user.userType === "HRadmin"){				
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {lName: 1, fName: 1, sys_reqs: 1}}
+				]);
 				
 				let acceptApps = [];
 				let pendApps = [];
@@ -248,6 +251,42 @@ const rendFunctions = {
 			res.redirect('/');
 		}
 	},
+
+/*	
+	sortSysReqs: async function(req, res) {
+		if(req.session.user) {
+			if(req.session.user.userType === "HRadmin"){
+				let applicants = await db.aggregate(ApplicantDB, [
+					{'$match': {}},
+					{'$sort': {sys_reqs: 1}}
+				]);
+				
+				if (applicants.length > 0){
+					let acceptApps = [];
+					let pendApps = [];
+					let rejectApps = [];
+
+					for(let i=0; i< applicants.length; i++){
+						if(applicants[i].screenStatus === "ACCEPTED")
+							acceptApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "PENDING")
+							pendApps.push(applicants[i]);
+						else if(applicants[i].screenStatus === "REJECTED")
+							rejectApps.push(applicants[i]);				
+					}
+
+					res.send({status: 200,
+						accepted: acceptApps,
+						pending: pendApps,
+						rejected: rejectApps
+					});					
+				} else {
+					res.send({status: 400, mssg: "Cannot retrieve from database."});
+				}
+			}
+		}
+	},
+*/
 	
 	getApplicInfo: async function(req, res) {
 		try {
@@ -321,32 +360,84 @@ const rendFunctions = {
 
 	},
 	
-//// non-functional
-	getApplicPDF: async function(req, res){
+	getIntervFiltered: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRinterv"){
+				let {phase, checkStatus} = req.query;
+				
+				// search for Interview phase of HR interviewer
+				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
+				let filtered = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
+				let filterIntervs = [];
 
-		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
-		console.log(req.query.applicID);
-		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
-		 console.log(encodePDF);
-		res.status(200).send(encodePDF);
-	
+				if (checkStatus === "Done") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.initialStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (!(filtered[i].applicant.finalStatus === "FOR REVIEW"))
+								filterIntervs.push(filtered[i]);
+						}		
+					
+				} else if (checkStatus === "Pending") {
+					if (phase === "Initial")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.initialStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}
+					else if (phase === "Final")
+						for (i=0; i<filtered.length; i++){
+							if (filtered[i].applicant.finalStatus === "FOR REVIEW")
+								filterIntervs.push(filtered[i]);
+						}						
+				} else 
+					for (i=0; i<filtered.length; i++)
+						filterIntervs.push(filtered[i]);				
+				
+				console.log("filterIntervs: "+ filterIntervs);
+				res.status(200).send(filterIntervs);
+			}	
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
 	},
 	
-	getPDF: function(req, res){
-		res.render('testpdf', {});
-	},
+//// non-functional
+//	getApplicPDF: async function(req, res){
+//
+//		let applic = await db.findOne(ApplicantDB, {applicantID: req.query.applicID}, '');
+//		console.log(req.query.applicID);
+//		let encodePDF = Buffer.from(applic.resume_cv.buffer).toString('base64');
+//		 console.log(encodePDF);
+//		res.status(200).send(encodePDF);
+//	
+//	},
+//	
+//	getPDF: function(req, res){
+//		res.render('testpdf', {});
+//	},
 ////	
 
-	getHRReports: async function(req, res, next) {
+	getHRReports: async function(req, res) {
 
-		var applicList = await db.findMany(ApplicantDB, {});
+		var initApplics = await db.findMany(ApplicantDB, {});
+		var applicList = [];
 		var screenPass = [];
 		var screenFail = [];
 		var initialPass = [];
 		var initialFail = [];
 		var finalPass = [];
 		var finalFail = [];
-
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applicList.push(initApplics[j]);
+		
 		for(var i=0; i < applicList.length; i++) {
 			if(applicList[i].screenStatus === "ACCEPTED") 
 				screenPass.push(applicList[i]);
@@ -378,8 +469,87 @@ const rendFunctions = {
 			ffLength: finalFail.length,
 			screenTotal: screenPass.length + screenFail.length,
 			initialTotal: initialPass.length + initialFail.length,
-			finalTotal: finalPass.length + finalFail.length,
+			finalTotal: finalPass.length + finalFail.length
 		});
+	},
+	
+	getHRFilterReports: async function(req, res) {
+		let {appStatus, dStart, dEnd} = req.query;
+		
+		// format Dates for db
+		let dateStart = new Date(dStart);
+		let dateEnd = new Date(dEnd);
+		
+		// placeholder array for rendering
+		let applics = [];
+		let applicList = [];
+		
+		// >= dateStart, <= dateEnd -- e.g. 2021/02/05 to 2021/02/10 
+		let initApplics = await db.aggregate(ApplicantDB, [
+			{'$match': {
+				applicDate: {
+					$gte: dateStart,
+					$lte: dateEnd
+				}
+			}},
+			{'$sort': {lName: 1, fName: 1}}
+		]);			
+		
+		// exclude PENDING, FOR REVIEW statuses..
+		for (let j=0; j<initApplics.length; j++)
+			if (!(initApplics[j].screenStatus === "PENDING") && !(initApplics[j].initialStatus === "FOR REVIEW") && !(initApplics[j].finalStatus === "FOR REVIEW"))
+				applics.push(initApplics[j]);
+		
+		// count stats for total breakdowns
+		let spCount = sfCount = ipCount = ifCount = fpCount = ffCount = 0;	
+		
+		for (let k=0; k<applics.length; k++){
+			// screening 
+			if (applics[k].screenStatus === "ACCEPTED")
+				spCount++;
+			else if (applics[k].screenStatus === "REJECTED")
+				sfCount++;
+			
+			// initialInterv
+			if (applics[k].initialStatus === "PASS")
+				ipCount++;
+			else if (applics[k].initialStatus === "FAIL")
+				ifCount++;	
+			
+			// finalInterv
+			if (applics[k].finalStatus === "PASS")
+				fpCount++;
+			else if (applics[k].finalStatus === "FAIL")
+				ffCount++;				
+		}
+		
+		
+		if (appStatus === "Endorsed"){
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].finalStatus === "PASS")	
+					applicList.push(applics[i]);			
+		} else if (appStatus === "Failed") {
+			for (let i=0; i<applics.length; i++)
+				if (applics[i].screenStatus === "REJECTED" || applics[i].initialStatus === "FAIL" || applics[i].finalStatus === "FAIL")	
+					applicList.push(applics[i]);		
+		} else
+			for (let i=0; i<applics.length; i++)
+				applicList.push(applics[i]);			
+		
+		//counts                          
+		/* total passed				(screening, initialInterv, finalInterv)
+		 * total failed				(screening, initialInterv, finalInterv)
+		 * no. of all applicants	(screening, initialInterv, finalInterv)
+		 */
+		
+		res.status(200).send({applics: applicList,
+					spLength: spCount,
+					sfLength: sfCount,
+					ipLength: ipCount,
+					ifLength: ifCount,
+					fpLength: fpCount,
+					ffLength: ffCount		
+				});
 	},
 
 	getTraineeProf: function(req, res, next) {
@@ -1375,6 +1545,8 @@ const rendFunctions = {
 					if(intervSched){
 						let sched = await InterviewDB.findOne({intervID: intID}, '').populate("interviewer applicant");
 						console.log(sched);
+						
+						// TO KIMI: because der is interview sched, pls email Applicant here
 						res.status(200).send(sched);
 					}
 				}
@@ -1386,7 +1558,7 @@ const rendFunctions = {
 		}
 	},
 	
-	postApplicStatus: async function(req, res) {
+	postApplicStatuses: async function(req, res) {
 		try {    
 			if(req.session.user.userType === "HRinterv"){
 				let {applicIDs, stats} = req.body;
@@ -1396,26 +1568,54 @@ const rendFunctions = {
 				
 				// search for Interview phase of HR interviewer
 				let intervs = await InterviewDB.find({}, '').populate("interviewer applicant");
-				let phase;
+				let filterIntervs = intervs.filter(elem => elem.interviewer.userID === req.session.user.userID);
 				
-				for(i=0; i<intervs.length;i++){
-					if(intervs[i].interviewer.userID === req.session.user.userID){
-						phase = intervs[i].phase;
+				let phase;
+				for(i=0; i<filterIntervs.length;i++){
+					if(filterIntervs[i].interviewer.userID === req.session.user.userID){
+						phase = filterIntervs[i].phase;
 					}
 				}
 				
 				if (phase === "Initial")
 					for(i=0; i<applicIDs.length; i++){
 						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+					
+					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
 					}
 				
 				if (phase === "Final")
 					for(i=0; i<applicIDs.length; i++){
-						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {initialStatus: stats[i]});
+						let applicant = await db.updateOne(ApplicantDB, {applicantID: applicIDs[i]}, {finalStatus: stats[i]});
+					
+					// TO KIMI: hello ples do the e-mail for "[initial phase] interview results" here
 					}
-				  
-				res.status(200).send();
+
+				res.status(200).send(filterIntervs);
 			}	
+		} catch(e){
+			console.log(e);
+			res.send(e);
+		}
+	},
+
+	postOneStatus: async function(req, res) {
+		try {    
+			if(req.session.user.userType === "HRinterv"){
+				let {appID, intervPhase} = req.body;
+				let applicant;
+				
+				console.log("in postOneStatus() appID: "+ appID);
+				console.log("in postOneStatus() intervPhase: "+ intervPhase);
+				
+				if(intervPhase === "Initial")
+					applicant = await db.updateOne(ApplicantDB, {applicantID: appID}, {initialStatus: "FOR REVIEW"}); 
+				
+				if(intervPhase === "Final")
+					applicant = await db.updateOne(ApplicantDB, {applicantID: appID}, {finalStatus: "FOR REVIEW"});
+				
+				res.status(200).send();
+			}
 		} catch(e){
 			console.log(e);
 			res.send(e);

@@ -4,14 +4,17 @@
 
 <div style="padding: 70px 20px 20px 20px;">
     <div><label class="h2 applicant-phase" style="padding: 5px;color: #2c2c2c;"><strong>Applicants List:&nbsp;</strong>{{intervPhase}} Phase</label></div>
+	<input id="applicPhase" type="hidden" value="{{{intervPhase}}}">
+
     <hr>
     <div class="d-inline-block">
         <label class="d-inline-block" style="padding: 3px 10px;"><strong>&nbsp;Filter</strong></label>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="display-all"><label class="form-check-label" for="display-all">All</label></div>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="display-done"><label class="form-check-label" for="display-done">Done</label></div>
-        <div class="form-check d-inline-block" style="margin: 5px;"><input class="form-check-input" type="checkbox" id="display-pending"><label class="form-check-label" for="display-pending">Pending</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-ALL" class="form-check-input checkList" type="checkbox" id="display-all"><label id="label-ALL" class="form-check-label" for="display-all">All</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-DONE" class="form-check-input checkList" type="checkbox" id="display-done"><label id="label-DONE" class="form-check-label" for="display-done">Done</label></div>
+        <div class="form-check d-inline-block" style="margin: 5px;"><input name="filter-PENDING" class="form-check-input checkList" type="checkbox" id="display-pending"><label id="label-PENDING" class="form-check-label" for="display-pending">Pending</label></div>
     </div>
-    <button type="button" id="save-statBtn" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)">Save changes</label></button>
+    <button type="button" id="save-statBtn" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Save changes </label></button>
+
     <div>
         <div class="table-responsive table-bordered">
             <table class="table table-bordered table-hover">
@@ -23,23 +26,32 @@
                         <th style="font-size: 14px;background: #efefef;color: rgb(0,148,68);width: 20%;">Status</th>
                     </tr>
                 </thead>
-                <tbody style="font-size: 14px;">
+                <tbody id="table-applicInterv" style="font-size: 14px;">
 					{{#each applicants}}
 						<input type="hidden" class="hidden-appID" value="{{{this.applicantID}}}">
+						<input type="hidden" class="hidden-initStat" value="{{{this.initialStatus}}}">
+						<input type="hidden" class="hidden-finalStat" value="{{{this.finalStatus}}}">
+
 						<tr id="rowApplic-{{{this.applicantID}}}" class="row-applic" style="font-size: 14px;">
 							<td id="applicName-row" style="font-size: 14px;"> {{genApplicName this}} </td>
-							<td style="font-size: 14px;"> {{this.sys_reqs}} </td>
+							<td style="font-size: 14px;"> 
+									<input name="contCheck-{{{this.applicantID}}}" type="hidden" value="{{{this.sys_reqs}}}">
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="laptop"><label for="laptop"> Personal Computer/Laptop</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="internet"><label for="internet"> Internet Speed</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="headset"><label for="headset"> Headset</label><br>
+									<input type="checkbox" name="check-{{{this.applicantID}}}" id="webcam"><label for="webcam"> Webcam</label><br>
+							</td>
 							<td style="font-size: 14px;">
-								<div class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
+								<div id="res-viewBtn" onclick="downloadFile('{{{this.applicantID}}}')" class="outlined-btn d-inline" style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-eye" style="margin-right: 5px;"></i><label>View</label></div>
 								<div id="res-downloadBtn" onclick="downloadFile('{{{this.applicantID}}}')" class="outlined-btn d-inline"  style="color: #2b2b2b; border-color: #2b2b2b;"><i class="fa fa-download" style="margin-right: 5px;margin-left: 7px;"></i><label>Download</label></div>
 							</td>
 							<td style="font-size: 14px;">
 								<div class="form-check d-inline-block" style="padding-right: 10px;">
-                                    <input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <input class="form-check-input radiobtn-pass applic-stat" id="applicant-pass" name="applic-{{{this.applicantID}}}" type="radio" value="PASS">
                                     <label class="form-check-label" for="applicant-pass" style="font-size: 12px;">Pass</label>
                                 </div>
 								<div class="form-check d-inline-block" style="padding-right: 10px;">
-                                    <input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-{{{this.applicantID}}}" type="radio">
+                                    <input class="form-check-input radiobtn-fail applic-stat" id="applicant-fail" name="applic-{{{this.applicantID}}}" type="radio" value="FAIL">
                                     <label class="form-check-label" for="applicant-fail" style="font-size: 12px;">Fail</label>
                                 </div>
 							</td>

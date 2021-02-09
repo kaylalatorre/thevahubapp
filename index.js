@@ -12,7 +12,7 @@ const base64 = require("byte-base64"); //for embedding resume .pdf files
 
 /* EXPRESS APPLICATION */
 const app = express();
-const port = process.env.port || 9000;
+const port = process.env.PORT || 9000;
  
 /* INITIALIZING DOTENV (for db access info)*/
 require('dotenv').config(); 

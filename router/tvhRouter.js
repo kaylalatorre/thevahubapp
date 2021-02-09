@@ -13,6 +13,7 @@ router.get('/error', controller.getError);
 // hr admin
 router.get('/hr-schedule', controller.getHRSched);
 router.get('/hr-screening', controller.getHRScreening);
+//router.get('/sort-sysreqs', controller.sortSysReqs);
 router.get('/rend-applicant', controller.getApplicInfo);
 
 router.get('/get-intervapplic', controller.getIntervApplic);
@@ -20,14 +21,17 @@ router.get('/get-interviews', controller.getInterviews);
 router.get('/get-filterIntervs', controller.getFilterIntervs);
 
 router.get('/application-reports', controller.getHRReports);
+router.get('/applic-filterReports', controller.getHRFilterReports);
+
 
 // interviewer
 router.get('/int-applicants', controller.getApplicList);
 router.get('/int-schedule', controller.getIntSchedule);
 router.get('/get-HRinterviews', controller.getHRInterviews);
-router.get('/get-applicPDF', controller.getApplicPDF);
-router.get('/view-resume', controller.getPDF);
+//router.get('/get-applicPDF', controller.getApplicPDF);
+//router.get('/view-resume', controller.getPDF);
 router.get('/download-resume', controller.getResumeDL);
+router.get('/get-filterIntervList', controller.getIntervFiltered);
 
 	// trainee
 router.get('/trainee-profile', controller.getTraineeProf);
@@ -78,7 +82,8 @@ router.post('/remove-applicant', controller.postRemoveApplic);
 router.post('/create-intsched', controller.postIntervSched);	
 
 //interviewer
-router.post('/update-applicStat', controller.postApplicStatus);
+router.post('/update-applicStats', controller.postApplicStatuses);
+router.post('/post-applicStat', controller.postOneStatus);
 
 
 	//trainees

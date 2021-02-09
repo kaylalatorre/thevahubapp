@@ -5,10 +5,6 @@
 <div style="padding: 70px 20px 20px 20px;">
     <div>
         <label class="h2" style="padding: 5px;color: #2c2c2c;"><strong>Screen </strong>Applications</label>
-        <div style="padding: 5px; float: right">
-            <input type="checkbox" id="sort-sysreq">
-            <label for="sort-sysreq" style="margin-left: 8px;"><strong>Sort by</strong> System Requirements</label>
-        </div>
     </div>
     <hr>
     <div style="height: 100%;">
@@ -19,7 +15,7 @@
                 <li class="nav-item" id="rejectedTab"  role="presentation" onclick="updateButtons(this);"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-3">REJECTED</a></li>
             </ul>
             <div class="tab-content" style="padding: 20px;margin: 0px -5px;">
-                <div class="tab-pane active" role="tabpanel" id="tab-1">
+                <div name="pending-tab" class="tab-pane active" role="tabpanel" id="tab-1">
 					{{#each pending}}
 						<div class="row applicant-row tab1row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab1Class(this);">
 							<label class="col-form-label d-block"> {{genApplicName this}} </label>
@@ -27,7 +23,7 @@
 					{{/each}}
                 </div>
 
-                <div class="tab-pane" role="tabpanel" id="tab-2">
+                <div name="accept-tab" class="tab-pane" role="tabpanel" id="tab-2">
 					{{#each accepted}}
 						<div class="row tab2row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab2Class(this);">
 							<label class="col-form-label d-block"> {{genApplicName this}} </label>
@@ -35,7 +31,7 @@
 					{{/each}}
                 </div>
 
-                <div class="tab-pane" role="tabpanel" id="tab-3">
+                <div name="reject-tab" class="tab-pane" role="tabpanel" id="tab-3">
 					{{#each rejected}}
 						<div class="row tab3row tabInactive" onclick="getApplicInfo('{{{this.applicantID}}}'); changeTab3Class(this);">
 							<label class="col-form-label d-block"> {{genApplicName this}} </label>

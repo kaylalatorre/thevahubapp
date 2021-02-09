@@ -27,7 +27,8 @@ var applicantSchema = new mongoose.Schema({
 	initialStatus: String,
 	initialRemarks: String,
 	finalStatus: String,
-	finalRemarks: String
+	finalRemarks: String,
+	applicDate: Date
 }, {collection: "Applicant"});
 
 module.exports = mongoose.model('Applicant', applicantSchema);
