@@ -463,7 +463,6 @@ $(document).ready(function() {
 		let applicName = $('#modal-applicName').text();
 		alert("Please update Interview status of Applicant " + applicName);
 	} 
-*/	
 
 /* SEMI-FUNCTION 
 	// for HR-interviewer sidebar filter
