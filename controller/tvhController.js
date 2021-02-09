@@ -641,6 +641,9 @@ const rendFunctions = {
 
 					classes[i].sDate = sDate;
 					classes[i].eDate = eDate;
+
+
+					console.log(classes[i]);
 				}
 			
 				res.render('trainee-classes', {
@@ -761,12 +764,41 @@ const rendFunctions = {
 
 	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
+
+			// check if there are trainees who do not belong to a class yet
+				// collect all trainees 
+			var allTR = await db.findMany(UserDB, {userType: "Trainee"});
+			var VAtrainees = JSON.parse(JSON.stringify(allTR));
+			var freeTrainees = 0; // number of trainees who doesn't belong to a class
+			
+			for(var x = 0; x < VAtrainees.length; x++){
+				ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
+					if (!match) {
+						freeTrainees += 1; // increment number of trainees without a class
+					}
+				});
+			}
+			console.log(freeTrainees);
+			var addClass = false;
+			if(freeTrainees >= 10){
+				addClass = true;
+			}
+
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
+					var start = new Date(classes[i].startDate);
+					var now = new Date();
+					var classEditable = false;
+
+					if(start.getTime() > now.getTime()){
+						//class is editable if it hasn't started yet
+						classes[i].classEditable = true; 
+					}
+
 					var sDate = formatShortDate(classes[i].startDate);
 					var eDate = formatShortDate(classes[i].endDate);
 
@@ -795,6 +827,7 @@ const rendFunctions = {
 					res.render('trainer-classes', {
 						classList: classes,
 						courseList: courses,
+						addClass: addClass,
 					});
 				});	
 			});
@@ -810,8 +843,15 @@ const rendFunctions = {
 		
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
-			// var classDet = classVar;	
-			// console.log(classVar);
+			
+			var start = new Date(classVar[0].startDate);
+			var now = new Date();
+			var classDone = false;
+
+			if(start.getTime() > now.getTime()){
+				//class is editable if it hasn't started yet
+				classVar[0].classDone = true; 
+			}
 		
 			// fix format of dates
 			var sDate = formatDate(classVar[0].startDate);
@@ -876,6 +916,7 @@ const rendFunctions = {
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
+				classDone: classVar[0].classDone,
 			});
 		});
 	},
