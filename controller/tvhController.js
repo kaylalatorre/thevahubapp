@@ -1478,14 +1478,14 @@ const rendFunctions = {
 										service: 'Gmail',
 										auth: {
 											user: 'training.tvh@gmail.com',
-											pass: 'tvhtraining'
+											pass: 'Minyoongi39!'
 										}
 									});
 
 									// content
 									var mailOptions = {
 										from: 'training.tvh@gmail.com',
-										to: sched.applicant.email,
+//										to: sched.applicant.email,
 										subject: '[TRAINING] Class Details and Schedule',
 										html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
 												+`<div style="background-color: #ebf5ee; padding: 80px;">`
@@ -1697,7 +1697,7 @@ const rendFunctions = {
 							service: 'Gmail',
 							auth: {
 								user: 'training.tvh@gmail.com',
-								pass: 'tvhtraining'
+								pass: 'Minyoongi39!'
 							}
 						});
 
@@ -1780,7 +1780,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1827,7 +1827,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1882,7 +1882,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1929,7 +1929,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
