@@ -10,16 +10,18 @@
     		{{!-- <input placeholder="Search" style="padding: 4px 10px;margin-bottom: 10px; width:100%;"></input><hr> --}}
 
     		<label>Course</label>
-		    <select style="width:100%"class="appdrop" name="course" id="courseFilter">    
-		      <option class="appoption dropdown-item" href="#">Marketing</option>
-		      <option class="appoption dropdown-item" href="#">Real Estate</option>
+		    <select style="width:100%"class="appdrop" name="course" id="courseFilter">   
+		      <option class="appoption dropdown-item" value="1">All</option>
+		      <option class="appoption dropdown-item" value="2">Marketing</option>
+		      <option class="appoption dropdown-item" value="3">Real Estate</option>
 		    </select> <br><br>
 
 			<label>Status</label>
-		    <select style="width:100%"class="appdrop" name="course" id="clStatusFilter">    
-		      <option class="appoption dropdown-item" href="#">Ongoing</option>
-		      <option class="appoption dropdown-item" href="#">Completed</option>
-		      <option class="appoption dropdown-item" href="#">Not Yet Started</option>
+		    <select style="width:100%"class="appdrop" name="course" id="clStatusFilter">  
+		      <option class="appoption dropdown-item" value="1">All</option>
+		      <option class="appoption dropdown-item" value="2">Ongoing</option>
+		      <option class="appoption dropdown-item" value="3">Completed</option>
+		      <option class="appoption dropdown-item" value="4">Not Yet Started</option>
 		    </select> <br><br>
 	
 			<label>Start Date</label>
@@ -33,18 +35,17 @@
     		<div style="text-align: center; margin-bottom: 10px;">
 		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Classes Summary Report</strong></label> <br>
 		    	<label id="label-date">Period Covered: {{sDateFilter}} - {{eDateFilter}}</label> <br>
-		    	<label>Course: {{courseFilter}} </label> <br>
 		    </div>
 		    <!--table -->
 		    <div class="table-responsive" style="width: 98%; margin: 00px auto;">
-		        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
+		        <table id="classTable" class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
 		            <thead>
 		                <tr style="background: #efefef;color: rgb(0,148,68);">
 		                    <th style="width: 10%;">Class ID</th>
 		                    <th style="width: 15%;">Course</th>
-		                    {{!-- <th style="width: 10%;">Section</th> --}}
 		                    <th style="width: 15%;">Status</th>
-		                    <th style="width: 25%;">Schedule</th>
+		                    <th style="width: 10%;">Start Date</th>
+		                    <th style="width: 10%;">End Date</th>
 		                    <th style="width: 5%;">Students</th>
 		                    <th style="width: 5%;">Passed</th>
 		                    <th style="width: 5%;">Failed</th>
@@ -54,18 +55,18 @@
 						{{#each classList}}
 		                <tr class="report-det">
 		                    <td> {{classID}} </td>
-		                    <td> {{courseName}} </td>
-		                    {{!-- <td> bebot </td> --}}
+		                    <td class="{{courseName}}"> {{courseName}} </td>
 		                    <td> {{classStatus}} </td>
-		                    <td> {{sDate}} - {{eDate}}, 2021 </td>
-		                    <td> {{numTrainees}} </td>
-		                    <td> {{numPassed}} </td>
-		                    <td> {{numFailed}} </td>
+		                    <td> {{sDate}}, 2021 </td>
+		                    <td> {{eDate}}, 2021 </td>
+		                    <td style="text-align: right;"> {{numTrainees}} </td>
+		                    <td style="text-align: right;"> {{numPassed}} </td>
+		                    <td style="text-align: right;"> {{numFailed}} </td>
 		                </tr>
 						{{/each}}
 		                <!--for totals-->
-		            	<tr style="font-weight: bold;">
-		            		<td colspan="4">Total</td>
+		            	<tr style="text-align: right;font-weight: bold;">
+		            		<td colspan="5">Total</td>
 		            		<td>{{totalTrainees}}</td>
 		            		<td>{{totalPassed}}</td>
 		            		<td>{{totalFailed}}</td>

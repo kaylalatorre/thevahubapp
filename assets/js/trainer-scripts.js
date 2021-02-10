@@ -585,25 +585,28 @@ $(document).ready(function() {
 
 	// APPLY FILTERS for Trainer Report
 	$('button#applyTRFilter').click(function() {
-		var courseFilter = $('#statusFilter option:selected').text();
-		var statusFilter = $('#clStatus option:selected').text();
+		var courseFilter = $('#courseFilter option:selected').text();
+		var statusFilter = $('#clStatusFilter option:selected').text();
 
-        var dateToday = new Date();
-		var sDateFilter = $('input#sDateFilter').val();
-		var eDateFilter = $('input#eDateFilter').val();
+		console.log(courseFilter);
 
-		$.ajax({
-			method: 'GET',
-			url: '/filteredtr-greports',
-			data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
-			success: function(res) {
-				$('#label-date').text("Period Covered: " + dateStart + " to " + dateEnd);
-				$('#classTable').empty();
-				console.log(res);
-				// console.log("Updated reports");				
-			},
-			error: res => console.log(res)
-		});
+        // var dateToday = new Date();
+		// var sDateFilter = $('input#sDateFilter').val();
+		// var eDateFilter = $('input#eDateFilter').val();
+
+		// $.ajax({
+		// 	method: 'GET',
+		// 	url: '/filteredtr-reports',
+		// 	data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
+		// 	success: function(res) {
+		// 		$('#label-date').text("Period Covered: " + sDateFilter + " to " + eDateFilter);
+		// 		$('#classTable').empty();
+		// 		console.log(res);
+		// 		// console.log("Updated reports");				
+		// 	},
+		// 	error: res => console.log(res)
+		// });
 	});
+
 
 });
