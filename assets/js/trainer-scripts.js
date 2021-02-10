@@ -154,8 +154,8 @@ $(document).ready(function() {
 
 	});
 
-	$('#editClass').click(function() {
-		var classID = $('#classID').val();
+	$('#updateClass').click(function() {
+		var classID = $('#classID').text();
 		var courseName = $('#courseName').val();
         var dateToday = new Date();
 		var startDate = new Date($('#startDate').val());
@@ -163,7 +163,7 @@ $(document).ready(function() {
 		var startTime = $('#startTime').val();
 		var endTime = $('#endTime').val();
         var meetLink = $('#meetLink').val();
-        var classPhoto = $('#classPhoto').val();
+        // var classPhoto = $('#classPhoto').val();
 
 		// just to check to see if data is received
 		console.log(courseName, dateToday, startDate, endDate, startTime, endTime, meetLink);
@@ -218,7 +218,7 @@ $(document).ready(function() {
 		if (!dateErrors && !timeErrors) {
 			console.log("no errors");
 			$.post('/edit-class', { classID: classID, courseName: courseName, startDate: startDate, endDate: endDate,
-				startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto}, function(res) {
+				startTime: startTime, endTime: endTime, meetLink: meetLink }, function(res) {
 				switch (res.status){
 					case 200: {
 						alert("Class updated successfully.");

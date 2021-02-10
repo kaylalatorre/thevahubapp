@@ -787,31 +787,34 @@ const rendFunctions = {
 	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
 
-			// check if there are trainees who do not belong to a class yet
-				// collect all trainees 
-			var allTR = await db.findMany(UserDB, {userType: "Trainee"});
-			var VAtrainees = JSON.parse(JSON.stringify(allTR));
-			var freeTrainees = 0; // number of trainees who doesn't belong to a class
-			// console.log(VAtrainees);
-			for(var x = 0; x < VAtrainees.length; x++){
-				ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
-					if (match) {
-						console.log(VAtrainees[x].traineeID);
-					}
-					else{
-						freeTrainees += 1; // increment number of trainees without a class
-					}
-				});
-			}
-			console.log(freeTrainees);
-			var addClass = false;
-			if(freeTrainees >= 10){
-				addClass = true;
-			}
+			// // check if there are trainees who do not belong to a class yet
+			// 	// collect all trainees 
+			// var allTR = await db.findMany(UserDB, {userType: "Trainee"});
+			// var VAtrainees = JSON.parse(JSON.stringify(allTR));
+			// var freeTrainees = 0; // number of trainees who doesn't belong to a class
+			// // console.log(VAtrainees);
+			// for(var x = 0; x < VAtrainees.length; x++){
+			// 	ScoreDB.findOne({traineeID: VAtrainees[x].userID}, function(err, match) {
+			// 		if (err) {
+			// 			console.log(VAtrainees[x].userID);
+			// 		}
+			// 		else{
+			// 			freeTrainees += 1; // increment number of trainees without a class
+			// 		}
+			// 	});
+			// }
+			// console.log(freeTrainees);
+			var addClass = true;
+			// if(freeTrainees >= 10){
+			// 	addClass = true;
+			// }
 
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
+
+				if (classes.length === 4)
+					addClass = false;
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
@@ -869,13 +872,13 @@ const rendFunctions = {
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			
-			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
 			var now = new Date();
-			var classDone = false;
+			var classDone = true;
 
-			if(start.getTime() > now.getTime()){
+			if(end.getTime() <= now.getTime()){
 				//class is editable if it hasn't started yet
-				classVar[0].classDone = true; 
+				classVar[0].classDone = false; 
 			}
 		
 			// fix format of dates
@@ -1441,7 +1444,8 @@ const rendFunctions = {
 			var trainerName = req.session.user.fName + " " + req.session.user.lName;
 
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+			var tempClass = createClass('C133506', req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink,
+			'https://images.unsplash.com/photo-1564069114553-7215e1ff1890?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=889&q=80');
 			
 			// add into Class model
 			ClassDB.create(tempClass, async function(error) {
@@ -1451,90 +1455,75 @@ const rendFunctions = {
 			}
 			else {
 				res.send({status: 200}); 
-
-				// getting trainees with no classes
-					// collect all trainees 
-				var allTR = await db.findMany(UserDB, {userType: "Trainee"});
-				var VAtrainees = JSON.parse(JSON.stringify(allTR));
 				
-				for(var x = 0; x < VAtrainees.length; x++){
-					ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
-						if (!match) {
-							var trainee = createClassTrainee(VAtrainees[x].traineeID, VAtrainees[x].fName, VAtrainees[x].lName, classID, courseName);
-							var startDate = formatDate(startDate);
-							var endDate = formatDate(endDate);
-							var sTime = formatTime(sTime);
-							var eTime = formatTime(eTime);
+				var sDate = formatShortDate(startDate);
+				var eDate = formatShortDate(endDate);
+				var startTime = formatTime(sTime);
+				var endTime = formatTime(eTime);
 
-							// add into Score model
-							ScoreDB.create(trainee, function(error) {
-								if (error) {
-									console.log("adding-trainees error: " + error);
-								}
-								else {
-									// SEND EMAIL to trainees when added to class
-									var smtpTransport = nodemailer.createTransport({
-										service: 'Gmail',
-										auth: {
-											user: 'training.tvh@gmail.com',
-											pass: 'tvhtraining'
-										}
-									});
+				var emailList = ['notgalgadot@gmail.com', 'notsuperman@gmail.com', 'waynenterprises@gmail.com', 'cbukowski@gmail.com',
+				'anna_catahan@dlsu.edu.ph', 'mosbyarchitecture@gmail.com', 'scherbatskynews@gmail.com', 'eriksencorplaw@gmail.com',
+				'buzzaldrinstudios@gmail.com', 'legendarystintson@gmail.com'];
 
-									// content
-									var mailOptions = {
-										from: 'training.tvh@gmail.com',
-										to: sched.applicant.email,
-										subject: '[TRAINING] Class Details and Schedule',
-										html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
-												+`<div style="background-color: #ebf5ee; padding: 80px;">`
-													+`<div style="text-align: center;">`
-														+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
-													+`</div>`
-													+`<section style="text-align: justify; margin-bottom: 40px;">`
-														+`<p> Greetings, ${VAtrainees[x].fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
-														+`<br><br>`
-														+`<p> The following are your class details:</p>`
-														+`<p> Section: ${classID} </p>`
-														+`<p> Trainer: ${trainerName} </p>`
-														+`<p> Date: ${startDate} to ${endDate}, 2021 </p>`
-														+`<p> Time: ${sTime} to ${eTime} </p>`
-													+`</section>`
-												+`</div>`
-												+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
-												+`</div>`,
-										attachments: [{
-												filename: 'tvh-logo-square.png',
-												path: __dirname+'/tvh-logo-square.png',
-												cid: 'signature'
-										}]
-									};
+				// SEND EMAIL to trainees when added to class
+				var smtpTransport = nodemailer.createTransport({
+					service: 'Gmail',
+					auth: {
+						user: 'training.tvh@gmail.com',
+						pass: 'Minyoongi39!'
+					}
+				});
 
-									smtpTransport.sendMail(mailOptions, function(error) {
-										if (error){
-											res.send({status: 500});
-											console.log(error);
-										}
-										else{
-											res.status(200).send(sched);
-										} 
+				// content
+				var mailOptions = {
+					from: 'training.tvh@gmail.com',
+					to: emailList,
+					subject: '[TRAINING] Class Details and Schedule',
+					html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+							+`<div style="background-color: #ebf5ee; padding: 80px;">`
+								+`<div style="text-align: center;">`
+									+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+								+`</div>`
+								+`<section style="text-align: justify; margin-bottom: 40px;">`
+									+`<p> Greetings! As a trainee of The VA Hub, you must accomplish two training classes, one from Marketing and one from Real Estate. </p>`
+									+`<br><br>`
+									+`<p> The following are your class details:</p>`
+									+`<p> Section: ${classID} </p>`
+									+`<p> Trainer: ${trainerName} </p>`
+									+`<p> Date: ${sDate} to ${eDate}, 2021 </p>`
+									+`<p> Time: ${startTime} to ${endTime} </p>`
+								+`</section>`
+							+`</div>`
+							+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+							+`</div>`,
+					attachments: [{
+							filename: 'tvh-logo-square.png',
+							path: __dirname+'/tvh-logo-square.png',
+							cid: 'signature'
+					}]
+				};
 
-										smtpTransport.close();
-									});
-								}
-						
-							});
-						}
-					});
-				}
+				smtpTransport.sendMail(mailOptions, function(error) {
+					if (error){
+						res.send({status: 500});
+						console.log(error);
+					}
+					else{
+						res.status(200).send(sched);
+					} 
+
+					smtpTransport.close();
+				});
 			}
 		});
 	},
 	
 	postEditClass: function(req, res) {
-		try{
-			let { classID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
+		// try{
+			let { classID, courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
 	
+			classID = 'C133506';
+			console.log(classID, courseName, startDate, endDate, startTime, endTime, meetLink);
 			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
 			// console.log(sTime, eTime);
@@ -1543,7 +1532,7 @@ const rendFunctions = {
 				{ classID: classID },
 				{ $set: {
 					courseName: courseName, startDate: startDate, endDate: endDate,
-					startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto,
+					startTime: sTime, endTime: eTime, meetLink: meetLink, 
 				}},
 				{ useFindAndModify: false },
 				function(err, match) {
@@ -1552,11 +1541,67 @@ const rendFunctions = {
 					}
 					else{
 						res.send({status: 200});
+
+						var sDate = formatShortDate(startDate);
+						var eDate = formatShortDate(endDate);
+						var startTime = formatTime(sTime);
+						var endTime = formatTime(eTime);
+		
+						var emailList = ['notgalgadot@gmail.com', 'notsuperman@gmail.com', 'waynenterprises@gmail.com', 'cbukowski@gmail.com',
+						'anna_catahan@dlsu.edu.ph', 'mosbyarchitecture@gmail.com', 'scherbatskynews@gmail.com', 'eriksencorplaw@gmail.com',
+						'buzzaldrinstudios@gmail.com', 'legendarystintson@gmail.com'];
+		
+						// SEND EMAIL to trainees when class is edited
+						var smtpTransport = nodemailer.createTransport({
+							service: 'Gmail',
+							auth: {
+								user: 'training.tvh@gmail.com',
+								pass: 'Minyoongi39!'
+							}
+						});
+		
+						// content
+						var mailOptions = {
+							from: 'training.tvh@gmail.com',
+							to: emailList,
+							subject: '[TRAINING] Class Details and Schedule',
+							html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+									+`<div style="background-color: #ebf5ee; padding: 80px;">`
+										+`<div style="text-align: center;">`
+											+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+										+`</div>`
+										+`<section style="text-align: justify; margin-bottom: 40px;">`
+											+`<p> Greetings! There were some changes in the classes you were enrolled in. Please see below for the updated class details.</p>`
+											+`<br><br>`
+											+`<p> Updated class details:</p>`
+											+`<p> Section: ${classID} </p>`
+											+`<p> Trainer: ${trainerName} </p>`
+											+`<p> Date: ${sDate} to ${eDate}, 2021 </p>`
+											+`<p> Time: ${startTime} to ${endTime} </p>`
+										+`</section>`
+									+`</div>`
+									+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+									+`</div>`,
+							attachments: [{
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
+							}]
+						};
+		
+						smtpTransport.sendMail(mailOptions, function(error) {
+							if (error){
+								res.send({status: 500});
+								console.log(error);
+							}
+							else{
+								res.status(200).send(sched);
+							} 
+		
+							smtpTransport.close();
+						});
 					}
 			});
-		} catch(e){
-			res.send({status: 500, mssg: 'Cannot connect to db.'});
-		}
 	},
 
 	postDeleteClass: function(req, res) {
@@ -1696,7 +1741,7 @@ const rendFunctions = {
 							service: 'Gmail',
 							auth: {
 								user: 'training.tvh@gmail.com',
-								pass: 'tvhtraining'
+								pass: 'Minyoongi39!'
 							}
 						});
 
@@ -1779,7 +1824,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1826,7 +1871,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1881,7 +1926,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
@@ -1928,7 +1973,7 @@ const rendFunctions = {
 								service: 'Gmail',
 								auth: {
 									user: 'training.tvh@gmail.com',
-									pass: 'tvhtraining'
+									pass: 'Minyoongi39!'
 								}
 							});
 
