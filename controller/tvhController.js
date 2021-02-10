@@ -1606,7 +1606,7 @@ const rendFunctions = {
 											+`<br><br>`
 											+`<p> Updated class details:</p>`
 											+`<p> Section: ${classID} </p>`
-											+`<p> Trainer: ${trainerName} </p>`
+//											+`<p> Trainer: ${trainerName} </p>`
 											+`<p> Date: ${sDate} to ${eDate}, 2021 </p>`
 											+`<p> Time: ${startTime} to ${endTime} </p>`
 										+`</section>`
