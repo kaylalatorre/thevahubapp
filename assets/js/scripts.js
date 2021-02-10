@@ -80,6 +80,15 @@ function switchTabContent(tabpane) {
 	}
 }
 
+function printElem(div) {
+	// get the whole page w/o navbar
+	var printCont = document.getElementById(div).innerHTML; 
+	var orig = document.body.innerHTML; //revert to the whole page
+	
+	document.body.innerHTML = printCont;
+	window.print();
+	document.body.innerHTML = orig;
+}
 
 /* BACKEND Specific Functions */
 
@@ -461,6 +470,13 @@ $(document).ready(function() {
 		if (enabledCount > 0)
 			$("button#save-statBtn").prop('disabled', false);
 	}
+	
+	// HR-admin Print report button
+	$("button#print-AppReport").on("click", function() {
+		let reportHTML = $('div#applic-report');
+		printElem(reportHTML);
+	});
+	
 	
 	// int-schedule Interviewed button
 	$("button#btn-Interviewed").on("click", function() {

@@ -21,7 +21,10 @@
 			<input style="width:100%"  type="date" id="endFilter"><br><br>
 			<button style="width:100%" id="applicFilter">Apply filters</button>
     	</div>
-    	<div class="class-report">
+
+		<button type="button" id="print-AppReport" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Print </label></button>
+
+    	<div id="applic-report" class="class-report">
     		<div style="text-align: center; margin-bottom: 10px;">
 		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Applications Summary Report</strong></label> <br>
 		    	<label id="label-date">Period Covered: {{start}} - {{end}}</label> <br>
