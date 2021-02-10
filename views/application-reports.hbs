@@ -22,62 +22,65 @@
 			<button style="width:100%" id="applicFilter">Apply filters</button>
     	</div>
 
-		<button type="button" id="print-AppReport" style="border: none;display:flex; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Print Report </label></button>
+		
+    	<div class="class-report">
+			<button type="button" id="print-AppReport" style="border: none;display:flex; margin-right: 10px; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Print Report </label></button>
 
-    	<div id="applic-report" class="class-report">
-    		<div style="text-align: center; margin-bottom: 10px;">
-		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Applications Summary Report</strong></label> <br>
-		    	<label id="label-date">Period Covered: {{start}} - {{end}}</label> <br>
-		    </div>
-		    <!--table -->
-		    <div class="table-responsive" style="width: 98%; margin: 00px auto;">
-		        <table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
-		            <thead>
-		                <tr style="background: #efefef;color: rgb(0,148,68);">
-		                    <th rowspan="2" style="width: 20%;">Applicant Name</th>
-		                    <th rowspan="2" style="width: 25%;">Applicant Email</th>
-		            		<th colspan="3" style="width: 50%;">Results</th>
-		                </tr>
-		                <tr style="background: #efefef;color: rgb(0,148,68);">
-		                    <th style="width: 20%;">Screening</th>
-		                    <th style="width: 20%;">Initial Interview</th>
-		                    <th style="width: 20%;">Final Interview</th>
-		                </tr>
-		            </thead>
-		            <tbody id="applic-Table">
-						{{#each applicants}}
-		            	<!--each applicant-->
-		                <tr class="report-det">
-		                    <td> {{genApplicName this}} </td>
-		                    <td> {{this.email}} </td>
-		                    <td> {{this.screenStatus}} </td>
-		                    <td> {{this.initialStatus}} </td>
-		                    <td> {{this.finalStatus}} </td>
-		                </tr>
-		                {{/each}}
-		                <!--for totals-->
-		            	<tr style="font-weight: bold;">
-		            		<td colspan="2">Total Passed</td>
-		            		<td>{{spLength}}</td>
-		            		<td>{{ipLength}}</td>
-		            		<td>{{fpLength}}</td>
-		            	</tr>
-		            	<tr style="font-weight: bold;">
-		            		<td colspan="2">Total Failed</td>
-		            		<td>{{sfLength}}</td>
-		            		<td>{{ifLength}}</td>
-		            		<td>{{ffLength}}</td>
-		            	</tr>
-		            	<tr style="font-weight: bold;">
-		            		<td colspan="2">No. of Applicants</td>
-		            		<td>{{screenTotal}}</td>
-		            		<td>{{initialTotal}}</td>
-		            		<td>{{finalTotal}}</td>
-		            	</tr>
-		            </tbody>
-		        </table>
-		    </div>
-		    <p class="page-footer">Page 1 of 1</p>
+			<div id="applic-report">
+				<div style="text-align: center; margin-bottom: 20px;">
+					<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Applications Summary Report</strong></label> <br>
+					<label id="label-date">Period Covered: {{start}} - {{end}}</label> <br>
+				</div>
+				<!--table -->
+				<div class="table-responsive" style="width: 98%; margin: 00px auto;">
+					<table class="table table-bordered" style="font-family: Raleway; font-size: 14px; background-color: #fff;">
+						<thead>
+							<tr style="background: #efefef;color: rgb(0,148,68);">
+								<th rowspan="2" style="width: 20%;">Applicant Name</th>
+								<th rowspan="2" style="width: 25%;">Applicant Email</th>
+								<th colspan="3" style="width: 50%; text-align: center">Results</th>
+							</tr>
+							<tr style="background: #efefef;color: rgb(0,148,68);">
+								<th style="width: 20%;">Screening</th>
+								<th style="width: 20%;">Initial Interview</th>
+								<th style="width: 20%;">Final Interview</th>
+							</tr>
+						</thead>
+						<tbody id="applic-Table">
+							{{#each applicants}}
+							<!--each applicant-->
+							<tr class="report-det">
+								<td> {{genApplicName this}} </td>
+								<td> {{this.email}} </td>
+								<td> {{this.screenStatus}} </td>
+								<td> {{this.initialStatus}} </td>
+								<td> {{this.finalStatus}} </td>
+							</tr>
+							{{/each}}
+							<!--for totals-->
+							<tr style="font-weight: bold;">
+								<td colspan="2">Total Passed</td>
+								<td>{{spLength}}</td>
+								<td>{{ipLength}}</td>
+								<td>{{fpLength}}</td>
+							</tr>
+							<tr style="font-weight: bold;">
+								<td colspan="2">Total Failed</td>
+								<td>{{sfLength}}</td>
+								<td>{{ifLength}}</td>
+								<td>{{ffLength}}</td>
+							</tr>
+							<tr style="font-weight: bold;">
+								<td colspan="2">No. of Applicants</td>
+								<td>{{screenTotal}}</td>
+								<td>{{initialTotal}}</td>
+								<td>{{finalTotal}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<p class="page-footer">Page 1 of 1</p>
+			</div>
     	</div>
     </div>
 </div>
