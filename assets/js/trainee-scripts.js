@@ -1,3 +1,13 @@
+function printTE(divID) {
+	// get the whole page w/o navbar
+	var printCont = document.getElementById(divID).innerHTML; 
+	var orig = document.body.innerHTML; //revert to the whole page
+	
+	document.body.innerHTML = printCont;
+	window.print();
+	document.body.innerHTML = orig;
+}
+
 $(document).ready(function() {
 
 	// DEACTIVATE ACCOUNT
@@ -28,5 +38,11 @@ $(document).ready(function() {
 			});
 		}			
 	});
+
+	// Trainee Print certificate button
+	$("button#print-Certificate").on("click", function() {
+		printTE('certificate');
+	});
+
 
 });

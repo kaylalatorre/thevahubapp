@@ -31,8 +31,12 @@
 			<input style="width:100%" id="eDateFilter" type="date"><br><br>
 			<button id="applyTRFilter" style="width:100%">Apply filters</button>
     	</div>
+
     	<div class="class-report">
-    		<div style="text-align: center; margin-bottom: 10px;">
+			<button type="button" id="print-ClassReport" style="border: none;display:flex; margin-right: 10px; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Print Report </label></button>
+
+			<div id="class-report">
+			<div style="text-align: center; margin-bottom: 10px;">
 		    	<label class="h3" style="padding: 5px;color: #2c2c2c;"><strong>Classes Summary Report</strong></label> <br>
 		    	<label id="label-date">Period Covered: {{sDateFilter}} - {{eDateFilter}}</label> <br>
 		    </div>
@@ -76,5 +80,6 @@
 		    </div>
 		    <p class="page-footer">Page 1 of 1</p>
     	</div>
+		</div>
     </div>
 </div>

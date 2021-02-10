@@ -14,6 +14,16 @@ function calculateHours(startTime, endTime) {
     return hours + (minutes*100);
 }
 
+function printTR(divID) {
+	// get the whole page w/o navbar
+	var printCont = document.getElementById(divID).innerHTML; 
+	var orig = document.body.innerHTML; //revert to the whole page
+	
+	document.body.innerHTML = printCont;
+	window.print();
+	document.body.innerHTML = orig;
+}
+
 $(document).ready(function() {
 
 	var calendarEl = document.getElementById('tr-calendar');
@@ -608,5 +618,9 @@ $(document).ready(function() {
 		// });
 	});
 
+	// Trainer Print report button
+	$("button#print-ClassReport").on("click", function() {
+		printTR('class-report');
+	});
 
 });
