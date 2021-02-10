@@ -23,8 +23,8 @@
     </div>
     <div name="scoresheet" style="padding: 5px;">
     	<label class="h4" style="color: #2c2c2c;"><strong>Scores</strong></label>
-    	<button type="button" class="outlined-btn theScore" style="margin: 2px;" id="theScores">Edit</button>
-    	<button type="button" id="saveScores4" class="outlined-btn editScore" style="margin: 2px;" id="saveScores">Save</button>
+    	<button type="button" disabled class="outlined-btn theScore" style="margin: 2px;" id="theScores">Edit</button>
+    	<button type="button" id="saveScores4" class="outlined-btn editScore" style="margin: 2px;">Save</button>
 		
 		<div style="float: right;  text-align: center; margin: 0 auto; display: inline-flex;  padding-right:35px;" id="daysBtnGrp">
     		<button type="button" onclick="window.location.href = '/update-scoresheet/3/{{{classID}}}'" class="outlined-btn theScore" style="margin: 2px 5px;" >
@@ -83,4 +83,5 @@
 	        </table>
 	    </div>
     </div>
+	<p  id="classID">{{classID}}</p>
 </div>

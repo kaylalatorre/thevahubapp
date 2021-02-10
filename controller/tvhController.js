@@ -177,9 +177,13 @@ const rendFunctions = {
 			else if (req.session.user.userType === "HRinterv")
 				res.render('int-home', {});		
 			else if (req.session.user.userType === "Trainee")
-				res.render('trainee-home', {});
+				res.render('trainee-home', {
+					fName: req.session.user.fName,
+				});
 			else if (req.session.user.userType === "Trainer")
-				res.render('trainer-home', {});
+				res.render('trainer-home', {
+					fName: req.session.user.fName,
+				});
 			else if (req.session.user.userType === "SLadmin")
 				res.render('sales-home', {});
 			else 
@@ -753,7 +757,7 @@ const rendFunctions = {
 			var ave5 = (traineeVar.Day1[4] + traineeVar.Day2[4] + traineeVar.Day3[4] + traineeVar.Day4[4] + traineeVar.Day5[4] + traineeVar.Day6[4] + traineeVar.Day7[4] + traineeVar.Day8[4])/8;
 
 				// insert into array
-			var dailyAve = [ave1.toFixed(3), ave2.toFixed(3), ave3.toFixed(3), ave4.toFixed(3), ave5.toFixed(3)];
+			var dailyAve = [ave1.toFixed(2), ave2.toFixed(2), ave3.toFixed(2), ave4.toFixed(2), ave5.toFixed(2)];
 
 				// compute for final average 
 			var finalAve = (ave1 + ave2 + ave3 + ave4 + ave5)/5;
@@ -776,7 +780,7 @@ const rendFunctions = {
 				skill4: skill4,
 				skill5: skill5,
 				dailyAve: dailyAve,
-				finalAve: finalAve.toFixed(3),
+				finalAve: finalAve.toFixed(2),
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
@@ -787,31 +791,34 @@ const rendFunctions = {
 	getTrainerClasses: async function(req, res, next) {
 		if (req.session.user.userType === "Trainer") {
 
-			// check if there are trainees who do not belong to a class yet
-				// collect all trainees 
-			var allTR = await db.findMany(UserDB, {userType: "Trainee"});
-			var VAtrainees = JSON.parse(JSON.stringify(allTR));
-			var freeTrainees = 0; // number of trainees who doesn't belong to a class
-			// console.log(VAtrainees);
-			for(var x = 0; x < VAtrainees.length; x++){
-				ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
-					if (match) {
-						console.log(VAtrainees[x].traineeID);
-					}
-					else{
-						freeTrainees += 1; // increment number of trainees without a class
-					}
-				});
-			}
-			console.log(freeTrainees);
-			var addClass = false;
-			if(freeTrainees >= 10){
-				addClass = true;
-			}
+			// // check if there are trainees who do not belong to a class yet
+			// 	// collect all trainees 
+			// var allTR = await db.findMany(UserDB, {userType: "Trainee"});
+			// var VAtrainees = JSON.parse(JSON.stringify(allTR));
+			// var freeTrainees = 0; // number of trainees who doesn't belong to a class
+			// // console.log(VAtrainees);
+			// for(var x = 0; x < VAtrainees.length; x++){
+			// 	ScoreDB.findOne({traineeID: VAtrainees[x].userID}, function(err, match) {
+			// 		if (err) {
+			// 			console.log(VAtrainees[x].userID);
+			// 		}
+			// 		else{
+			// 			freeTrainees += 1; // increment number of trainees without a class
+			// 		}
+			// 	});
+			// }
+			// console.log(freeTrainees);
+			var addClass = true;
+			// if(freeTrainees >= 10){
+			// 	addClass = true;
+			// }
 
 			//collect classes under current trainer
 			ClassDB.find({trainerID: req.session.user.userID}, async function(err, data) {
 				var classes = JSON.parse(JSON.stringify(data));
+
+				if (classes.length === 4)
+					addClass = false;
 
 				// fix format of dates
 				for(let i = 0; i < classes.length; i++) {
@@ -870,14 +877,16 @@ const rendFunctions = {
 			var classVar = JSON.parse(JSON.stringify(data));
 			
 			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
 			var now = new Date();
-			var classDone = false;
 
-			if(start.getTime() > now.getTime()){
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
 				//class is editable if it hasn't started yet
-				classVar[0].classDone = true; 
+				var classDone = true; 
 			}
-		
+			else var classDone = false;
+			console.log(classDone)
+
 			// fix format of dates
 			var sDate = formatDate(classVar[0].startDate);
 			var eDate = formatDate(classVar[0].endDate);
@@ -913,19 +922,19 @@ const rendFunctions = {
 				var ave8 = (traineesVar[i].Day8[0] + traineesVar[i].Day8[1] + traineesVar[i].Day8[2] + traineesVar[i].Day8[3] + traineesVar[i].Day8[4])/5;
 
 				// insert into array
-				traineesVar[i].Day1[5] = ave1.toFixed(3);
-				traineesVar[i].Day2[5] = ave2.toFixed(3);
-				traineesVar[i].Day3[5] = ave3.toFixed(3);
-				traineesVar[i].Day4[5] = ave4.toFixed(3);
-				traineesVar[i].Day5[5] = ave5.toFixed(3);
-				traineesVar[i].Day6[5] = ave6.toFixed(3);
-				traineesVar[i].Day7[5] = ave7.toFixed(3);
-				traineesVar[i].Day8[5] = ave8.toFixed(3);
+				traineesVar[i].Day1[5] = ave1.toFixed(2);
+				traineesVar[i].Day2[5] = ave2.toFixed(2);
+				traineesVar[i].Day3[5] = ave3.toFixed(2);
+				traineesVar[i].Day4[5] = ave4.toFixed(2);
+				traineesVar[i].Day5[5] = ave5.toFixed(2);
+				traineesVar[i].Day6[5] = ave6.toFixed(2);
+				traineesVar[i].Day7[5] = ave7.toFixed(2);
+				traineesVar[i].Day8[5] = ave8.toFixed(2);
 
 				// compute for final average 
 				fAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
 				
-				traineesVar[i].finalAve = fAve.toFixed(3);
+				traineesVar[i].finalAve = fAve.toFixed(2);
 
 				console.log(traineesVar[i]);
 			}
@@ -941,7 +950,7 @@ const rendFunctions = {
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
-				classDone: classVar[0].classDone,
+				classDone: classDone,
 			});
 		});
 	},
@@ -952,6 +961,17 @@ const rendFunctions = {
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
+
+			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
+			var now = new Date();
+
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
+				//class is editable if it hasn't started yet
+				var classDone = true; 
+			}
+			else var classDone = false;
+			console.log(classDone)
 
 			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
@@ -965,6 +985,7 @@ const rendFunctions = {
 				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
+				classDone: classDone,
 			});
 		});
 	},
@@ -974,6 +995,17 @@ const rendFunctions = {
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
+
+			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
+			var now = new Date();
+
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
+				//class is editable if it hasn't started yet
+				var classDone = true; 
+			}
+			else var classDone = false;
+			console.log(classDone)
 
 			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
@@ -987,6 +1019,7 @@ const rendFunctions = {
 				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
+				classDone: classDone,
 			});
 		});
 	},
@@ -1442,7 +1475,8 @@ const rendFunctions = {
 			var trainerName = req.session.user.fName + " " + req.session.user.lName;
 
 			// create the class
-			var tempClass = createClass(classID, req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink, classPhoto);
+			var tempClass = createClass('C133506', req.session.user.userID, trainerName, courseName, startDate, endDate, sTime, eTime, meetLink,
+			'https://images.unsplash.com/photo-1564069114553-7215e1ff1890?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=889&q=80');
 			
 			// add into Class model
 			ClassDB.create(tempClass, async function(error) {
@@ -1452,90 +1486,75 @@ const rendFunctions = {
 			}
 			else {
 				res.send({status: 200}); 
-
-				// getting trainees with no classes
-					// collect all trainees 
-				var allTR = await db.findMany(UserDB, {userType: "Trainee"});
-				var VAtrainees = JSON.parse(JSON.stringify(allTR));
 				
-				for(var x = 0; x < VAtrainees.length; x++){
-					ScoreDB.findOne({traineeID: VAtrainees[x].traineeID}, function(err, match) {
-						if (!match) {
-							var trainee = createClassTrainee(VAtrainees[x].traineeID, VAtrainees[x].fName, VAtrainees[x].lName, classID, courseName);
-							var startDate = formatDate(startDate);
-							var endDate = formatDate(endDate);
-							var sTime = formatTime(sTime);
-							var eTime = formatTime(eTime);
+				var sDate = formatShortDate(startDate);
+				var eDate = formatShortDate(endDate);
+				var startTime = formatTime(sTime);
+				var endTime = formatTime(eTime);
 
-							// add into Score model
-							ScoreDB.create(trainee, function(error) {
-								if (error) {
-									console.log("adding-trainees error: " + error);
-								}
-								else {
-									// SEND EMAIL to trainees when added to class
-									var smtpTransport = nodemailer.createTransport({
-										service: 'Gmail',
-										auth: {
-											user: 'training.tvh@gmail.com',
-											pass: 'Minyoongi39!'
-										}
-									});
+				var emailList = ['notgalgadot@gmail.com', 'notsuperman@gmail.com', 'waynenterprises@gmail.com', 'cbukowski@gmail.com',
+				'anna_catahan@dlsu.edu.ph', 'mosbyarchitecture@gmail.com', 'scherbatskynews@gmail.com', 'eriksencorplaw@gmail.com',
+				'buzzaldrinstudios@gmail.com', 'legendarystintson@gmail.com'];
 
-									// content
-									var mailOptions = {
-										from: 'training.tvh@gmail.com',
-//										to: sched.applicant.email,
-										subject: '[TRAINING] Class Details and Schedule',
-										html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
-												+`<div style="background-color: #ebf5ee; padding: 80px;">`
-													+`<div style="text-align: center;">`
-														+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
-													+`</div>`
-													+`<section style="text-align: justify; margin-bottom: 40px;">`
-														+`<p> Greetings, ${VAtrainees[x].fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
-														+`<br><br>`
-														+`<p> The following are your class details:</p>`
-														+`<p> Section: ${classID} </p>`
-														+`<p> Trainer: ${trainerName} </p>`
-														+`<p> Date: ${startDate} to ${endDate}, 2021 </p>`
-														+`<p> Time: ${sTime} to ${eTime} </p>`
-													+`</section>`
-												+`</div>`
-												+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
-												+`</div>`,
-										attachments: [{
-												filename: 'tvh-logo-square.png',
-												path: __dirname+'/tvh-logo-square.png',
-												cid: 'signature'
-										}]
-									};
+				// SEND EMAIL to trainees when added to class
+				var smtpTransport = nodemailer.createTransport({
+					service: 'Gmail',
+					auth: {
+						user: 'training.tvh@gmail.com',
+						pass: 'Minyoongi39!'
+					}
+				});
 
-									smtpTransport.sendMail(mailOptions, function(error) {
-										if (error){
-											res.send({status: 500});
-											console.log(error);
-										}
-										else{
-											res.status(200).send(sched);
-										} 
+				// content
+				var mailOptions = {
+					from: 'training.tvh@gmail.com',
+					to: emailList,
+					subject: '[TRAINING] Class Details and Schedule',
+					html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+							+`<div style="background-color: #ebf5ee; padding: 80px;">`
+								+`<div style="text-align: center;">`
+									+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+								+`</div>`
+								+`<section style="text-align: justify; margin-bottom: 40px;">`
+									+`<p> Greetings! As a trainee of The VA Hub, you must accomplish two training classes, one from Marketing and one from Real Estate. </p>`
+									+`<br><br>`
+									+`<p> The following are your class details:</p>`
+									+`<p> Section: ${classID} </p>`
+									+`<p> Trainer: ${trainerName} </p>`
+									+`<p> Date: ${sDate} to ${eDate}, 2021 </p>`
+									+`<p> Time: ${startTime} to ${endTime} </p>`
+								+`</section>`
+							+`</div>`
+							+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+							+`</div>`,
+					attachments: [{
+							filename: 'tvh-logo-square.png',
+							path: __dirname+'/tvh-logo-square.png',
+							cid: 'signature'
+					}]
+				};
 
-										smtpTransport.close();
-									});
-								}
-						
-							});
-						}
-					});
-				}
+				smtpTransport.sendMail(mailOptions, function(error) {
+					if (error){
+						res.send({status: 500});
+						console.log(error);
+					}
+					else{
+						res.status(200).send(sched);
+					} 
+
+					smtpTransport.close();
+				});
 			}
 		});
 	},
 	
 	postEditClass: function(req, res) {
-		try{
-			let { classID, courseName, startDate, endDate, startTime, endTime, meetLink, classPhoto } = req.body;
+		// try{
+			let { classID, courseName, startDate, endDate, startTime, endTime, meetLink } = req.body;
 	
+			classID = 'C133506';
+			console.log(classID, courseName, startDate, endDate, startTime, endTime, meetLink);
 			var sTime = new Date("Jan 01 2021 " + startTime + ":00");
 			var eTime = new Date("Jan 01 2021 " + endTime + ":00");
 			// console.log(sTime, eTime);
@@ -1544,7 +1563,7 @@ const rendFunctions = {
 				{ classID: classID },
 				{ $set: {
 					courseName: courseName, startDate: startDate, endDate: endDate,
-					startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto,
+					startTime: sTime, endTime: eTime, meetLink: meetLink, 
 				}},
 				{ useFindAndModify: false },
 				function(err, match) {
@@ -1553,16 +1572,72 @@ const rendFunctions = {
 					}
 					else{
 						res.send({status: 200});
+
+						var sDate = formatShortDate(startDate);
+						var eDate = formatShortDate(endDate);
+						var startTime = formatTime(sTime);
+						var endTime = formatTime(eTime);
+		
+						var emailList = ['notgalgadot@gmail.com', 'notsuperman@gmail.com', 'waynenterprises@gmail.com', 'cbukowski@gmail.com',
+						'anna_catahan@dlsu.edu.ph', 'mosbyarchitecture@gmail.com', 'scherbatskynews@gmail.com', 'eriksencorplaw@gmail.com',
+						'buzzaldrinstudios@gmail.com', 'legendarystintson@gmail.com'];
+		
+						// SEND EMAIL to trainees when class is edited
+						var smtpTransport = nodemailer.createTransport({
+							service: 'Gmail',
+							auth: {
+								user: 'training.tvh@gmail.com',
+								pass: 'Minyoongi39!'
+							}
+						});
+		
+						// content
+						var mailOptions = {
+							from: 'training.tvh@gmail.com',
+							to: emailList,
+							subject: '[TRAINING] Class Details and Schedule',
+							html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+									+`<div style="background-color: #ebf5ee; padding: 80px;">`
+										+`<div style="text-align: center;">`
+											+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+										+`</div>`
+										+`<section style="text-align: justify; margin-bottom: 40px;">`
+											+`<p> Greetings! There were some changes in the classes you were enrolled in. Please see below for the updated class details.</p>`
+											+`<br><br>`
+											+`<p> Updated class details:</p>`
+											+`<p> Section: ${classID} </p>`
+											+`<p> Trainer: ${trainerName} </p>`
+											+`<p> Date: ${sDate} to ${eDate}, 2021 </p>`
+											+`<p> Time: ${startTime} to ${endTime} </p>`
+										+`</section>`
+									+`</div>`
+									+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+									+`</div>`,
+							attachments: [{
+									filename: 'tvh-logo-square.png',
+									path: __dirname+'/tvh-logo-square.png',
+									cid: 'signature'
+							}]
+						};
+		
+						smtpTransport.sendMail(mailOptions, function(error) {
+							if (error){
+								res.send({status: 500});
+								console.log(error);
+							}
+							else{
+								res.status(200).send(sched);
+							} 
+		
+							smtpTransport.close();
+						});
 					}
 			});
-		} catch(e){
-			res.send({status: 500, mssg: 'Cannot connect to db.'});
-		}
 	},
 
 	postDeleteClass: function(req, res) {
 		let { classID } = req.body;
-
+		classID = 'C133506';
 		ClassDB.findOne({classID: classID}, function(err, match) {
 			if (err) {
 				res.send({status: 500, mssg:'Error in deleting class.'});
@@ -1578,26 +1653,219 @@ const rendFunctions = {
 	postSaveScores1: async function(req, res) {
 		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
 		
+		// console.log(classID);
 		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
 		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-		console.log("hi");
+		// console.log(traineesVar);
+		var done = 0;
 		for(var i = 0; i < traineesVar.length; i++){
 			ScoreDB.findOneAndUpdate(
 				{ classID: classID, traineeID: traineesVar[i].traineeID },
 				{ $set: {
-					scores1: scores1[i], scores2: scores2[i], scores3: scores3[i],
-						scores4: scores4[i], scores5: scores5[i],
+					Day1: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
 				}},
 				{ useFindAndModify: false },
 				function(err, match) {
 					if(err){
-						console.log(err);
 						res.send({status: 500})
 					}
-					else{
-						res.send({status: 200});
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores2: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day2: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
 					}
-				})
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores3: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day3: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores4: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		// console.log(classID);
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		// console.log(traineesVar);
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day4: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores5: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day5: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores6: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day6: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores7: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		// console.log(classID);
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		// console.log(traineesVar);
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day7: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores8: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day8: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
 		}
 	},
 
@@ -1692,53 +1960,104 @@ const rendFunctions = {
 						let timeStart = formatTime(sched.timeStart);
 						let timeEnd = formatTime(sched.timeEnd);
 
-						// SEND EMAIL to applicant (interview schedule)
-						var smtpTransport = nodemailer.createTransport({
-							service: 'Gmail',
-							auth: {
-								user: 'training.tvh@gmail.com',
-								pass: 'Minyoongi39!'
-							}
-						});
+						if(sched.phase === "Initial"){
+							// SEND EMAIL to applicant (initial interview schedule)
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'Minyoongi39!'
+								}
+							});
 
-						// content
-						var mailOptions = {
-							from: 'training.tvh@gmail.com',
-							to: sched.applicant.email,
-							subject: '[APPLICATION] Initial Interview Schedule',
-							html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
-									+`<div style="background-color: #ebf5ee; padding: 80px;">`
-										+`<div style="text-align: center;">`
-											+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: sched.applicant.email,
+								subject: '[APPLICATION] Initial Interview Schedule',
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+										+`<div style="background-color: #ebf5ee; padding: 80px;">`
+											+`<div style="text-align: center;">`
+												+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+											+`</div>`
+											+`<section style="text-align: justify; margin-bottom: 40px;">`
+												+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the initial phase of our interview application. </p>`
+												+`<br><br>`
+												+`<p> Here is your interview schedule:</p>`
+												+`<p> Date: ${date}, 2021 </p>`
+												+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+											+`</section>`
 										+`</div>`
-										+`<section style="text-align: justify; margin-bottom: 40px;">`
-											+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
-											+`<br><br>`
-											+`<p> Here is your interview schedule:</p>`
-											+`<p> Date: ${date}, 2021 </p>`
-											+`<p> Time: ${timeStart} to ${timeEnd} </p>`
-										+`</section>`
-									+`</div>`
-									+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
-								    +`</div>`,
-							attachments: [{
-									filename: 'tvh-logo-square.png',
-									path: __dirname+'/tvh-logo-square.png',
-									cid: 'signature'
-							}]
-						};
+										+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+										+`</div>`,
+								attachments: [{
+										filename: 'tvh-logo-square.png',
+										path: __dirname+'/tvh-logo-square.png',
+										cid: 'signature'
+								}]
+							};
 
-						smtpTransport.sendMail(mailOptions, function(error) {
-							if (error){
-								res.send({status: 500});
-								console.log(error);
-							}
-							else{
-								res.status(200).send(sched);
-							} 
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(sched);
+								} 
 
-							smtpTransport.close();
-						});
+								smtpTransport.close();
+							});
+						}
+						else { 
+							// SEND EMAIL to applicant (final interview schedule)
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'Minyoongi39!'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: sched.applicant.email,
+								subject: '[APPLICATION] Final Interview Schedule',
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+										+`<div style="background-color: #ebf5ee; padding: 80px;">`
+											+`<div style="text-align: center;">`
+												+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+											+`</div>`
+											+`<section style="text-align: justify; margin-bottom: 40px;">`
+												+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the final phase of our interview application. </p>`
+												+`<br><br>`
+												+`<p> Here is your interview schedule:</p>`
+												+`<p> Date: ${date}, 2021 </p>`
+												+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+											+`</section>`
+										+`</div>`
+										+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+										+`</div>`,
+								attachments: [{
+										filename: 'tvh-logo-square.png',
+										path: __dirname+'/tvh-logo-square.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(sched);
+								} 
+
+								smtpTransport.close();
+							});
+						}
 						// res.status(200).send(sched);
 					}
 				}
@@ -1899,6 +2218,9 @@ const rendFunctions = {
 									+`<section style="text-align: justify; margin-bottom: 40px;">`
 										+`<p> Greetings, ${findApplic.fName}! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p>`
 										+`<br><br>`
+										+`<p> To get started, you can find your login credentials to the TVH System below. </p>`
+										+`<p> Email: ${findApplic.email} </p>`
+										+`<p> Password: bGjCa4mN </p>`
 										+`<p> Please wait for our next email for your class schedule. </p>`
 									+`</section>`
 								+`</div>`

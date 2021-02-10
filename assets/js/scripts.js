@@ -81,7 +81,7 @@ function switchTabContent(tabpane) {
 }
 
 function printElem(divID) {
-	// get the whole page w/o navbar
+	// get only the reports part of the HTML page
 	var printCont = document.getElementById(divID).innerHTML; 
 	var orig = document.body.innerHTML; //revert to the whole page
 	

@@ -14,6 +14,16 @@ function calculateHours(startTime, endTime) {
     return hours + (minutes*100);
 }
 
+function printTR(divID) {
+	// get the whole page w/o navbar
+	var printCont = document.getElementById(divID).innerHTML; 
+	var orig = document.body.innerHTML; //revert to the whole page
+	
+	document.body.innerHTML = printCont;
+	window.print();
+	document.body.innerHTML = orig;
+}
+
 $(document).ready(function() {
 
 	var calendarEl = document.getElementById('tr-calendar');
@@ -154,8 +164,8 @@ $(document).ready(function() {
 
 	});
 
-	$('#editClass').click(function() {
-		var classID = $('#classID').val();
+	$('#updateClass').click(function() {
+		var classID = $('#classID').text();
 		var courseName = $('#courseName').val();
         var dateToday = new Date();
 		var startDate = new Date($('#startDate').val());
@@ -163,7 +173,7 @@ $(document).ready(function() {
 		var startTime = $('#startTime').val();
 		var endTime = $('#endTime').val();
         var meetLink = $('#meetLink').val();
-        var classPhoto = $('#classPhoto').val();
+        // var classPhoto = $('#classPhoto').val();
 
 		// just to check to see if data is received
 		console.log(courseName, dateToday, startDate, endDate, startTime, endTime, meetLink);
@@ -218,7 +228,7 @@ $(document).ready(function() {
 		if (!dateErrors && !timeErrors) {
 			console.log("no errors");
 			$.post('/edit-class', { classID: classID, courseName: courseName, startDate: startDate, endDate: endDate,
-				startTime: startTime, endTime: endTime, meetLink: meetLink, classPhoto: classPhoto}, function(res) {
+				startTime: startTime, endTime: endTime, meetLink: meetLink }, function(res) {
 				switch (res.status){
 					case 200: {
 						alert("Class updated successfully.");
@@ -263,36 +273,37 @@ $(document).ready(function() {
 		// var endDate = $('#endhide').text()
 		// var compareDate = new Date(endDate);
 
+		// console.log(endDate);
 		// if(compareDate < today) {
 		// 	alert("This class ended in " + getDate(compareDate) + ". You cannot edit the scores for this class anymore.");
 		// }
 		// else {
-			//hide text, show editor
+			// hide text, show editor
 			for(var i = 0; i < theScore.length; i++) 
 				theScore[i].style.display = 'none';
 			
 			for(var i = 0; i < editScore.length; i++) 
 				editScore[i].style.display = 'inline';
 			
-			editScore.style.display = 'inline';
+			// editScore.style.display = 'inline';
 		// }
 	});
 
 	$('#saveScores1').click(function() {
 		var classID = $('#classID').text();
-		// var traineeID = document.getElementsByClassName('traineeID');
 		var S1 = document.getElementsByClassName('S1');
 		var S2 = document.getElementsByClassName('S2');
 		var S3 = document.getElementsByClassName('S3');
 		var S4 = document.getElementsByClassName('S4');
 		var S5 = document.getElementsByClassName('S5');
 
-		console.log(classID);
-
-		var scores1, scores2, scores3, scores4, scores5 = [];
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
 
 		for(var i = 0; i < S1.length; i++){
-			// trainees.push(traineeID[i].value)
 			scores1.push(S1[i].value);
 			scores2.push(S2[i].value);
 			scores3.push(S3[i].value);
@@ -300,15 +311,12 @@ $(document).ready(function() {
 			scores5.push(S5[i].value);
 		}
 
-		console.log(scores1);
-
 		$.post('/save-scores1', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
 									scores4: scores4, scores5: scores5  }, function(res) {
-										console.log("hi");
 			switch (res.status){
 				case 200: {
-					alert("Scores updated successfully.");
 					window.location.reload();
+					alert("Scores updated successfully.");
 					break;
 				}
 				case 500: {
@@ -317,29 +325,302 @@ $(document).ready(function() {
 				}
 			}
 		});
-	}); 	
+	}); 
+	
+	$('#saveScores2').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores2', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores3').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores3', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores4').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores4', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+	
+	$('#saveScores5').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores5', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores6').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores6', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores7').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores7', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+	
+	$('#saveScores8').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores8', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
 
 	// APPLY FILTERS for Trainer Report
 	$('button#applyTRFilter').click(function() {
-		var courseFilter = $('#statusFilter option:selected').text();
-		var statusFilter = $('#clStatus option:selected').text();
+		var courseFilter = $('#courseFilter option:selected').text();
+		var statusFilter = $('#clStatusFilter option:selected').text();
 
-        var dateToday = new Date();
-		var sDateFilter = $('input#sDateFilter').val();
-		var eDateFilter = $('input#eDateFilter').val();
+		console.log(courseFilter);
 
-		$.ajax({
-			method: 'GET',
-			url: '/filteredtr-greports',
-			data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
-			success: function(res) {
-				$('#label-date').text("Period Covered: " + dateStart + " to " + dateEnd);
-				$('#classTable').empty();
-				console.log(res);
-				// console.log("Updated reports");				
-			},
-			error: res => console.log(res)
-		});
+        // var dateToday = new Date();
+		// var sDateFilter = $('input#sDateFilter').val();
+		// var eDateFilter = $('input#eDateFilter').val();
+
+		// $.ajax({
+		// 	method: 'GET',
+		// 	url: '/filteredtr-reports',
+		// 	data: {courseFilter: courseFilter, sDateFilter: sDateFilter, eDateFilter: eDateFilter},
+		// 	success: function(res) {
+		// 		$('#label-date').text("Period Covered: " + sDateFilter + " to " + eDateFilter);
+		// 		$('#classTable').empty();
+		// 		console.log(res);
+		// 		// console.log("Updated reports");				
+		// 	},
+		// 	error: res => console.log(res)
+		// });
+	});
+
+	// Trainer Print report button
+	$("button#print-ClassReport").on("click", function() {
+		printTR('class-report');
 	});
 
 });

@@ -14,18 +14,19 @@
     		<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Course</label>
 				<select id="courseName" class="appdrop" style="width: 68%">  
-					{{#each courseList}}   
-					<option class="appoption dropdown-item" href="#">{{courseName}}</option>
-					{{/each}}
+
+					<option id="courseName" class="appoption dropdown-item" href="#">Real Estate</option>
+					<option id="courseName" class="appoption dropdown-item" href="#">Marketing</option>
+
 				</select>
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">Start Date</label>
-				<input id="startDate" type="date" value="{{startDate}}">
+				<input id="startDate" type="date" value="2021-02-15">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label style="display: inline-block; width: 30%">End Date</label>
-				<input id="endDate" type="date" value="{{endDate}}">
+				<input id="endDate" type="date" value="2021-02-22">
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="timeSlot" style="display: inline-block; width: 30%">Timeslot</label>
@@ -33,7 +34,7 @@
 			</div>
 			<div style="margin-bottom: 12px;">
 				<label id="meet-link" style="display: inline-block; width: 30%">Meeting Link</label>
-				<input id="meetLink" placeholder="Meeting Link" style="width: 68%" value="{{meetingLink}}">
+				<input id="meetLink" placeholder="Meeting Link" style="width: 68%" value="https://zoom.us/j/97287653823?pwd=K3pEaklGQUhhU2FTL0xyWTQ1ekc3QT09">
 			</div>
     	</form>
 

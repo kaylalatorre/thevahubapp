@@ -1,19 +1,22 @@
 <!DOCTYPE HTML>
 
 <div style="background: #fafafa; min-height: 100%; padding: 20px;">
-	<div class="certificate-border">
-		<div class="certificate-content">
-			<img style="width: 100px; height: 100px;" src="/assets/img/tvh-logo-square.png"> 
-		       <h1 style="font: 40px;">Certificate of Completion</h2>
-		       <br><br>
-		       <span style="font-size:25px"><i>This is to certify that</i></span>
-		       <br><br>
-		       <span style="font-size:35px; color: #4CAF50"><b>{{fName}} {{lName}}</b></span><br/><br/>
-		       <span style="font-size:20px"><i>has completed the</i></span> <br/><br/>
-		       <span style="font-size:30px">The VA Hub's Virtual Assistant Training</span> <br/>
-		       <span style="font-size:20px"> taking up courses on Marketing and Real Estate with a final average of <b>{{gradAve}}</b></span> <br/><br/>
-		       <span style="font-size:20px"><i>dated</i></span><br>
-		      <span style="font-size:20px">{{endDate}}</span>
+	<button type="button" id="print-Certificate" style="border: none;display:flex; margin-right: 10px; margin-bottom: 10px; float: right; box-shadow: 1px 1px 5px rgba(0,0,0,0.2)"> Print Certificate </label></button>
+	<div id="certificate">
+		<div class="certificate-border">
+			<div class="certificate-content">
+				<img style="width: 100px; height: 100px;" src="/views/tvh-logo-square.png"> 
+				<h1 style="font: 40px;">Certificate of Completion</h2>
+				<br><br>
+				<span style="font-size:25px"><i>This is to certify that</i></span>
+				<br><br>
+				<span style="font-size:35px; color: #4CAF50"><b>{{fName}} {{lName}}</b></span><br/><br/>
+				<span style="font-size:20px"><i>has completed the</i></span> <br/><br/>
+				<span style="font-size:30px">The VA Hub's Virtual Assistant Training</span> <br/>
+				<span style="font-size:20px"> taking up courses on Marketing and Real Estate with a final average of <b>{{gradAve}}</b></span> <br/><br/>
+				<span style="font-size:20px"><i>dated</i></span><br>
+				<span style="font-size:20px">{{endDate}}</span>
+			</div>
 		</div>
 	</div>
 	<div class="footer" style="text-align: left; padding: 20px">
