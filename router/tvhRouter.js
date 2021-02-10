@@ -96,13 +96,13 @@ router.post('/edit-class', controller.postEditClass);
 router.post('/delete-class', controller.postDeleteClass);
 
 router.post('/save-scores1', controller.postSaveScores1);
-// router.post('/save-scores2', controller.postSaveScores2);
-// router.post('/save-scores3', controller.postSaveScores3);
-// router.post('/save-scores4', controller.postSaveScores4);
-// router.post('/save-scores5', controller.postSaveScores5);
-// router.post('/save-scores6', controller.postSaveScores6);
-// router.post('/save-scores7', controller.postSaveScores7);
-// router.post('/save-scores8', controller.postSaveScores8);
+router.post('/save-scores2', controller.postSaveScores2);
+router.post('/save-scores3', controller.postSaveScores3);
+router.post('/save-scores4', controller.postSaveScores4);
+router.post('/save-scores5', controller.postSaveScores5);
+router.post('/save-scores6', controller.postSaveScores6);
+router.post('/save-scores7', controller.postSaveScores7);
+router.post('/save-scores8', controller.postSaveScores8);
 
 
 module.exports = router;

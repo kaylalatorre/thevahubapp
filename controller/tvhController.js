@@ -1652,12 +1652,11 @@ const rendFunctions = {
 	postSaveScores1: async function(req, res) {
 		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
 		
-		console.log(classID);
+		// console.log(classID);
 		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
 		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-		console.log(traineesVar);
-
-
+		// console.log(traineesVar);
+		var done = 0;
 		for(var i = 0; i < traineesVar.length; i++){
 			ScoreDB.findOneAndUpdate(
 				{ classID: classID, traineeID: traineesVar[i].traineeID },
@@ -1667,14 +1666,205 @@ const rendFunctions = {
 				{ useFindAndModify: false },
 				function(err, match) {
 					if(err){
-						console.log(err);
 						res.send({status: 500})
 					}
-					else{
-						res.send({status: 200});
-						// return;
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores2: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day2: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
 					}
 				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores3: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day3: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores4: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		// console.log(classID);
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		// console.log(traineesVar);
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day4: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores5: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day5: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores6: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day6: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores7: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		// console.log(classID);
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+		// console.log(traineesVar);
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day7: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
+		}
+	},
+
+	postSaveScores8: async function(req, res) {
+		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
+		
+		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
+		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
+
+		var done = 0;
+		for(var i = 0; i < traineesVar.length; i++){
+			ScoreDB.findOneAndUpdate(
+				{ classID: classID, traineeID: traineesVar[i].traineeID },
+				{ $set: {
+					Day8: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
+				}},
+				{ useFindAndModify: false },
+				function(err, match) {
+					if(err){
+						res.send({status: 500})
+					}
+				});
+			done++;
+		}
+
+		if(done === traineesVar.length){
+			res.send({status: 200});
 		}
 	},
 

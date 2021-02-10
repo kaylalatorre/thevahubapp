@@ -294,7 +294,6 @@ $(document).ready(function() {
 		var scores5 = [];
 
 		for(var i = 0; i < S1.length; i++){
-			// trainees.push(traineeID[i].value)
 			scores1.push(S1[i].value);
 			scores2.push(S2[i].value);
 			scores3.push(S3[i].value);
@@ -306,8 +305,8 @@ $(document).ready(function() {
 									scores4: scores4, scores5: scores5  }, function(res) {
 			switch (res.status){
 				case 200: {
-					alert("Scores updated successfully.");
 					window.location.reload();
+					alert("Scores updated successfully.");
 					break;
 				}
 				case 500: {
@@ -316,7 +315,273 @@ $(document).ready(function() {
 				}
 			}
 		});
-	}); 	
+	}); 
+	
+	$('#saveScores2').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores2', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores3').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores3', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores4').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores4', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+	
+	$('#saveScores5').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores5', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores6').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores6', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+
+	$('#saveScores7').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores7', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
+	
+	$('#saveScores8').click(function() {
+		var classID = $('#classID').text();
+		var S1 = document.getElementsByClassName('S1');
+		var S2 = document.getElementsByClassName('S2');
+		var S3 = document.getElementsByClassName('S3');
+		var S4 = document.getElementsByClassName('S4');
+		var S5 = document.getElementsByClassName('S5');
+
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
+
+		for(var i = 0; i < S1.length; i++){
+			scores1.push(S1[i].value);
+			scores2.push(S2[i].value);
+			scores3.push(S3[i].value);
+			scores4.push(S4[i].value);
+			scores5.push(S5[i].value);
+		}
+
+		$.post('/save-scores8', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
+									scores4: scores4, scores5: scores5  }, function(res) {
+			switch (res.status){
+				case 200: {
+					window.location.reload();
+					alert("Scores updated successfully.");
+					break;
+				}
+				case 500: {
+					alert("Error in updating scores.");
+					break;
+				}
+			}
+		});
+	}); 
 
 	// APPLY FILTERS for Trainer Report
 	$('button#applyTRFilter').click(function() {
