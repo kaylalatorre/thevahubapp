@@ -1959,53 +1959,104 @@ const rendFunctions = {
 						let timeStart = formatTime(sched.timeStart);
 						let timeEnd = formatTime(sched.timeEnd);
 
-						// SEND EMAIL to applicant (interview schedule)
-						var smtpTransport = nodemailer.createTransport({
-							service: 'Gmail',
-							auth: {
-								user: 'training.tvh@gmail.com',
-								pass: 'Minyoongi39!'
-							}
-						});
+						if(sched.phase === "Initial"){
+							// SEND EMAIL to applicant (initial interview schedule)
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'Minyoongi39!'
+								}
+							});
 
-						// content
-						var mailOptions = {
-							from: 'training.tvh@gmail.com',
-							to: sched.applicant.email,
-							subject: '[APPLICATION] Initial Interview Schedule',
-							html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
-									+`<div style="background-color: #ebf5ee; padding: 80px;">`
-										+`<div style="text-align: center;">`
-											+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: sched.applicant.email,
+								subject: '[APPLICATION] Initial Interview Schedule',
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+										+`<div style="background-color: #ebf5ee; padding: 80px;">`
+											+`<div style="text-align: center;">`
+												+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+											+`</div>`
+											+`<section style="text-align: justify; margin-bottom: 40px;">`
+												+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the initial phase of our interview application. </p>`
+												+`<br><br>`
+												+`<p> Here is your interview schedule:</p>`
+												+`<p> Date: ${date}, 2021 </p>`
+												+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+											+`</section>`
 										+`</div>`
-										+`<section style="text-align: justify; margin-bottom: 40px;">`
-											+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the second phase of our application. </p>`
-											+`<br><br>`
-											+`<p> Here is your interview schedule:</p>`
-											+`<p> Date: ${date}, 2021 </p>`
-											+`<p> Time: ${timeStart} to ${timeEnd} </p>`
-										+`</section>`
-									+`</div>`
-									+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
-								    +`</div>`,
-							attachments: [{
-									filename: 'tvh-logo-square.png',
-									path: __dirname+'/tvh-logo-square.png',
-									cid: 'signature'
-							}]
-						};
+										+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+										+`</div>`,
+								attachments: [{
+										filename: 'tvh-logo-square.png',
+										path: __dirname+'/tvh-logo-square.png',
+										cid: 'signature'
+								}]
+							};
 
-						smtpTransport.sendMail(mailOptions, function(error) {
-							if (error){
-								res.send({status: 500});
-								console.log(error);
-							}
-							else{
-								res.status(200).send(sched);
-							} 
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(sched);
+								} 
 
-							smtpTransport.close();
-						});
+								smtpTransport.close();
+							});
+						}
+						else { 
+							// SEND EMAIL to applicant (final interview schedule)
+							var smtpTransport = nodemailer.createTransport({
+								service: 'Gmail',
+								auth: {
+									user: 'training.tvh@gmail.com',
+									pass: 'Minyoongi39!'
+								}
+							});
+
+							// content
+							var mailOptions = {
+								from: 'training.tvh@gmail.com',
+								to: sched.applicant.email,
+								subject: '[APPLICATION] Final Interview Schedule',
+								html: `<div style="box-sizing: border-box; background: #6dc63f; width: 500px; margin: auto; padding: 20px;">`
+										+`<div style="background-color: #ebf5ee; padding: 80px;">`
+											+`<div style="text-align: center;">`
+												+`<img style="height: 124px; align-items: center;"src="cid:signature"/> <!-- change to path in our app ehe -->`
+											+`</div>`
+											+`<section style="text-align: justify; margin-bottom: 40px;">`
+												+`<p> Greetings, ${sched.applicant.fName}! You have been selected as one of the few to enter the final phase of our interview application. </p>`
+												+`<br><br>`
+												+`<p> Here is your interview schedule:</p>`
+												+`<p> Date: ${date}, 2021 </p>`
+												+`<p> Time: ${timeStart} to ${timeEnd} </p>`
+											+`</section>`
+										+`</div>`
+										+`<footer style="font-size: 10px; color: #ebf5ee; text-align:center; margin-top: 5px;">Copyright © 2021 TVH System</footer>`
+										+`</div>`,
+								attachments: [{
+										filename: 'tvh-logo-square.png',
+										path: __dirname+'/tvh-logo-square.png',
+										cid: 'signature'
+								}]
+							};
+
+							smtpTransport.sendMail(mailOptions, function(error) {
+								if (error){
+									res.send({status: 500});
+									console.log(error);
+								}
+								else{
+									res.status(200).send(sched);
+								} 
+
+								smtpTransport.close();
+							});
+						}
 						// res.status(200).send(sched);
 					}
 				}
@@ -2166,6 +2217,9 @@ const rendFunctions = {
 									+`<section style="text-align: justify; margin-bottom: 40px;">`
 										+`<p> Greetings, ${findApplic.fName}! Based on your last interview, we are glad to inform you that you have passed and will be proceeding to the training phase. </p>`
 										+`<br><br>`
+										+`<p> To get started, you can find your login credentials to the TVH System below. </p>`
+										+`<p> Email: ${findApplic.email} </p>`
+										+`<p> Password: bGjCa4mN </p>`
 										+`<p> Please wait for our next email for your class schedule. </p>`
 									+`</section>`
 								+`</div>`
