@@ -263,33 +263,35 @@ $(document).ready(function() {
 		// var endDate = $('#endhide').text()
 		// var compareDate = new Date(endDate);
 
+		// console.log(endDate);
 		// if(compareDate < today) {
 		// 	alert("This class ended in " + getDate(compareDate) + ". You cannot edit the scores for this class anymore.");
 		// }
 		// else {
-			//hide text, show editor
+			// hide text, show editor
 			for(var i = 0; i < theScore.length; i++) 
 				theScore[i].style.display = 'none';
 			
 			for(var i = 0; i < editScore.length; i++) 
 				editScore[i].style.display = 'inline';
 			
-			editScore.style.display = 'inline';
+			// editScore.style.display = 'inline';
 		// }
 	});
 
 	$('#saveScores1').click(function() {
 		var classID = $('#classID').text();
-		// var traineeID = document.getElementsByClassName('traineeID');
 		var S1 = document.getElementsByClassName('S1');
 		var S2 = document.getElementsByClassName('S2');
 		var S3 = document.getElementsByClassName('S3');
 		var S4 = document.getElementsByClassName('S4');
 		var S5 = document.getElementsByClassName('S5');
 
-		console.log(classID);
-
-		var scores1, scores2, scores3, scores4, scores5 = [];
+		var scores1 = [];
+		var scores2 = [];
+		var scores3 = [];
+		var scores4 = [];
+		var scores5 = [];
 
 		for(var i = 0; i < S1.length; i++){
 			// trainees.push(traineeID[i].value)
@@ -300,11 +302,8 @@ $(document).ready(function() {
 			scores5.push(S5[i].value);
 		}
 
-		console.log(scores1);
-
 		$.post('/save-scores1', { classID: classID, scores1: scores1, scores2: scores2, scores3: scores3,
 									scores4: scores4, scores5: scores5  }, function(res) {
-										console.log("hi");
 			switch (res.status){
 				case 200: {
 					alert("Scores updated successfully.");

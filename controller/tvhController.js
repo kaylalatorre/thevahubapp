@@ -177,9 +177,13 @@ const rendFunctions = {
 			else if (req.session.user.userType === "HRinterv")
 				res.render('int-home', {});		
 			else if (req.session.user.userType === "Trainee")
-				res.render('trainee-home', {});
+				res.render('trainee-home', {
+					fName: req.session.user.fName,
+				});
 			else if (req.session.user.userType === "Trainer")
-				res.render('trainer-home', {});
+				res.render('trainer-home', {
+					fName: req.session.user.fName,
+				});
 			else if (req.session.user.userType === "SLadmin")
 				res.render('sales-home', {});
 			else 
@@ -753,7 +757,7 @@ const rendFunctions = {
 			var ave5 = (traineeVar.Day1[4] + traineeVar.Day2[4] + traineeVar.Day3[4] + traineeVar.Day4[4] + traineeVar.Day5[4] + traineeVar.Day6[4] + traineeVar.Day7[4] + traineeVar.Day8[4])/8;
 
 				// insert into array
-			var dailyAve = [ave1.toFixed(3), ave2.toFixed(3), ave3.toFixed(3), ave4.toFixed(3), ave5.toFixed(3)];
+			var dailyAve = [ave1.toFixed(2), ave2.toFixed(2), ave3.toFixed(2), ave4.toFixed(2), ave5.toFixed(2)];
 
 				// compute for final average 
 			var finalAve = (ave1 + ave2 + ave3 + ave4 + ave5)/5;
@@ -776,7 +780,7 @@ const rendFunctions = {
 				skill4: skill4,
 				skill5: skill5,
 				dailyAve: dailyAve,
-				finalAve: finalAve.toFixed(3),
+				finalAve: finalAve.toFixed(2),
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
@@ -872,15 +876,17 @@ const rendFunctions = {
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
 			
+			var start = new Date(classVar[0].startDate);
 			var end = new Date(classVar[0].endDate);
 			var now = new Date();
-			var classDone = true;
 
-			if(end.getTime() <= now.getTime()){
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
 				//class is editable if it hasn't started yet
-				classVar[0].classDone = false; 
+				var classDone = true; 
 			}
-		
+			else var classDone = false;
+			console.log(classDone)
+
 			// fix format of dates
 			var sDate = formatDate(classVar[0].startDate);
 			var eDate = formatDate(classVar[0].endDate);
@@ -916,19 +922,19 @@ const rendFunctions = {
 				var ave8 = (traineesVar[i].Day8[0] + traineesVar[i].Day8[1] + traineesVar[i].Day8[2] + traineesVar[i].Day8[3] + traineesVar[i].Day8[4])/5;
 
 				// insert into array
-				traineesVar[i].Day1[5] = ave1.toFixed(3);
-				traineesVar[i].Day2[5] = ave2.toFixed(3);
-				traineesVar[i].Day3[5] = ave3.toFixed(3);
-				traineesVar[i].Day4[5] = ave4.toFixed(3);
-				traineesVar[i].Day5[5] = ave5.toFixed(3);
-				traineesVar[i].Day6[5] = ave6.toFixed(3);
-				traineesVar[i].Day7[5] = ave7.toFixed(3);
-				traineesVar[i].Day8[5] = ave8.toFixed(3);
+				traineesVar[i].Day1[5] = ave1.toFixed(2);
+				traineesVar[i].Day2[5] = ave2.toFixed(2);
+				traineesVar[i].Day3[5] = ave3.toFixed(2);
+				traineesVar[i].Day4[5] = ave4.toFixed(2);
+				traineesVar[i].Day5[5] = ave5.toFixed(2);
+				traineesVar[i].Day6[5] = ave6.toFixed(2);
+				traineesVar[i].Day7[5] = ave7.toFixed(2);
+				traineesVar[i].Day8[5] = ave8.toFixed(2);
 
 				// compute for final average 
 				fAve = (ave1 + ave2 + ave3 + ave4 + ave5 + ave6 + ave7 + ave8)/8;
 				
-				traineesVar[i].finalAve = fAve.toFixed(3);
+				traineesVar[i].finalAve = fAve.toFixed(2);
 
 				console.log(traineesVar[i]);
 			}
@@ -944,7 +950,7 @@ const rendFunctions = {
 				date: classVar[0].startDate + " - " + classVar[0].endDate + ", 2021",
 				time: classVar[0].startTime + " - " + classVar[0].endTime,
 				meetLink: classVar[0].meetLink,
-				classDone: classVar[0].classDone,
+				classDone: classDone,
 			});
 		});
 	},
@@ -955,6 +961,17 @@ const rendFunctions = {
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
+
+			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
+			var now = new Date();
+
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
+				//class is editable if it hasn't started yet
+				var classDone = true; 
+			}
+			else var classDone = false;
+			console.log(classDone)
 
 			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
@@ -968,6 +985,7 @@ const rendFunctions = {
 				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
+				classDone: classDone,
 			});
 		});
 	},
@@ -977,6 +995,17 @@ const rendFunctions = {
 
 		ClassDB.find({classID: classID}, async function(err, data) {
 			var classVar = JSON.parse(JSON.stringify(data));
+
+			var start = new Date(classVar[0].startDate);
+			var end = new Date(classVar[0].endDate);
+			var now = new Date();
+
+			if((start.getTime() > now.getTime()) || (end.getTime() <= now.getTime())){
+				//class is editable if it hasn't started yet
+				var classDone = true; 
+			}
+			else var classDone = false;
+			console.log(classDone)
 
 			// find trainees in class
 			var traineesDump = await db.findMany(ScoreDB, {classID: classVar[0].classID});
@@ -990,6 +1019,7 @@ const rendFunctions = {
 				endDate: classVar[0].endDate,
 				courseName: classVar[0].courseName,
 				trainees: classVar[0].trainees,
+				classDone: classDone,
 			});
 		});
 	},
@@ -1606,7 +1636,7 @@ const rendFunctions = {
 
 	postDeleteClass: function(req, res) {
 		let { classID } = req.body;
-
+		classID = 'C133506';
 		ClassDB.findOne({classID: classID}, function(err, match) {
 			if (err) {
 				res.send({status: 500, mssg:'Error in deleting class.'});
@@ -1622,15 +1652,17 @@ const rendFunctions = {
 	postSaveScores1: async function(req, res) {
 		let { classID, scores1, scores2, scores3, scores4, scores5 } = req.body;
 		
+		console.log(classID);
 		var traineesDump = await db.findMany(ScoreDB, {classID: classID});
 		var traineesVar = JSON.parse(JSON.stringify(traineesDump));
-		console.log("hi");
+		console.log(traineesVar);
+
+
 		for(var i = 0; i < traineesVar.length; i++){
 			ScoreDB.findOneAndUpdate(
 				{ classID: classID, traineeID: traineesVar[i].traineeID },
 				{ $set: {
-					scores1: scores1[i], scores2: scores2[i], scores3: scores3[i],
-						scores4: scores4[i], scores5: scores5[i],
+					Day1: [scores1[i], scores2[i], scores3[i], scores4[i], scores5[i]],
 				}},
 				{ useFindAndModify: false },
 				function(err, match) {
@@ -1640,8 +1672,9 @@ const rendFunctions = {
 					}
 					else{
 						res.send({status: 200});
+						// return;
 					}
-				})
+				});
 		}
 	},
 
